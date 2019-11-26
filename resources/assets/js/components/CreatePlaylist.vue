@@ -1,0 +1,75 @@
+<template>
+    <div class="container">
+      <div class="modal fade" id="CreatePlaylist" ref="modal" tabindex="-1" role="dialog" aria-labelledby="CreatePlaylistLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form @submit.prevent="createPlaylist">
+              <div class="modal-header">
+                <h5 class="modal-title font-weight-bold" id="CreatePlaylistLabel">Create New Playlist</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <div class="form-group file_container">
+                    <div class="form-group">
+                        <input type="text" name="nama_playlist" class="form-control" placeholder="Playlist Name" autofocus
+                            v-model="form.nama_playlist"
+                            :class="{ 'is-invalid': form.errors.has('nama_playlist') }
+                        ">
+                        <has-error :form="form" field="nama_playlist"></has-error>
+                    </div>
+                </div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" @click="resetModal" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" @click="createPlaylist" class="btn btn-primary">Create</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</template>
+
+<script>
+  import Form from 'vform';
+  import {mapState} from 'vuex'
+
+  export default{
+    data(){
+      return{
+        form: new Form({
+            nama_playlist: '',
+            parent_id: 0
+        })
+      }
+    },
+    methods:{
+      resetModal(){
+        this.form.playlistName = '';
+      },
+      createPlaylist(){
+        this.form.parent_id = this.playlistParentID;
+        this.form.post(window.location.origin+'/api/playlist')
+          .then(res=>{
+            this.resetModal();
+            this.$alert('Upload Succesful', '', 'success');
+            location.reload();
+          }).catch(err=>{
+            this.$alert('Upload Failed: '+err.message, '', 'error');
+          });;
+      },
+    },
+    computed: {
+      ...mapState([
+        'selectedPlaylist'
+      ]),
+      playlistParentID(){ //console.log(store.state.selectedPlaylist);
+        return this.$store.state.playlistParentID;
+      }
+    },
+  }
+</script>
