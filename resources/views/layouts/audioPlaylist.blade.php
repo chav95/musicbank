@@ -13,7 +13,7 @@
 
     <title>{{ucwords(str_replace('_', ' ', config('app.name')))}}</title>
   </head>
-  <body class="hold-transition skin-blue sidebar-mini">
+  <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper" id="app">
       <upload-music></upload-music>
       <create-playlist></create-playlist>

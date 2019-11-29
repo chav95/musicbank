@@ -46,7 +46,7 @@ class MusicController extends Controller
      */
     public function store(Request $request){
         $playlist = $request->playlist;
-        if($request->hasFile('file_name')){ return json_encode($request);
+        if($request->hasFile('file_name')){ //return json_encode($request);
             foreach($request->file_name as $item){
                 $originalFilename = $item->getClientOriginalName();
                 $extension = $item->getClientOriginalExtension();
@@ -146,6 +146,7 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
+        PlaylistDetail::where('music_id', $id)->delete();
         return Music::where('id', $id)->update(['status' => -1]);
     }
 }
