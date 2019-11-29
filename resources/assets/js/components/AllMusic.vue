@@ -52,7 +52,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <template v-if="searchMusic.length > 0">
+                  <template v-if="searchMusic !== ''">
                     <tr v-for="(music,index) in searchMusic" :key="index" hover:bg-blue px-4 py2>
                       <td>{{music.judul}}</td>
                       <td>
@@ -118,7 +118,7 @@
 <script>
   import moment from 'moment';
   import AudioPlayer from './reusables/PlayAudio.vue';
-  import addToPlaylist from './reusables/AddToPlaylist.vue';
+  import addToPlaylist from './AddToPlaylist.vue';
 
   export default {
     components: {

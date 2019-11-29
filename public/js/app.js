@@ -1874,6 +1874,112 @@ module.exports = function isBuffer (obj) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddToPlaylist.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    selectedMusicID: Number,
+    selectedMusicJudul: String
+  },
+  data: function data() {
+    return {
+      formReset: 0,
+      playlist: [],
+      selectedPlaylist: []
+    };
+  },
+  methods: {
+    loadPlaylist: function loadPlaylist() {
+      var _this = this;
+
+      axios.get(window.location.origin + '/api/playlist/playlistSelection').then(function (_ref) {
+        var data = _ref.data;
+        return _this.playlist = data;
+      });
+    },
+    resetModal: function resetModal() {
+      this.formReset = 1;
+    },
+    addToPlaylist: function addToPlaylist() {
+      var _this2 = this;
+
+      //console.log(this.selectedMusicID);
+      var addToPlaylist = {
+        'act': 'add_to_playlist',
+        'music_id': this.selectedMusicID,
+        'playlist_arr': this.selectedPlaylist
+      }; //console.log(addToPlaylist);
+
+      axios.post(window.location.origin + '/api/playlist', addToPlaylist).then(function (_ref2) {
+        var response = _ref2.response;
+        _this2.selectedPlaylist = [];
+
+        _this2.$emit('success');
+      })["catch"](function (_ref3) {
+        var error = _ref3.error;
+        return _this2.$alert(error.act, '', 'error');
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.loadPlaylist();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=script&lang=js&":
 /*!**************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=script&lang=js& ***!
@@ -1886,7 +1992,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _reusables_PlayAudio_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reusables/PlayAudio.vue */ "./resources/assets/js/components/reusables/PlayAudio.vue");
-/* harmony import */ var _reusables_AddToPlaylist_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reusables/AddToPlaylist.vue */ "./resources/assets/js/components/reusables/AddToPlaylist.vue");
+/* harmony import */ var _AddToPlaylist_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddToPlaylist.vue */ "./resources/assets/js/components/AddToPlaylist.vue");
 //
 //
 //
@@ -2010,7 +2116,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     AudioPlayer: _reusables_PlayAudio_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-    addToPlaylist: _reusables_AddToPlaylist_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+    addToPlaylist: _AddToPlaylist_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -2737,6 +2843,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _reusables_Playlist_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reusables/Playlist.vue */ "./resources/assets/js/components/reusables/Playlist.vue");
+/* harmony import */ var _reusables_UploadProgress_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reusables/UploadProgress.vue */ "./resources/assets/js/components/reusables/UploadProgress.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -2781,11 +2888,33 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    playlist: _reusables_Playlist_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    playlist: _reusables_Playlist_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    progressBar: _reusables_UploadProgress_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -2794,17 +2923,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       btnText: 'Choose File(s)',
       filenameList: [],
       selectedFile: null,
-      playlist: null
+      playlist: null,
+      playlistPath: [],
+      selectedPlaylistArr: [],
+      isUploading: false,
+      uploadProgress: 0,
+      uploadResult: ''
     };
   },
   methods: {
     loadPlaylist: function loadPlaylist() {
       var _this = this;
 
-      axios.get(window.location.origin + '/api/music').then(function (_ref) {
+      //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
+      axios.get(window.location.origin + '/api/playlist/playlistSelection').then(function (_ref) {
         var data = _ref.data;
-        return _this.playlist = data;
-      }); //axios.get(window.location.origin+'/api/music/get_user_data');
+        return _this.playlistPath = data;
+      });
     },
     onFileSelected: function onFileSelected(event) {
       this.filenameList = [];
@@ -2827,36 +2962,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.toUpload = new FormData();
       this.filenameList = [];
       this.btnText = 'Choose File(s)';
+      this.isUploading = false;
+      this.selectedPlaylistArr = [];
     },
     uploadMusic: function uploadMusic() {
       var _this2 = this;
 
-      var data = JSON.parse(JSON.stringify(this.selectedPlaylist)); //console.log(data);
+      var data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
 
       if (this.selectedFile === null || this.selectedFile.length === 0) {
         this.$alert('No Music Choosen', '', 'warning');
-      } else if (this.selectedPlaylist.length == 0) {
+      } else if (this.selectedPlaylistArr.length == 0) {
         this.$alert('Must Pick At Least 1 Playlist', '', 'warning');
       } else {
-        this.toUpload.append('playlist', this.selectedPlaylist);
+        this.toUpload.append('playlist', this.selectedPlaylistArr);
         console.log(this.toUpload);
+        this.isUploading = true;
         axios.post(window.location.origin + '/api/music', this.toUpload, {
           headers: {
             'Content-Type': 'multipart/form-data'
+          },
+          onUploadProgress: function onUploadProgress(uploadEvent) {
+            //console.log('Upload Progress: '+Math.round(uploadEvent.loaded/uploadEvent.total*100)+'%')
+            _this2.uploadProgress = Math.round(uploadEvent.loaded / uploadEvent.total * 100);
           }
         }).then(function (res) {
-          _this2.resetModal();
+          _this2.toUpload = new FormData();
 
-          _this2.$alert('Upload Succesful', '', 'success');
+          _this2.$alert('Upload Succesful', '', 'success').then();
+
+          _this2.uploadResult = 'success';
         })["catch"](function (err) {
           _this2.$alert('Upload Failed: ' + err.message, '', 'error');
+
+          _this2.uploadResult = 'error';
         });
       }
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['selectedPlaylist']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['getSelectedPlaylist']), {
     selectedPlaylist: function selectedPlaylist() {
-      //console.log(store.state.selectedPlaylist);
       return this.$store.state.selectedPlaylist;
     }
   }),
@@ -3408,113 +3553,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    selectedMusicID: Number,
-    selectedMusicJudul: String
-  },
-  data: function data() {
-    return {
-      formReset: 0,
-      playlist: [],
-      selectedPlaylist: []
-    };
-  },
-  methods: {
-    loadPlaylist: function loadPlaylist() {
-      var _this = this;
-
-      //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
-      axios.get(window.location.origin + '/api/playlist/playlistSelection').then(function (_ref) {
-        var data = _ref.data;
-        return _this.playlist = data;
-      });
-    },
-    resetModal: function resetModal() {
-      this.formReset = 1;
-    },
-    addToPlaylist: function addToPlaylist() {
-      var _this2 = this;
-
-      //console.log(this.selectedMusicID);
-      var addToPlaylist = {
-        'act': 'add_to_playlist',
-        'music_id': this.selectedMusicID,
-        'playlist_arr': this.selectedPlaylist
-      }; //console.log(addToPlaylist);
-
-      axios.post(window.location.origin + '/api/playlist', addToPlaylist).then(function (_ref2) {
-        var response = _ref2.response;
-        _this2.selectedPlaylist = [];
-
-        _this2.$emit('success');
-      })["catch"](function (_ref3) {
-        var error = _ref3.error;
-        return _this2.$alert(error.act, '', 'error');
-      });
-    }
-  },
-  mounted: function mounted() {
-    this.loadPlaylist();
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/PlayAudio.vue?vue&type=script&lang=js&":
 /*!*************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/PlayAudio.vue?vue&type=script&lang=js& ***!
@@ -3824,6 +3862,70 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['getSelectedPlaylist']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(['SET_SELECTED_PLAYLIST']))
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    uploadProgress: Number,
+    uploadResult: String,
+    isUploading: Boolean
+  },
+  data: function data() {
+    return {};
+  },
+  computed: {
+    progressLabel: function progressLabel() {
+      if (this.uploadProgress < 100) {
+        return '(' + this.uploadProgress + '%) Uploading...';
+      } else {
+        if (this.uploadResult == 'error') {
+          return 'Upload Failed';
+        } else if (this.uploadResult == 'success') {
+          return 'Upload Complete';
+        }
+      }
+    },
+    progressClass: function progressClass() {
+      if (this.uploadProgress < 100) {
+        return '';
+      } else {
+        if (this.uploadResult == 'error') {
+          return 'progress-bar-danger';
+        } else if (this.uploadResult == 'success') {
+          return 'progress-bar-success';
+        }
+      }
+    },
+    showhide: function showhide() {
+      if (this.isUploading === false) {
+        return 'd-none';
+      } else {
+        return '';
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -6438,6 +6540,25 @@ exports.push([module.i, "body {\n  font-family: \"Nunito\", sans-serif;\n}\n.pla
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.playlist_container{\n  max-height: 500px;\n  overflow: auto;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&":
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& ***!
@@ -6469,7 +6590,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.playlist_container{\n  max-height: 500px;\n  overflow: auto;\n}\n#filename_container{\n  max-height: 150px;\n}\n", ""]);
+exports.push([module.i, "\n.playlist_container{\n  max-height: 500px;\n  overflow: auto;\n}\n#filename_container{\n  max-height: 150px;\n}\n.dropzone{\n  min-height: 200px;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n  outline: 2px dashed grey;\n  outline-offset: -10px;\n  background: lightcyan;\n}\n.dropzone:hover{\n  background: lightblue;\n  color: grey;\n}\n.input-field{\n  opacity: 0;\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  cursor: pointer;\n}\n.dropzone .call-to-action{\n  font-size: 1.2 rem;\n  text-align: center;\n  padding-top: 70px;\n  color: black;\n}\n", ""]);
 
 // exports
 
@@ -6527,25 +6648,6 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.card-tools[data-v-50347708]{\n  text-align: right;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css&":
-/*!************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css& ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.playlist_container{\n  max-height: 500px;\n  overflow: auto;\n}\n", ""]);
 
 // exports
 
@@ -52986,6 +53088,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& ***!
@@ -53129,36 +53261,6 @@ options.transform = transform
 options.insertInto = undefined;
 
 var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css&":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css& ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
 
 if(content.locals) module.exports = content.locals;
 
@@ -57718,6 +57820,223 @@ AlertSuccess_component.options.__file = "AlertSuccess.vue"
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c(
+      "div",
+      {
+        ref: "modal",
+        staticClass: "modal fade",
+        attrs: {
+          id: "PlaylistModal",
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "PlaylistModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-dialog-centered",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c(
+                "form",
+                {
+                  attrs: { enctype: "multipart/form-data" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.addToPlaylist($event)
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "modal-header" }, [
+                    _c(
+                      "h5",
+                      {
+                        staticClass: "modal-title font-weight-bold",
+                        attrs: { id: "PlaylistModalLabel" }
+                      },
+                      [
+                        _vm._v(
+                          "Add " +
+                            _vm._s(_vm.selectedMusicJudul) +
+                            " To Playlist"
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(0)
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { key: _vm.formReset, staticClass: "modal-body" }, [
+                    _c(
+                      "div",
+                      { staticClass: "form-group playlist_container" },
+                      [
+                        _c("h4", [_vm._v("Choose Playlist(s)")]),
+                        _vm._v(" "),
+                        _c(
+                          "ul",
+                          {},
+                          _vm._l(_vm.playlist, function(item) {
+                            return _c(
+                              "li",
+                              {
+                                key: item.id,
+                                staticStyle: { "list-style-type": "none" }
+                              },
+                              [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.selectedPlaylist,
+                                      expression: "selectedPlaylist"
+                                    }
+                                  ],
+                                  ref: "playlistPath_" + item.id,
+                                  refInFor: true,
+                                  staticClass: "playlist",
+                                  attrs: {
+                                    type: "checkbox",
+                                    id: "playlistPath_" + item.id
+                                  },
+                                  domProps: {
+                                    value: item.id,
+                                    checked: Array.isArray(_vm.selectedPlaylist)
+                                      ? _vm._i(_vm.selectedPlaylist, item.id) >
+                                        -1
+                                      : _vm.selectedPlaylist
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$a = _vm.selectedPlaylist,
+                                        $$el = $event.target,
+                                        $$c = $$el.checked ? true : false
+                                      if (Array.isArray($$a)) {
+                                        var $$v = item.id,
+                                          $$i = _vm._i($$a, $$v)
+                                        if ($$el.checked) {
+                                          $$i < 0 &&
+                                            (_vm.selectedPlaylist = $$a.concat([
+                                              $$v
+                                            ]))
+                                        } else {
+                                          $$i > -1 &&
+                                            (_vm.selectedPlaylist = $$a
+                                              .slice(0, $$i)
+                                              .concat($$a.slice($$i + 1)))
+                                        }
+                                      } else {
+                                        _vm.selectedPlaylist = $$c
+                                      }
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "label",
+                                  {
+                                    ref: "label_" + item.id,
+                                    refInFor: true,
+                                    attrs: { for: "playlistPath_" + item.id }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                          " +
+                                        _vm._s(
+                                          _vm._f("capitalize")(item.path)
+                                        ) +
+                                        "\n                      "
+                                    )
+                                  ]
+                                )
+                              ]
+                            )
+                          }),
+                          0
+                        )
+                      ]
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { type: "button", "data-dismiss": "modal" },
+                        on: { click: _vm.resetModal }
+                      },
+                      [_vm._v("Cancel")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: { click: _vm.addToPlaylist }
+                      },
+                      [_vm._v("OK")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: {
+          type: "button",
+          "data-dismiss": "modal",
+          "aria-label": "Close"
+        }
+      },
+      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=template&id=41feb83b&scoped=true&":
 /*!******************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=template&id=41feb83b&scoped=true& ***!
@@ -57897,7 +58216,7 @@ var render = function() {
                       _c(
                         "tbody",
                         [
-                          _vm.searchMusic.length > 0
+                          _vm.searchMusic !== ""
                             ? _vm._l(_vm.searchMusic, function(music, index) {
                                 return _c(
                                   "tr",
@@ -58607,61 +58926,155 @@ var render = function() {
                   _vm._m(0),
                   _vm._v(" "),
                   _c("div", { key: _vm.formReset, staticClass: "modal-body" }, [
-                    _c("div", { staticClass: "form-group file_container" }, [
-                      _c("input", {
-                        ref: "fileInput",
-                        staticStyle: { display: "none" },
-                        attrs: { type: "file", multiple: "multiple" },
-                        on: { change: _vm.onFileSelected }
-                      }),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary btn-block",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.$refs.fileInput.click()
-                            }
-                          }
-                        },
-                        [_vm._v(_vm._s(_vm.btnText))]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "ul",
-                        _vm._l(_vm.filenameList, function(filename) {
-                          return _c(
-                            "li",
-                            { key: filename, attrs: { accept: ".mp3" } },
-                            [_vm._v(_vm._s(filename))]
-                          )
-                        }),
-                        0
-                      )
-                    ]),
-                    _vm._v(" "),
                     _c(
                       "div",
-                      { staticClass: "form-group playlist_container" },
+                      {},
                       [
-                        _c("h4", [_vm._v("Choose Playlist(s)")]),
+                        _c(
+                          "div",
+                          { staticClass: "form-group file_container" },
+                          [
+                            _c("input", {
+                              ref: "fileInput",
+                              staticStyle: { display: "none" },
+                              attrs: { type: "file", multiple: "multiple" },
+                              on: { change: _vm.onFileSelected }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary btn-block",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.$refs.fileInput.click()
+                                  }
+                                }
+                              },
+                              [_vm._v(_vm._s(_vm.btnText))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "ul",
+                              _vm._l(_vm.filenameList, function(filename) {
+                                return _c(
+                                  "li",
+                                  { key: filename, attrs: { accept: ".mp3" } },
+                                  [_vm._v(_vm._s(filename))]
+                                )
+                              }),
+                              0
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("progress-bar", {
+                          attrs: {
+                            uploadProgress: _vm.uploadProgress,
+                            uploadResult: _vm.uploadResult,
+                            isUploading: _vm.isUploading
+                          }
+                        }),
                         _vm._v(" "),
                         _c(
-                          "ul",
-                          {},
+                          "div",
+                          { staticClass: "form-group playlist_container" },
                           [
-                            _c("playlist", {
-                              attrs: {
-                                playlist: _vm.playlist,
-                                display: "checkbox"
-                              }
-                            })
-                          ],
-                          1
+                            _c("h4", [_vm._v("Choose Playlist(s)")]),
+                            _vm._v(" "),
+                            _c(
+                              "ul",
+                              {},
+                              _vm._l(_vm.playlistPath, function(item) {
+                                return _c(
+                                  "li",
+                                  {
+                                    key: item.id,
+                                    staticStyle: { "list-style-type": "none" }
+                                  },
+                                  [
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.selectedPlaylistArr,
+                                          expression: "selectedPlaylistArr"
+                                        }
+                                      ],
+                                      ref: "playlistPath_" + item.id,
+                                      refInFor: true,
+                                      staticClass: "playlist",
+                                      attrs: {
+                                        type: "checkbox",
+                                        id: "playlistPath_" + item.id
+                                      },
+                                      domProps: {
+                                        value: item.id,
+                                        checked: Array.isArray(
+                                          _vm.selectedPlaylistArr
+                                        )
+                                          ? _vm._i(
+                                              _vm.selectedPlaylistArr,
+                                              item.id
+                                            ) > -1
+                                          : _vm.selectedPlaylistArr
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          var $$a = _vm.selectedPlaylistArr,
+                                            $$el = $event.target,
+                                            $$c = $$el.checked ? true : false
+                                          if (Array.isArray($$a)) {
+                                            var $$v = item.id,
+                                              $$i = _vm._i($$a, $$v)
+                                            if ($$el.checked) {
+                                              $$i < 0 &&
+                                                (_vm.selectedPlaylistArr = $$a.concat(
+                                                  [$$v]
+                                                ))
+                                            } else {
+                                              $$i > -1 &&
+                                                (_vm.selectedPlaylistArr = $$a
+                                                  .slice(0, $$i)
+                                                  .concat($$a.slice($$i + 1)))
+                                            }
+                                          } else {
+                                            _vm.selectedPlaylistArr = $$c
+                                          }
+                                        }
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "label",
+                                      {
+                                        ref: "label_" + item.id,
+                                        refInFor: true,
+                                        attrs: {
+                                          for: "playlistPath_" + item.id
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                            " +
+                                            _vm._s(
+                                              _vm._f("capitalize")(item.path)
+                                            ) +
+                                            "\n                        "
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                )
+                              }),
+                              0
+                            )
+                          ]
                         )
-                      ]
+                      ],
+                      1
                     )
                   ]),
                   _vm._v(" "),
@@ -59498,223 +59911,6 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=template&id=3e24eaa0&":
-/*!*********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=template&id=3e24eaa0& ***!
-  \*********************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
-    _c(
-      "div",
-      {
-        ref: "modal",
-        staticClass: "modal fade",
-        attrs: {
-          id: "PlaylistModal",
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "PlaylistModalLabel",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-dialog-centered",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c(
-                "form",
-                {
-                  attrs: { enctype: "multipart/form-data" },
-                  on: {
-                    submit: function($event) {
-                      $event.preventDefault()
-                      return _vm.addToPlaylist($event)
-                    }
-                  }
-                },
-                [
-                  _c("div", { staticClass: "modal-header" }, [
-                    _c(
-                      "h5",
-                      {
-                        staticClass: "modal-title font-weight-bold",
-                        attrs: { id: "PlaylistModalLabel" }
-                      },
-                      [
-                        _vm._v(
-                          "Add " +
-                            _vm._s(_vm.selectedMusicJudul) +
-                            " To Playlist"
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _vm._m(0)
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { key: _vm.formReset, staticClass: "modal-body" }, [
-                    _c(
-                      "div",
-                      { staticClass: "form-group playlist_container" },
-                      [
-                        _c("h4", [_vm._v("Choose Playlist(s)")]),
-                        _vm._v(" "),
-                        _c(
-                          "ul",
-                          {},
-                          _vm._l(_vm.playlist, function(item) {
-                            return _c(
-                              "li",
-                              {
-                                key: item.id,
-                                staticStyle: { "list-style-type": "none" }
-                              },
-                              [
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.selectedPlaylist,
-                                      expression: "selectedPlaylist"
-                                    }
-                                  ],
-                                  ref: "playlistPath_" + item.id,
-                                  refInFor: true,
-                                  staticClass: "playlist",
-                                  attrs: {
-                                    type: "checkbox",
-                                    id: "playlistPath_" + item.id
-                                  },
-                                  domProps: {
-                                    value: item.id,
-                                    checked: Array.isArray(_vm.selectedPlaylist)
-                                      ? _vm._i(_vm.selectedPlaylist, item.id) >
-                                        -1
-                                      : _vm.selectedPlaylist
-                                  },
-                                  on: {
-                                    change: function($event) {
-                                      var $$a = _vm.selectedPlaylist,
-                                        $$el = $event.target,
-                                        $$c = $$el.checked ? true : false
-                                      if (Array.isArray($$a)) {
-                                        var $$v = item.id,
-                                          $$i = _vm._i($$a, $$v)
-                                        if ($$el.checked) {
-                                          $$i < 0 &&
-                                            (_vm.selectedPlaylist = $$a.concat([
-                                              $$v
-                                            ]))
-                                        } else {
-                                          $$i > -1 &&
-                                            (_vm.selectedPlaylist = $$a
-                                              .slice(0, $$i)
-                                              .concat($$a.slice($$i + 1)))
-                                        }
-                                      } else {
-                                        _vm.selectedPlaylist = $$c
-                                      }
-                                    }
-                                  }
-                                }),
-                                _vm._v(" "),
-                                _c(
-                                  "label",
-                                  {
-                                    ref: "label_" + item.id,
-                                    refInFor: true,
-                                    attrs: { for: "playlistPath_" + item.id }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                          " +
-                                        _vm._s(
-                                          _vm._f("capitalize")(item.path)
-                                        ) +
-                                        "\n                      "
-                                    )
-                                  ]
-                                )
-                              ]
-                            )
-                          }),
-                          0
-                        )
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "modal-footer" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-danger",
-                        attrs: { type: "button", "data-dismiss": "modal" },
-                        on: { click: _vm.resetModal }
-                      },
-                      [_vm._v("Cancel")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: { click: _vm.addToPlaylist }
-                      },
-                      [_vm._v("OK")]
-                    )
-                  ])
-                ]
-              )
-            ])
-          ]
-        )
-      ]
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass: "close",
-        attrs: {
-          type: "button",
-          "data-dismiss": "modal",
-          "aria-label": "Close"
-        }
-      },
-      [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-    )
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/PlayAudio.vue?vue&type=template&id=4bf0d5b4&":
 /*!*****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/PlayAudio.vue?vue&type=template&id=4bf0d5b4& ***!
@@ -60168,6 +60364,46 @@ var render = function() {
         0
       )
     : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { class: "progress " + _vm.showhide }, [
+    _c(
+      "div",
+      {
+        class:
+          "progress-bar " + _vm.progressClass + " progress-bar-striped active",
+        style: "width:" + _vm.uploadProgress + "%",
+        attrs: {
+          role: "progressbar",
+          "aria-valuenow": _vm.uploadProgress,
+          "aria-valuemin": "0",
+          "aria-valuemax": "100"
+        }
+      },
+      [_vm._v(_vm._s(_vm.progressLabel))]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -76586,6 +76822,93 @@ if (token) {
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/AddToPlaylist.vue":
+/*!**********************************************************!*\
+  !*** ./resources/assets/js/components/AddToPlaylist.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AddToPlaylist_vue_vue_type_template_id_355b1947___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddToPlaylist.vue?vue&type=template&id=355b1947& */ "./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947&");
+/* harmony import */ var _AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddToPlaylist.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/AddToPlaylist.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddToPlaylist.vue?vue&type=style&index=0&lang=css& */ "./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AddToPlaylist_vue_vue_type_template_id_355b1947___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AddToPlaylist_vue_vue_type_template_id_355b1947___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/assets/js/components/AddToPlaylist.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/AddToPlaylist.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/assets/js/components/AddToPlaylist.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css&":
+/*!*******************************************************************************************!*\
+  !*** ./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css& ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_template_id_355b1947___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=template&id=355b1947& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_template_id_355b1947___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_template_id_355b1947___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/AllMusic.vue":
 /*!*****************************************************!*\
   !*** ./resources/assets/js/components/AllMusic.vue ***!
@@ -77297,93 +77620,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/assets/js/components/reusables/AddToPlaylist.vue":
-/*!********************************************************************!*\
-  !*** ./resources/assets/js/components/reusables/AddToPlaylist.vue ***!
-  \********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AddToPlaylist_vue_vue_type_template_id_3e24eaa0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddToPlaylist.vue?vue&type=template&id=3e24eaa0& */ "./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=template&id=3e24eaa0&");
-/* harmony import */ var _AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddToPlaylist.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AddToPlaylist.vue?vue&type=style&index=0&lang=css& */ "./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _AddToPlaylist_vue_vue_type_template_id_3e24eaa0___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _AddToPlaylist_vue_vue_type_template_id_3e24eaa0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/js/components/reusables/AddToPlaylist.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css&":
-/*!*****************************************************************************************************!*\
-  !*** ./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css& ***!
-  \*****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=template&id=3e24eaa0&":
-/*!***************************************************************************************************!*\
-  !*** ./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=template&id=3e24eaa0& ***!
-  \***************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_template_id_3e24eaa0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToPlaylist.vue?vue&type=template&id=3e24eaa0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/AddToPlaylist.vue?vue&type=template&id=3e24eaa0&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_template_id_3e24eaa0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddToPlaylist_vue_vue_type_template_id_3e24eaa0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
 /***/ "./resources/assets/js/components/reusables/PlayAudio.vue":
 /*!****************************************************************!*\
   !*** ./resources/assets/js/components/reusables/PlayAudio.vue ***!
@@ -77535,6 +77771,76 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Playlist_vue_vue_type_template_id_6726bd10___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Playlist_vue_vue_type_template_id_6726bd10___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/reusables/UploadProgress.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/assets/js/components/reusables/UploadProgress.vue ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UploadProgress_vue_vue_type_template_id_4f0b27e8_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true& */ "./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true&");
+/* harmony import */ var _UploadProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UploadProgress.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=script&lang=js&");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _UploadProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _UploadProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UploadProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UploadProgress_vue_vue_type_template_id_4f0b27e8_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UploadProgress_vue_vue_type_template_id_4f0b27e8_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "4f0b27e8",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/assets/js/components/reusables/UploadProgress.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UploadProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./UploadProgress.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UploadProgress_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true&":
+/*!****************************************************************************************************************!*\
+  !*** ./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true& ***!
+  \****************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UploadProgress_vue_vue_type_template_id_4f0b27e8_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/reusables/UploadProgress.vue?vue&type=template&id=4f0b27e8&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UploadProgress_vue_vue_type_template_id_4f0b27e8_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UploadProgress_vue_vue_type_template_id_4f0b27e8_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

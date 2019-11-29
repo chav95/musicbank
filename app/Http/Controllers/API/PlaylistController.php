@@ -114,7 +114,7 @@ class PlaylistController extends Controller
 
     protected function playlistBreakdown($path, $allPlaylist, $playlistArr){
         foreach($allPlaylist as $item){
-            $node = $path.'/'.ucwords($item['nama_playlist']);
+            $node = $path.' / '.ucwords($item['nama_playlist']);
             $new_item = array(
                 'id' => $item['id'],
                 'path' => $node,

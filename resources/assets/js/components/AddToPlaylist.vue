@@ -58,7 +58,6 @@
     },
     methods:{
         loadPlaylist(){
-            //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
             axios.get(window.location.origin+'/api/playlist/playlistSelection').then(({data}) => (this.playlist = data));
         },
         resetModal(){

@@ -46,7 +46,7 @@ class MusicController extends Controller
      */
     public function store(Request $request){
         $playlist = $request->playlist;
-        if($request->hasFile('file_name')){ //return 'true';
+        if($request->hasFile('file_name')){ return json_encode($request);
             foreach($request->file_name as $item){
                 $originalFilename = $item->getClientOriginalName();
                 $extension = $item->getClientOriginalExtension();

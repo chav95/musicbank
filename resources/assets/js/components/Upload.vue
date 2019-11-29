@@ -12,16 +12,36 @@
               </div>
 
               <div class="modal-body" :key="formReset">
-                <div class="form-group file_container">
-                  <input type="file" ref="fileInput" multiple="multiple" @change="onFileSelected" style="display:none">
-                  <button @click="$refs.fileInput.click()" type="button" class="btn btn-primary btn-block">{{btnText}}</button>
-                  <ul><li v-for="filename in filenameList" :key="filename" accept=".mp3">{{filename}}</li></ul>
-                </div>
-                <div class="form-group playlist_container">
-                  <h4>Choose Playlist(s)</h4>
-                  <ul style>
-                    <playlist :playlist="playlist" :display="'checkbox'"></playlist>
-                  </ul>
+                <div class="">
+                  <div class="form-group file_container">
+                    <input type="file" ref="fileInput" multiple="multiple" @change="onFileSelected" style="display:none">
+                    <button @click="$refs.fileInput.click()" type="button" class="btn btn-primary btn-block">{{btnText}}</button>
+                    <ul><li v-for="filename in filenameList" :key="filename" accept=".mp3">{{filename}}</li></ul>
+                  </div>
+                  <progress-bar 
+                    :uploadProgress="uploadProgress" 
+                    :uploadResult="uploadResult"
+                    :isUploading="isUploading"
+                  ></progress-bar>
+
+                  <div class="form-group playlist_container">
+                    <h4>Choose Playlist(s)</h4>
+                    <ul style>
+                      <!--<playlist :playlist="playlist" :display="'checkbox'"></playlist>-->
+                      
+                      <li v-for="item in playlistPath" :key="item.id" style="list-style-type: none">
+                          <input type="checkbox" class="playlist"
+                              v-model="selectedPlaylistArr"
+                              :value="item.id" 
+                              :id="'playlistPath_'+item.id"
+                              :ref="'playlistPath_'+item.id"
+                          />
+                          <label :for ="'playlistPath_'+item.id" :ref="'label_'+item.id">
+                              {{item.path | capitalize}}
+                          </label>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -39,10 +59,12 @@
 <script>
   import {mapState, mapGetters} from 'vuex'
   import playlist from './reusables/Playlist.vue'
+  import progressBar from './reusables/UploadProgress.vue'
 
   export default{
     components: {
-      playlist
+      playlist,
+      progressBar,
     },
     data(){
       return{
@@ -52,12 +74,18 @@
         filenameList: [],
         selectedFile: null,
         playlist: null,
+        playlistPath: [],
+        selectedPlaylistArr: [],
+
+        isUploading: false,
+        uploadProgress: 0,
+        uploadResult: '',
       }
     },
     methods:{
       loadPlaylist(){
-        axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
-        //axios.get(window.location.origin+'/api/music/get_user_data');
+        //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
+        axios.get(window.location.origin+'/api/playlist/playlistSelection').then(({data}) => (this.playlistPath = data));
       },
       onFileSelected(event){
         this.filenameList = [];
@@ -68,10 +96,10 @@
         if(event.target.files.length == 0){
           this.filenameList = ['No File Selected'];
         }else{
-            for(let i=0; i<event.target.files.length; i++){
-              this.filenameList.push(event.target.files[i].name);
-              this.toUpload.append('file_name['+i+']', event.target.files[i]);
-            }
+          for(let i=0; i<event.target.files.length; i++){
+            this.filenameList.push(event.target.files[i].name);
+            this.toUpload.append('file_name['+i+']', event.target.files[i]);
+          }
         }
       },
       resetModal(){
@@ -80,24 +108,34 @@
         this.toUpload = new FormData();
         this.filenameList = [];
         this.btnText = 'Choose File(s)';
+        this.isUploading = false;
+        this.selectedPlaylistArr = [];
       },
       uploadMusic(){
-        let data = JSON.parse(JSON.stringify(this.selectedPlaylist)); //console.log(data);
+        let data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
         if(this.selectedFile === null || this.selectedFile.length === 0){
           this.$alert('No Music Choosen', '', 'warning');
-        }else if(this.selectedPlaylist.length == 0){
+        }else if(this.selectedPlaylistArr.length == 0){
           this.$alert('Must Pick At Least 1 Playlist', '', 'warning');
         }else{
-          this.toUpload.append('playlist', this.selectedPlaylist); console.log(this.toUpload);
+          this.toUpload.append('playlist', this.selectedPlaylistArr); console.log(this.toUpload);
+          this.isUploading = true;
+
           axios.post(window.location.origin+'/api/music', this.toUpload, {
             headers: {
               'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: uploadEvent => {
+              //console.log('Upload Progress: '+Math.round(uploadEvent.loaded/uploadEvent.total*100)+'%')
+              this.uploadProgress = Math.round(uploadEvent.loaded/uploadEvent.total*100);
             }
           }).then(res=>{
-            this.resetModal();
-            this.$alert('Upload Succesful', '', 'success');
+            this.toUpload = new FormData();
+            this.$alert('Upload Succesful', '', 'success').then();
+            this.uploadResult = 'success';
           }).catch(err=>{
             this.$alert('Upload Failed: '+err.message, '', 'error');
+            this.uploadResult = 'error';
           });
         }
       },
@@ -109,9 +147,9 @@
       ...mapGetters([
         'getSelectedPlaylist'
       ]),
-      selectedPlaylist(){ //console.log(store.state.selectedPlaylist);
+      selectedPlaylist(){
         return this.$store.state.selectedPlaylist;
-      }
+      },
     },
     mounted(){
       this.loadPlaylist();
@@ -127,5 +165,33 @@
 
   #filename_container{
     max-height: 150px;
+  }
+  .dropzone{
+    min-height: 200px;
+    padding: 10px 10px;
+    position: relative;
+    cursor: pointer;
+    outline: 2px dashed grey;
+    outline-offset: -10px;
+    background: lightcyan;
+  }
+  .dropzone:hover{
+    background: lightblue;
+    color: grey;
+  }
+
+  .input-field{
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: pointer;
+  }
+
+  .dropzone .call-to-action{
+    font-size: 1.2 rem;
+    text-align: center;
+    padding-top: 70px;
+    color: black;
   }
 </style>
