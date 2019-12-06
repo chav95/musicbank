@@ -102,7 +102,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        if($id == 'getUserLogin'){ 
+            return auth('api')->user();
+        }
     }
 
     /**

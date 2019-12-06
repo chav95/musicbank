@@ -10,6 +10,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
+    
+    public function wishlistCreated(){
+        return $this->hasMany('App\Wishlist', 'user_id');
+    }
+    public function musicUploaded(){
+        return $this->hasMany('App\Music', 'uploaded_by');
+    }
+    public function playlistCreated(){
+        return $this->hasMany('App\Playlist', 'created_by');
+    }
 
     /**
      * The attributes that are mass assignable.

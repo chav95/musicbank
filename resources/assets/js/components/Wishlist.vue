@@ -25,6 +25,10 @@
                   :autoPlay="autoPlay" 
                   v-on:playNext="nextMusic">
                 </audio-player>
+
+                <button v-else type="button" class="btn btn-primary create-wishlist" data-toggle="modal" data-target="#CreateWishlistModal">
+                  Create New Playlist
+                </button>
               </div>
               
               <table v-if="$route.params.wishlist_id" class="table table-head-fixed">
@@ -78,7 +82,7 @@
                     <th colspan="2">Wishlist Name</th>
                     <th>Created At</th>
                     <th>Status</th>
-                    <th>Modify</th>
+                    <th v-if="userLogin.hak_akses != 'editor'">Modify</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -101,8 +105,8 @@
                       <td><span :class="'status_'+item.status">
                         {{(item.status == 0 ? 'Pending' : (item.status == 1 ? 'Finished' : 'Canceled'))}}
                       </span></td>
-                      <td>
-                        <div v-if="item.status == 0">
+                      <td v-if="userLogin.hak_akses != 'editor'">
+                        <div v-if="item.status == 0 && userLogin.hak_akses != 'editor'">
                           <a class="modify-btn" title="Mark Wishlist As Finished"
                             v-on:click="openConfirmModal(item.id, item.wishlist_label, 1)"
                           >
@@ -132,6 +136,8 @@
         </div>        
       </div>
     </section>
+
+    <add-wishlist v-on:wishlistCreated="loadWishlist"></add-wishlist>
   </div>
 </template>
 
@@ -139,18 +145,22 @@
   import moment from 'moment';
   import AudioPlayer from './reusables/PlayAudio.vue';
   import AddToWishlist from './AddToWishlist.vue';
+  import AddWishlist from './reusables/AddWishlist.vue';
 
   export default {
     components: {
       AudioPlayer,
       AddToWishlist,
+      AddWishlist,
     },
     data(){
       return{
+        userLogin: null,
+
         file: null,
         file_id: null,
         judul: null,
-
+        
         autoPlay: false,
         wishlist:{data:{}},
         fileArr: [],
@@ -159,6 +169,11 @@
       }
     },
     methods:{
+      loadUserLogin(){
+        axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => { console.log(data);
+          this.userLogin = data;
+        });
+      },
       loadWishlist(){
         this.fileArr = [];
         this.judulArr = [];
@@ -274,6 +289,7 @@
     },
     mounted() {
       this.loadWishlist();
+      this.loadUserLogin();
     }
   }
 </script>
@@ -281,6 +297,10 @@
 <style lang="scss" scoped>
   .card-tools{
     text-align: right;
+  }
+
+  .create-wishlist{
+    float: left;
   }
 
   .status{

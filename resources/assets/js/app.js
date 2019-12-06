@@ -19,12 +19,14 @@ import moment from 'moment'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueFuse from 'vue-fuse'
+import V_Session from 'v-session'
 
 Vue.use(VueSimpleAlert)
 Vue.use(moment)
 Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueFuse)
+Vue.use(V_Session)
 
 let routes = [
     {path: '/all-music', component: require('./components/AllMusic.vue').default},

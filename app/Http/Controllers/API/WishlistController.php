@@ -59,7 +59,6 @@ class WishlistController extends Controller
                 $wishlist->wishlist_label = $request->wishlist_label;
                 $wishlist->user_id = auth('api')->user()->id;
                 $wishlist->save();
-
                 return response()->json(array('success' => true, 'last_insert_id' => $wishlist->id), 200);
             }else if($request->act == 'add_to_wishlist'){
                 foreach($request->selected_wishlist as $wishlist){
@@ -68,7 +67,6 @@ class WishlistController extends Controller
                     $item->music_id = $request->music_id;
                     $item->save();
                 }
-
                 return response()->json(array('success' => true, 'last_insert_id' => $item->id), 200);
             }else if($request->act == 'delete_from_wishlist'){
                 return WishlistDetail::where('id', $request->id)->delete();
@@ -93,12 +91,36 @@ class WishlistController extends Controller
                 ->orderBy('created_at', 'DESC')
                 ->withCount('detail')
                 ->get();
-        }else if($id == 'get_wishlist'){
-            return Wishlist::where('user_id', '=', auth('api')->user()->id)
-                ->orderByRaw("FIELD(status , '0', '1', '-1') ASC")
-                ->orderBy('created_at', 'DESC')
-                ->withCount('detail')
-                ->paginate(10);
+        }else if($id == 'get_wishlist'){ //return auth('api')->user()->hak_akses;
+            if(auth('api')->user()->hak_akses == 'editor'){
+                /*$self_created = Wishlist::where('user_id', '=', auth('api')->user()->id)
+                    ->orderByRaw("FIELD(status , '0', '1', '-1') ASC")
+                    ->orderBy('created_at', 'DESC')
+                    ->withCount('detail')
+                    ->with('user')
+                    ->paginate(10);
+                $assigned = Wishlist::where('user_id', '=', auth('api')->user()->id)
+                    ->orderByRaw("FIELD(status , '0', '1', '-1') ASC")
+                    ->orderBy('created_at', 'DESC')
+                    ->withCount('detail')
+                    ->with('user')
+                    ->paginate(10);
+                $merged = $self_created->merge($assigned);
+                return $merged->all();*/
+
+                return Wishlist::orderByRaw("FIELD(status , '0', '1', '-1') ASC")
+                    ->orderBy('created_at', 'DESC')
+                    ->withCount('detail')
+                    ->with('user')
+                    ->paginate(10); 
+            }else{
+                return Wishlist::where('user_id', '=', auth('api')->user()->id)
+                    ->orderByRaw("FIELD(status , '0', '1', '-1') ASC")
+                    ->orderBy('created_at', 'DESC')
+                    ->withCount('detail')
+                    ->with('user')
+                    ->paginate(10);
+            }
         }else if(strpos($id, 'get_wishlist_detail') !== false){
             $index = strpos($id, '-');
             $wishlist = substr($id, ($index+1));
