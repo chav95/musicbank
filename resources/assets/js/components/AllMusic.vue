@@ -3,12 +3,17 @@
     <add-to-playlist
       :selectedMusicID="modal_music_id"
       :selectedMusicJudul="modal_music_judul"
-      v-on:success="successAlert"
+      v-on:success="successAlert('Playlist')"
     ></add-to-playlist>
+    <add-to-wishlist
+      :selectedMusicID="modal_music_id"
+      :selectedMusicJudul="modal_music_judul"
+      v-on:success="successAlert('Wishlist')"
+    ></add-to-wishlist>
 
     <section class="content-header">
       <h1 v-if="$route.params.playlist_id">
-        {{($route.params.playlist_name ? this.$options.filters.capitalize($route.params.playlist_name) : '')}} <br>
+        {{($route.params.playlist_name ? this.$options.filters.capitalize($route.params.playlist_name.replace('-', ' ')) : '')}} <br>
         <small>List of Playlist Content</small>
       </h1>
       <h1 v-else>
@@ -70,13 +75,17 @@
                         <div class="modify-btn-container">
                           <a class="modify-btn" title="Add To Playlist"
                             data-toggle="modal" data-target="#PlaylistModal"
-                            v-on:click="openPlaylistModal(music.id, music.judul)"
+                            v-on:click="openExtraModal(music.id, music.judul)"
                           >
                             <i class="fas fa-compact-disc color-cyan fa-fw fa-lg"></i>
                           </a>
-                          <a class="modify-btn" title="Add To Wishlist" 
-                            v-on:click="addToWishlist(music.id, music.judul)"
+                          <a class="modify-btn" title="Add To Wishlist"
+                            data-toggle="modal" data-target="#AddWishlistModal"
+                            v-on:click="openExtraModal(music.id, music.judul)"
                           >
+                          <!--<a class="modify-btn" title="Add To Wishlist" 
+                            v-on:click="addToWishlist(music.id, music.judul)"
+                          >-->
                             <i class="fa fa-folder-plus color-purple fa-fw fa-lg"></i>
                           </a>
                           <a class="modify-btn" title="Download" 
@@ -94,7 +103,7 @@
                       </td>
                     </tr>
                   </template>
-                  <template v-else>
+                  <template v-else-if="searchMusic.length == 0">
                     <tr>
                       <td colspan="100%" v-if="$route.params.playlist_id"><h3 class="text-center">Playlist Is Empty</h3></td>
                       <td colspan="100%" v-else><h3 class="text-center">Music Bank Is Empty</h3></td>
@@ -118,12 +127,14 @@
 <script>
   import moment from 'moment';
   import AudioPlayer from './reusables/PlayAudio.vue';
-  import addToPlaylist from './AddToPlaylist.vue';
+  import AddToPlaylist from './AddToPlaylist.vue';
+  import AddToWishlist from './AddToWishlist.vue';
 
   export default {
     components: {
       AudioPlayer,
-      addToPlaylist,
+      AddToPlaylist,
+      AddToWishlist,
     },
     data(){
       return{
@@ -159,18 +170,31 @@
       }
     },
     methods:{
-        successAlert(){
-          $('#PlaylistModal').modal('hide');
-          this.$alert(this.modal_music_judul+' added to selected Playlists', '', 'success');
-        },
-        loadMusics(sortingParam){
-          if(sortingParam == undefined){
-            sortingParam = 'created_at@DESC';
-          }
-          this.sortParam = sortingParam;
+      successAlert(type){
+        $('#PlaylistModal').modal('hide');
+        this.$alert(this.modal_music_judul+' added to selected '+type, '', 'success');
+      },
+      loadMusics(sortingParam){
+        if(sortingParam == undefined){
+          sortingParam = 'created_at@DESC';
+        }
+        this.sortParam = sortingParam;
 
-          if(this.$route.params.playlist_id){
-            let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id).then(({data}) => { 
+        if(this.$route.params.playlist_id){
+          let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id).then(({data}) => { 
+            this.musics = data;
+            for(let item of data.data){
+              this.fileArr.push('/storage/'+item.path);
+              this.judulArr.push(item.judul);
+            }
+            this.dataLoaded = 1;
+          });
+        }else{
+          let index = sortingParam.indexOf('@'); //console.log(index);
+          sortingParam = sortingParam.slice(0, index); //console.log(sortingParam);
+
+          if(sortingParam == 'judul'){
+            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByTitle/').then(({data}) => { 
               this.musics = data;
               for(let item of data.data){
                 this.fileArr.push('/storage/'+item.path);
@@ -178,165 +202,152 @@
               }
               this.dataLoaded = 1;
             });
-          }else{
-            let index = sortingParam.indexOf('@'); //console.log(index);
-            sortingParam = sortingParam.slice(0, index); //console.log(sortingParam);
+          }else if(sortingParam == 'created_at'){
+            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/').then(({data}) => { 
+              this.musics = data;
+              for(let item of data.data){
+                this.fileArr.push('/storage/'+item.path);
+                this.judulArr.push(item.judul);
+              }
+              this.dataLoaded = 1;
+            });
+          }
+        }
+      },
+      getResults(page = 1){
+        if(this.$route.params.playlist_id){
+          axios.get(window.location.origin+'/api/music/playlist_'+this.sortParam+'-'+this.$route.params.playlist_id+'?page=' + page)
+            .then(response => {
+              this.musics = response.data;
+              for(let item of data.data){
+                this.fileArr.push('/storage/'+item.path);
+                this.judulArr.push(item.judul);
+              }
+              this.dataLoaded = 1;
+            });
+        }else{
+          let index = this.sortParam.indexOf('@'); //console.log(index);
+          let sortingParam = this.sortParam.slice(0, index); //console.log(this.sortParam);
 
-            if(sortingParam == 'judul'){
-              let musicList = axios.get(window.location.origin+'/api/music/getMusicListByTitle/').then(({data}) => { 
-                this.musics = data;
-                for(let item of data.data){
-                  this.fileArr.push('/storage/'+item.path);
-                  this.judulArr.push(item.judul);
-                }
-                this.dataLoaded = 1;
-              });
-            }else if(sortingParam == 'created_at'){
-              let musicList = axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/').then(({data}) => { 
-                this.musics = data;
-                for(let item of data.data){
-                  this.fileArr.push('/storage/'+item.path);
-                  this.judulArr.push(item.judul);
-                }
-                this.dataLoaded = 1;
-              });
+          if(sortingParam == 'judul'){
+            axios.get(window.location.origin+'/api/music/getMusicListByTitle/?page=' + page)
+            .then(response => {
+              this.musics = response.data;
+              for(let item of data.data){
+                this.fileArr.push('/storage/'+item.path);
+                this.judulArr.push(item.judul);
+              }
+              this.dataLoaded = 1;
+            });
+          }else if(sortingParam == 'created_at'){
+            axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/?page=' + page)
+            .then(response => {
+              this.musics = response.data;
+              for(let item of data.data){
+                this.fileArr.push('/storage/'+item.path);
+                this.judulArr.push(item.judul);
+              }
+              this.dataLoaded = 1;
+            });
+          }
+        }
+      },
+      formatDatetime(datetime){
+        return moment(String(datetime)).format('llll');
+      },
+      playAudio(judul, path, id, index){
+        this.judul = judul;
+        this.file = path;
+        this.file_id = id;
+        this.autoPlay = true;
+        this.playingIndex = index;
+      },
+      nextMusic(){
+        let next = this.playingIndex+1;
+        if(this.fileArr[next] == null){
+          next = 0;
+        }
+        this.playingIndex = next;
+        this.file = this.fileArr[next];
+        this.judul = this.judulArr[next];
+      },
+      download(judul, path, id){
+        axios.get(path, { responseType: 'blob' })
+          .then(({ data }) => {
+            const blob = new Blob([data], {type: 'audio/mp3'});
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = judul;
+            link.click();
+            
+            let postToLog = {
+              'judul' : judul,
+              'music_id' : id,
+              'filename' : path.replace('/storage/uploadedMusic/', '')
             }
-          }
-        },
-        getResults(page = 1){
-          if(this.$route.params.playlist_id){
-            axios.get(window.location.origin+'/api/music/playlist_'+this.sortParam+'-'+this.$route.params.playlist_id+'?page=' + page)
-              .then(response => {
-                this.musics = response.data;
-                for(let item of data.data){
-                  this.fileArr.push('/storage/'+item.path);
-                  this.judulArr.push(item.judul);
-                }
-                this.dataLoaded = 1;
-              });
-          }else{
-            let index = this.sortParam.indexOf('@'); //console.log(index);
-            let sortingParam = this.sortParam.slice(0, index); //console.log(this.sortParam);
-
-            if(sortingParam == 'judul'){
-              axios.get(window.location.origin+'/api/music/getMusicListByTitle/?page=' + page)
-              .then(response => {
-                this.musics = response.data;
-                for(let item of data.data){
-                  this.fileArr.push('/storage/'+item.path);
-                  this.judulArr.push(item.judul);
-                }
-                this.dataLoaded = 1;
-              });
-            }else if(sortingParam == 'created_at'){
-              axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/?page=' + page)
-              .then(response => {
-                this.musics = response.data;
-                for(let item of data.data){
-                  this.fileArr.push('/storage/'+item.path);
-                  this.judulArr.push(item.judul);
-                }
-                this.dataLoaded = 1;
-              });
-            }
-          }
-        },
-        formatDatetime(datetime){
-          return moment(String(datetime)).format('llll');
-        },
-        playAudio(judul, path, id, index){
-          this.judul = judul;
-          this.file = path;
-          this.file_id = id;
-          this.autoPlay = true;
-          this.playingIndex = index;
-        },
-        nextMusic(){
-          let next = this.playingIndex+1;
-          if(this.fileArr[next] == null){
-            next = 0;
-          }
-          this.playingIndex = next;
-          this.file = this.fileArr[next];
-          this.judul = this.judulArr[next];
-        },
-        download(judul, path, id){
-          axios.get(path, { responseType: 'blob' })
+            axios.post(window.location.origin+'/api/log', postToLog)
             .then(({ data }) => {
-              const blob = new Blob([data], {type: 'audio/mp3'});
-              let link = document.createElement('a');
-              link.href = window.URL.createObjectURL(blob);
-              link.download = judul;
-              link.click();
-              
-              let postToLog = {
-                'judul' : judul,
-                'music_id' : id,
-                'filename' : path.replace('/storage/uploadedMusic/', '')
-              }
-              axios.post(window.location.origin+'/api/log', postToLog)
-              .then(({ data }) => {
-                  
-              })
-              .catch(error => console.error(error));
-          })
-          .catch(error => console.error(error));
-        },
-        addToWishlist(music_id, music_judul){
-          this.$confirm('Add '+music_judul+' to your wishlist?', '', 'question')
-          .then( () => {
-            let postToWishlist = {
-              'music_id' : music_id,
-            }
-            axios.post(window.location.origin+'/api/wishlist', postToWishlist)
-              .then(({ response }) => {
-                this.$alert(music_judul+' added to your wishlist', '', 'success')
-              })
-              .catch(error => console.error(error));
-          })
-          .catch(error => console.error(error));
-        },
-        openPlaylistModal(music_id, music_judul){
-          this.modal_music_id = music_id;
-          this.modal_music_judul = music_judul;
-        },
-        deleteMusic(music_id, music_judul){
-          let playlist = 'Music Bank permanently';
-          let confirm_type = 'warning';
-
-          if(this.$route.params.playlist_id){
-            playlist = this.$options.filters.capitalize(this.$route.params.playlist_title)+' playlist';
-            confirm_type = 'question';
-          }
-
-          this.$confirm('Delete '+music_judul+' from '+playlist+'?', '', confirm_type)
-            .then( () => {
-              if(this.$route.params.playlist_id){
-                let patchMusic = {
-                  'act': 'remove_from_playlist',
-                  'playlist_detail_id': music_id,
-                  'playlist_id': this.$route.params.playlist_id
-                }
-                axios.post(window.location.origin+'/api/music', patchMusic)
-                  .then(({response}) => {
-                    this.$alert(music_judul+' removed from '+playlist+' playlist', '', 'success');
-                    this.loadMusics();
-                  })
-                  .catch(({error}) => this.$alert(error.message, '', 'error'));
-              }else{
-                this.$confirm('This delete action cannot be undone!', '', 'warning')
-                  .then( () => {
-                    axios.delete(window.location.origin+'/api/music/'+music_id)
-                      .then(({response}) => {
-                        this.$alert('Delete Successful', '', 'success');
-                        this.loadMusics();
-                      })
-                      .catch(({error}) => this.$alert(error.message, '', 'error'));
-                  });
-              }
+                
             })
             .catch(error => console.error(error));
-        },
+        })
+        .catch(error => console.error(error));
+      },
+      addToWishlist(music_id, music_judul){
+        this.$confirm('Add '+music_judul+' to your wishlist?', '', 'question')
+        .then( () => {
+          let postToWishlist = {
+            'music_id' : music_id,
+          }
+          axios.post(window.location.origin+'/api/wishlist', postToWishlist)
+            .then(({ response }) => {
+              this.$alert(music_judul+' added to your wishlist', '', 'success')
+            })
+            .catch(error => console.error(error));
+        })
+        .catch(error => console.error(error));
+      },
+      openExtraModal(music_id, music_judul){
+        this.modal_music_id = music_id;
+        this.modal_music_judul = music_judul;
+      },
+      deleteMusic(music_id, music_judul){
+        let playlist = 'Music Bank permanently';
+        let confirm_type = 'warning';
+
+        if(this.$route.params.playlist_id){
+          playlist = this.$options.filters.capitalize(this.$route.params.playlist_title)+' playlist';
+          confirm_type = 'question';
+        }
+
+        this.$confirm('Delete '+music_judul+' from '+playlist+'?', '', confirm_type)
+          .then( () => {
+            if(this.$route.params.playlist_id){
+              let patchMusic = {
+                'act': 'remove_from_playlist',
+                'playlist_detail_id': music_id,
+                'playlist_id': this.$route.params.playlist_id
+              }
+              axios.post(window.location.origin+'/api/music', patchMusic)
+                .then(({response}) => {
+                  this.$alert(music_judul+' removed from '+playlist+' playlist', '', 'success');
+                  this.loadMusics();
+                })
+                .catch(({error}) => this.$alert(error.message, '', 'error'));
+            }else{
+              this.$confirm('This delete action cannot be undone!', '', 'warning')
+                .then( () => {
+                  axios.delete(window.location.origin+'/api/music/'+music_id)
+                    .then(({response}) => {
+                      this.$alert('Delete Successful', '', 'success');
+                      this.loadMusics();
+                    })
+                    .catch(({error}) => this.$alert(error.message, '', 'error'));
+                });
+            }
+          })
+          .catch(error => console.error(error));
+      },
     },
     watch: {
       '$route.params.playlist_id': function(playlist_id){

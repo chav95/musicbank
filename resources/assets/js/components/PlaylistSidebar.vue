@@ -1,9 +1,6 @@
 <template>
     <ul class="treeview-menu">
-        <li
-            v-for="item in playlist" :key="item.id"
-            class="treeview"
-        >
+        <li v-for="item in playlist" :key="item.id" class="treeview">
             <router-link
                 :to="{
                     name: 'playlist',
@@ -69,6 +66,7 @@
                     .then(res => {
                         axios.delete(window.location.origin+'/api/playlist/'+id).then(result => {
                             this.$alert('Delete Success', '', 'success');
+                            location.reload();
                         });
                     }
                 );

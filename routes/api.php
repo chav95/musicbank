@@ -23,4 +23,13 @@ Route::resources([
     'log' => 'API\LogController',
     'wishlist' => 'API\WishlistController',
     'user' => 'API\UserController',
+    'sendmail' => 'API\SendMailController',
+    /*'sendmail' => function(\Illuminate\Http\Request $request, \Illuminate\Mail\Mailer $mailer){
+        $mailer->to('chavinpradana@gmail.com')->send(new \App\Mail\SendMail($request));
+    }*/
 ]);
+
+/*Route::post('/api/sendmail', function(\Illuminate\Http\Request $request, \Illuminate\Mail\Mailer $mailer){
+    $mailer->to('chavinpradana@gmail.com')->send(new \App\Mail\SendMail($request));
+});*/
+Route::get('/api/sendmail', 'API\SendMailController@mail')->name('sendMail');

@@ -80,6 +80,12 @@
         isUploading: false,
         uploadProgress: 0,
         uploadResult: '',
+
+        sendMail: {
+          name: 'Recepient Name',
+          title: 'Mail Title',
+          body: 'Mail Body',
+        }
       }
     },
     methods:{
@@ -112,6 +118,9 @@
         this.selectedPlaylistArr = [];
       },
       uploadMusic(){
+        //axios.post(window.location.origin+'/api/sendmail', this.sendMail, 'sendMail');
+        //axios.get(window.location.origin+'/api/sendmail');
+
         let data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
         if(this.selectedFile === null || this.selectedFile.length === 0){
           this.$alert('No Music Choosen', '', 'warning');

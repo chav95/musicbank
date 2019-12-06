@@ -56,10 +56,10 @@
         this.form.post(window.location.origin+'/api/playlist')
           .then(res=>{
             this.resetModal();
-            this.$alert('Upload Succesful', '', 'success');
+            this.$alert('Playlist Created', '', 'success');
             location.reload();
           }).catch(err=>{
-            this.$alert('Upload Failed: '+err.message, '', 'error');
+            this.$alert('Failed: '+err.message, '', 'error');
           });;
       },
     },

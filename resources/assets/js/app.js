@@ -35,6 +35,11 @@ let routes = [
         component: require('./components/AllMusic.vue').default
     },
     {path: '/wishlist', component: require('./components/Wishlist.vue').default},
+    {
+        path: '/wishlist/:wishlist_name',
+        name: 'wishlist',
+        component: require('./components/Wishlist.vue').default
+    },
     {path: '/log', component: require('./components/Log.vue').default},
     {path: '/manage-users', component: require('./components/Users.vue').default},
 ]

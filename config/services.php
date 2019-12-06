@@ -16,6 +16,7 @@ return [
 
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
+        //'domain' => env('webmail.mncgroup.com'),
         'secret' => env('MAILGUN_SECRET'),
     ],
 
