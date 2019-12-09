@@ -4957,8 +4957,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     uploadMusic: function uploadMusic() {
       var _this2 = this;
 
-      //axios.post(window.location.origin+'/api/sendmail', this.sendMail, 'sendMail');
-      //axios.get(window.location.origin+'/api/sendmail');
+      axios.post(window.location.origin + '/api/sendmail', this.sendMail, 'sendMail'); //axios.get(window.location.origin+'/api/sendmail');
+
       var data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
 
       if (this.selectedFile === null || this.selectedFile.length === 0) {
@@ -5424,7 +5424,16 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      userLogin: null,
+      userLogin: {
+        created_at: '',
+        email: '',
+        hak_akses: '',
+        id: '',
+        name: '',
+        privilege: '',
+        status: '',
+        updated_at: ''
+      },
       file: null,
       file_id: null,
       judul: null,
@@ -5443,7 +5452,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref) {
         var data = _ref.data;
-        console.log(data);
+        //console.log(data);
         _this.userLogin = data;
       });
     },
@@ -101038,7 +101047,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var vue_fuse__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-fuse */ "./node_modules/vue-fuse/dist/vue-fuse.umd.min.js");
 /* harmony import */ var vue_fuse__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vue_fuse__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var v_session__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! v-session */ "./node_modules/v-session/index.js");
+/* harmony import */ var v_session__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! v-session */ "./node_modules/v-session/index.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -101062,7 +101071,7 @@ Vue.use(moment__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
 Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]);
 Vue.use(vue_fuse__WEBPACK_IMPORTED_MODULE_5___default.a);
-Vue.use(v_session__WEBPACK_IMPORTED_MODULE_7__["default"]);
+Vue.use(v_session__WEBPACK_IMPORTED_MODULE_6__["default"]);
 var routes = [{
   path: '/all-music',
   component: __webpack_require__(/*! ./components/AllMusic.vue */ "./resources/assets/js/components/AllMusic.vue")["default"]

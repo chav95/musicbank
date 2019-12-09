@@ -155,7 +155,16 @@
     },
     data(){
       return{
-        userLogin: null,
+        userLogin: {
+          created_at: '',
+          email: '',
+          hak_akses: '',
+          id: '',
+          name: '',
+          privilege: '',
+          status: '',
+          updated_at: '',
+        },
 
         file: null,
         file_id: null,
@@ -170,7 +179,7 @@
     },
     methods:{
       loadUserLogin(){
-        axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => { console.log(data);
+        axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => { //console.log(data);
           this.userLogin = data;
         });
       },
