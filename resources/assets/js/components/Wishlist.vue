@@ -82,7 +82,7 @@
                     <th colspan="2">Wishlist Name</th>
                     <th>Created At</th>
                     <th>Status</th>
-                    <th v-if="userLogin.hak_akses != 'editor'">Modify</th>
+                    <th v-if="userLogin.hak_akses == 'editor' || userLogin.hak_akses == 'produser'">Modify</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -105,17 +105,26 @@
                       <td><span :class="'status_'+item.status">
                         {{(item.status == 0 ? 'Pending' : (item.status == 1 ? 'Finished' : 'Canceled'))}}
                       </span></td>
-                      <td v-if="userLogin.hak_akses != 'editor'">
-                        <div v-if="item.status == 0 && userLogin.hak_akses != 'editor'">
+                      <td v-if="userLogin.hak_akses == 'editor'">
+                        <div v-if="item.status == 0 && userLogin.hak_akses == 'editor'">
                           <a class="modify-btn" title="Mark Wishlist As Finished"
                             v-on:click="openConfirmModal(item.id, item.wishlist_label, 1)"
                           >
                             <i class="fas fa-check-square color-green fa-fw fa-lg"></i>
                           </a>
+                        </div>
+                      </td>
+                      <td v-if="userLogin.hak_akses == 'produser'">
+                        <div v-if="item.status == 0">
                           <a class="modify-btn" title="Cancel Wishlist"
                             v-on:click="openConfirmModal(item.id, item.wishlist_label, -1)"
                           >
                             <i class="fas fa-window-close color-red fa-fw fa-lg"></i>
+                          </a>
+                          <a class="modify-btn" title="Delete Wishlist"
+                            v-on:click="openConfirmModal(item.id, item.wishlist_label, 'delete')"
+                          >
+                            <i class="fas fa-trash-alt color-red fa-fw fa-lg"></i>
                           </a>
                         </div>
                       </td>
@@ -266,29 +275,39 @@
               });
           })
       },
-      openConfirmModal(id, label, new_stat){console.log(id+' '+label+' '+new_stat);
-        let stat_text = '';
-        if(new_stat == 1){
-          stat_text = 'Finished';
-        }else if(new_stat == 0){
-          stat_text = 'Pending';
-        }else if(new_stat == -1){
-          stat_text = 'Canceled';
+      openConfirmModal(id, label, new_stat){
+        if(Number.isInteger(new_stat)){
+          let stat_text = '';
+          if(new_stat == 1){
+            stat_text = 'Finished';
+          }else if(new_stat == 0){
+            stat_text = 'Pending';
+          }else if(new_stat == -1){
+            stat_text = 'Canceled';
+          }
+
+          this.$confirm("Mark '"+label+"' as "+stat_text+"?", "", "question")
+            .then(() => {
+              let modifyWishlistStat = {
+                'act': 'modify_wishlist_stat',
+                'id': id,
+                'status': new_stat,
+              };
+
+              axios.post(window.location.origin+'/api/wishlist', modifyWishlistStat)
+                .then(({response}) => {
+                  this.loadWishlist();
+                });
+            })
+        }else{
+          this.$confirm("Delete '"+label+"'?", '', 'question')
+            .then(() => {
+              axios.delete(window.location.origin+'/api/wishlist/'+id)
+                .then(({response}) => {
+                  this.loadWishlist();
+                });
+            })
         }
-
-        this.$confirm('Mark '+label+' as '+stat_text+'?', '', 'question')
-          .then(() => {
-            let modifyWishlistStat = {
-              'act': 'modify_wishlist_stat',
-              'id': id,
-              'status': new_stat,
-            };
-
-            axios.post(window.location.origin+'/api/wishlist', modifyWishlistStat)
-              .then(({response}) => {
-                this.loadWishlist();
-              });
-          })
       },
     },
     watch: {

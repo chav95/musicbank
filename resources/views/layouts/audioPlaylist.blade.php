@@ -153,7 +153,7 @@
           <!-- Home tab content -->
           <div class="tab-pane active" id="control-sidebar-home-tab">
             <h3 class="control-sidebar-heading">Recent Activity</h3>
-            <ul class="control-sidebar-menu">
+            <ul class="control-sidebar-menu" data-widget="tree">
               <li>
                 <a href="javascript:;">
                   <i class="menu-icon fa fa-birthday-cake bg-red"></i>

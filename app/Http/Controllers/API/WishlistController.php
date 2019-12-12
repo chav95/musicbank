@@ -162,6 +162,7 @@ class WishlistController extends Controller
      */
     public function destroy($id)
     {
-        //
+        WishlistDetail::where('wishlist_id', $id)->delete();
+        return Wishlist::where('id', $id)->delete();
     }
 }

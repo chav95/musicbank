@@ -14,7 +14,7 @@
               <div class="modal-body">
                 <div class="form-group file_container">
                     <div class="form-group">
-                        <input type="text" name="nama_playlist" class="form-control" placeholder="Playlist Name" autofocus
+                        <input type="text" name="nama_playlist" class="form-control" placeholder="Playlist Name" autofocus="autofocus"
                             v-model="form.nama_playlist"
                             :class="{ 'is-invalid': form.errors.has('nama_playlist') }
                         ">

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Playlist;
 use App\PlaylistDetail;
+use App\Config;
 
 class PlaylistController extends Controller
 {
@@ -160,6 +161,18 @@ class PlaylistController extends Controller
      */
     public function destroy($id)
     {
-        return Playlist::where('id', $id)->update(['status' => -1]);
+        self::delete_child_playlist($id);
+        
+        //return Playlist::where('id', $id)->update(['status' => -1]);
+    }
+
+    protected function delete_child_playlist($id){
+        $child_playlist = Playlist::where('parent_id', $id)->get();
+        foreach($child_playlist as $child){
+            self::delete_child_playlist($child['id']);
+        }
+
+        PlaylistDetail::where('playlist_id', $id)->delete();
+        return Playlist::where('id', $id)->delete();
     }
 }

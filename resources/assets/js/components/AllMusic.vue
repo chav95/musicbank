@@ -56,7 +56,7 @@
                     <th>Modify</th>
                   </tr>
                 </thead>
-                <tbody>
+                <draggable v-model="musics.data" :options="{group:{judul:musics.data.judul}, pull:'clone'}" @start="drag=true" :element="'tbody'">
                   <template v-if="searchMusic !== ''">
                     <tr v-for="(music,index) in searchMusic" :key="index" hover:bg-blue px-4 py2>
                       <td>{{music.judul}}</td>
@@ -109,7 +109,7 @@
                       <td colspan="100%" v-else><h3 class="text-center">Music Bank Is Empty</h3></td>
                     </tr>
                   </template>
-                </tbody>
+                </draggable>
               </table>
             </div>
             <div class="card-footer">
@@ -129,12 +129,14 @@
   import AudioPlayer from './reusables/PlayAudio.vue';
   import AddToPlaylist from './AddToPlaylist.vue';
   import AddToWishlist from './AddToWishlist.vue';
+  import draggable from 'vuedraggable'
 
   export default {
     components: {
       AudioPlayer,
       AddToPlaylist,
       AddToWishlist,
+      draggable,
     },
     data(){
       return{
@@ -156,6 +158,8 @@
         sortParam: 'created_at@DESC',
 
         searchContent: '',
+
+        dragMusic: [],
       }
     },
     computed: {

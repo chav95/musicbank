@@ -128,6 +128,10 @@ class MusicController extends Controller
         }
     }
 
+    protected function get_child_playlist_music(){
+        
+    }
+
     /**
      * Update the specified resource in storage.
      *
