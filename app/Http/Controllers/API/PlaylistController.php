@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Playlist;
-use App\PlaylistDetail;
+use App\MusicPlaylist;
 use App\Config;
 
 class PlaylistController extends Controller
@@ -63,11 +63,13 @@ class PlaylistController extends Controller
                 $music_id = $request->music_id;
 
                 foreach($request->playlist_arr as $playlist_id){
-                    $playlist_detail = new PlaylistDetail;
+                    $playlist_detail = new MusicPlaylist;
                     $playlist_detail->music_id = $music_id;
                     $playlist_detail->playlist_id = $playlist_id;
                     $playlist_detail->save();
                 }
+            }if($request->act == 'rename_playlist'){
+                return Playlist::where('id', $request->playlist_id)->update(['nama_playlist' => $request->playlist_new_name]);
             }
             return response()->json(array('act' => $request->act, 'success' => true), 200);
         }else{
@@ -172,7 +174,7 @@ class PlaylistController extends Controller
             self::delete_child_playlist($child['id']);
         }
 
-        PlaylistDetail::where('playlist_id', $id)->delete();
+        MusicPlaylist::where('playlist_id', $id)->delete();
         return Playlist::where('id', $id)->delete();
     }
 }

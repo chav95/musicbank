@@ -12,8 +12,7 @@
                 }"
             >
                 <i title="Delete Playlist"
-                    class="far fa-trash-alt nav-icon color-red" 
-                    @click="deletePlaylist(item.id, item.nama_playlist)"
+                    class="far fa-file-audio nav-icon color-blue" 
                 ></i>
                 <span class="text-capitalize">{{item.nama_playlist}}</span>
                 <span class="pull-right-container" v-if="item.children.length > 0">
@@ -27,11 +26,11 @@
                 :addParentID="item.id" 
                 :level="(selfLevel+1)"
             ></playlist-sidebar>
-            <ul v-else class="treeview-menu">
+            <!--<ul v-else class="treeview-menu">
                 <add-playlist :parent_id="item.id"></add-playlist>
-            </ul>
+            </ul>-->
         </li>
-        <add-playlist :parent_id="addParentID"></add-playlist>
+        <!--<add-playlist :parent_id="addParentID"></add-playlist>-->
     </ul>
 </template>
 

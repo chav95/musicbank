@@ -11,30 +11,39 @@
       v-on:success="successAlert('Wishlist')"
     ></add-to-wishlist>
 
-    <section class="content-header">
-      <h1 v-if="$route.params.playlist_id">
-        {{($route.params.playlist_name ? this.$options.filters.capitalize($route.params.playlist_name.replace('-', ' ')) : '')}} <br>
-        <small>List of Playlist Content</small>
-      </h1>
-      <h1 v-else>
-        All Music <br>
-        <small>List of All Uploaded Music</small>
-      </h1>
-    </section>
-
-    <section class="content container-fluid">
+    <!--<section class="content container-fluid">-->
       <div class="row justify-content-center mt-4 mb-4 h-100">
         <div class="col-12">
           <div class="card my-auto">
-            <div class="card-header">
-              <div class="search-container form-group has-feedback has-search">
-                <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                <input type="text" class="form-control" placeholder="Search" v-model="searchContent">
-                <!--<vue-fuse :keys="keys" :list="bikes" :defaultAll="false" :eventName="bikesChanged"></vue-fuse>-->
+            <div class="container fixed-content">
+              <h3 v-if="$route.params.playlist_id">
+                {{($route.params.playlist_name ? $route.params.playlist_name.replace('-', ' ') : '')}} <br>
+                <small>{{musics.length}} musics</small>
+              </h3>
+              <h3 v-else>
+                All Music <br>
+                <small>{{musics.length}} musics</small>
+              </h3>
+              <div class="card-header">
+                <div class="button-container">
+                  <button class="btn btn-primary" data-toggle="modal" data-target="#CreatePlaylist"
+                    :id="($route.params.playlist_id ? $route.params.playlist_id : 0)"
+                  >Create Child Playlist</button>
+                  <button class="btn btn-primary" 
+                    v-if="$route.params.playlist_id"
+                    @click="renamePlaylist($route.params.playlist_id, $route.params.playlist_name)"
+                  >Rename</button>
+                  <button class="btn btn-danger" 
+                    v-if="$route.params.playlist_id" 
+                    @click="deletePlaylist($route.params.playlist_id, $route.params.playlist_name)"
+                  >Delete</button>
+                </div>
+                <div class="search-container form-group has-feedback has-search">
+                  <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                  <input type="text" class="form-control" placeholder="Search" v-model="searchContent">
+                  <!--<vue-fuse :keys="keys" :list="bikes" :defaultAll="false" :eventName="bikesChanged"></vue-fuse>-->
+                </div>
               </div>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body table-responsive p-0" style="height: 100%;">
               <div class="card-tools">
                 <audio-player 
                   :file="file"
@@ -44,8 +53,13 @@
                   v-on:playNext="nextMusic"
                 ></audio-player>
               </div>
-              <pagination :data="musics" @pagination-change-page="getResults"></pagination>
-              <table class="table table-head-fixed">
+              <table class="table table-head-fixed" id="header-table">
+                <colgroup>
+                  <col width="652px">
+                  <col width="113px">
+                  <col width="253px">
+                  <col width="152px">
+                </colgroup>
                 <thead>
                   <tr>
                     <th @click="loadMusics('judul@ASC')" title="Sort By Title" colspan="2" class="headerButton">Title</th>
@@ -56,20 +70,27 @@
                     <th>Modify</th>
                   </tr>
                 </thead>
-                <draggable v-model="musics.data" :options="{group:{judul:musics.data.judul}, pull:'clone'}" @start="drag=true" :element="'tbody'">
-                  <template v-if="searchMusic !== ''">
+              </table>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0" style="height: 100%;">
+              <!--<pagination :data="musics" @pagination-change-page="getResults"></pagination>-->
+              <table class="table table-head-fixed" id="content-table" :num="searchMusic.length">
+                <!--<draggable v-model="musics" :options="{group:{judul:musics.judul}, pull:'clone'}" @start="drag=true" :element="'tbody'">-->
+                <tbody>
+                  <template v-if="searchMusic !== '' && searchMusic != 0">
                     <tr v-for="(music,index) in searchMusic" :key="index" hover:bg-blue px-4 py2>
                       <td>{{music.judul}}</td>
                       <td>
                         <button 
                           type="button" class="btn btn-primary playlist-play-btn"
-                          @click="playAudio(music.judul, '/storage/'+music.path, music.id, index)"
+                          @click="playAudio(music.judul, music.filename, music.id, index)"
                         >
                           Play
                           <i class="fas fa-play-circle nav-icon"></i>
                         </button>
                       </td>
-                      <td v-if="$route.params.playlist_id" class="text-capitalize">{{music.nama_playlist}}</td>
+                      <td v-if="$route.params.playlist_id" class="text-capitalize">{{music.folder_path}}</td>
                       <td>{{formatDatetime(music.created_at)}}</td>
                       <td>
                         <div class="modify-btn-container">
@@ -89,7 +110,7 @@
                             <i class="fa fa-folder-plus color-purple fa-fw fa-lg"></i>
                           </a>
                           <a class="modify-btn" title="Download" 
-                            v-on:click="download(music.judul, '/storage/'+music.path, music.id)"
+                            v-on:click="download(music.judul, music.filename, music.id)"
                           >
                             <i class="fa fa-download color-green fa-fw fa-lg"></i>
                           </a>
@@ -103,24 +124,28 @@
                       </td>
                     </tr>
                   </template>
-                  <template v-else-if="searchMusic.length == 0">
+                  <template v-else>
                     <tr>
-                      <td colspan="100%" v-if="$route.params.playlist_id"><h3 class="text-center">Playlist Is Empty</h3></td>
-                      <td colspan="100%" v-else><h3 class="text-center">Music Bank Is Empty</h3></td>
+                      <td colspan="100%">
+                        <h3 class="text-center" v-if="$route.params.playlist_id && musics.length == 0">Playlist Is Empty</h3>
+                        <h3 class="text-center" v-else-if="!$route.params.playlist_id && musics.length == 0">Music Bank Is Empty</h3>
+                        <h3 class="text-center" v-else>No Match Found</h3>
+                      </td>
                     </tr>
                   </template>
-                </draggable>
+                </tbody>
+                <!--</draggable>-->
               </table>
             </div>
             <div class="card-footer">
-              <pagination :data="musics" @pagination-change-page="getResults"></pagination>
+              <!--<pagination :data="musics" @pagination-change-page="getResults"></pagination>-->
             </div>
             <!-- /.card-body -->
           </div>
           <!-- /.card -->
         </div>        
       </div>
-    </section>
+    <!--</section>-->
   </div>
 </template>
 
@@ -165,7 +190,12 @@
     computed: {
       searchMusic: function(){
         if(this.dataLoaded == 1){
-          return this.musics.data.filter((item) => {
+          /*if(typeof(this.musics) === 'object' && this.musics !== null){
+            this.musics = Object.keys(this.musics).map(function(key){
+              return [Number(key), this.musics[key]];
+            });
+          }*/
+          return this.musics.filter((item) => {
             return item.judul.toLowerCase().match(this.searchContent.toLowerCase());
           });
         }else{
@@ -187,8 +217,8 @@
         if(this.$route.params.playlist_id){
           let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id).then(({data}) => { 
             this.musics = data;
-            for(let item of data.data){
-              this.fileArr.push('/storage/'+item.path);
+            for(let item of data){ console.log(item.filepath);
+              this.fileArr.push(item.filename);
               this.judulArr.push(item.judul);
             }
             this.dataLoaded = 1;
@@ -200,8 +230,8 @@
           if(sortingParam == 'judul'){
             let musicList = axios.get(window.location.origin+'/api/music/getMusicListByTitle/').then(({data}) => { 
               this.musics = data;
-              for(let item of data.data){
-                this.fileArr.push('/storage/'+item.path);
+              for(let item of data){
+                this.fileArr.push(item.filename);
                 this.judulArr.push(item.judul);
               }
               this.dataLoaded = 1;
@@ -209,8 +239,8 @@
           }else if(sortingParam == 'created_at'){
             let musicList = axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/').then(({data}) => { 
               this.musics = data;
-              for(let item of data.data){
-                this.fileArr.push('/storage/'+item.path);
+              for(let item of data){
+                this.fileArr.push(item.filename);
                 this.judulArr.push(item.judul);
               }
               this.dataLoaded = 1;
@@ -218,10 +248,10 @@
           }
         }
       },
-      getResults(page = 1){
+      /*getResults(page = 1){
         if(this.$route.params.playlist_id){
-          axios.get(window.location.origin+'/api/music/playlist_'+this.sortParam+'-'+this.$route.params.playlist_id+'?page=' + page)
-            .then(response => {
+          axios.get(window.location.origin+'/api/music/playlist_'+this.sortParam+'-'+this.$route.params.playlist_id+'?page='+page)
+            .then(({response}) => {
               this.musics = response.data;
               for(let item of data.data){
                 this.fileArr.push('/storage/'+item.path);
@@ -235,7 +265,7 @@
 
           if(sortingParam == 'judul'){
             axios.get(window.location.origin+'/api/music/getMusicListByTitle/?page=' + page)
-            .then(response => {
+            .then(({response}) => {
               this.musics = response.data;
               for(let item of data.data){
                 this.fileArr.push('/storage/'+item.path);
@@ -245,7 +275,7 @@
             });
           }else if(sortingParam == 'created_at'){
             axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/?page=' + page)
-            .then(response => {
+            .then(({response}) => {
               this.musics = response.data;
               for(let item of data.data){
                 this.fileArr.push('/storage/'+item.path);
@@ -255,7 +285,7 @@
             });
           }
         }
-      },
+      },*/
       formatDatetime(datetime){
         return moment(String(datetime)).format('llll');
       },
@@ -265,6 +295,21 @@
         this.file_id = id;
         this.autoPlay = true;
         this.playingIndex = index;
+
+        let postToLog = {
+          'judul' : judul,
+          'music_id' : id,
+          'action': 'play',
+          'filename' : path.split('/')[path.split('/').length - 1],
+        }
+        axios.post(window.location.origin+'/api/log', postToLog)
+        .then(({ data }) => {})
+        .catch(({error}) => {
+          console.error(error);
+          if(error.response.data.error.statusCode === 401){
+            location.reload();
+          }
+        });
       },
       nextMusic(){
         let next = this.playingIndex+1;
@@ -287,15 +332,24 @@
             let postToLog = {
               'judul' : judul,
               'music_id' : id,
-              'filename' : path.replace('/storage/uploadedMusic/', '')
+              'action': 'download',
+              'filename' : path.split('/')[path.split('/').length - 1], //path.replace('/storage/uploadedMusic/', ''),
             }
             axios.post(window.location.origin+'/api/log', postToLog)
-            .then(({ data }) => {
-                
-            })
-            .catch(error => console.error(error));
+            .then(({ data }) => {})
+            .catch(({error}) => {
+              console.error(error);
+              if(error.response.data.error.statusCode === 401){
+                location.reload();
+              }
+            });
         })
-        .catch(error => console.error(error));
+        .catch(({error}) => {
+          console.log(error);
+          if(error.response.data.error.statusCode === 401){
+            location.reload();
+          }
+        });
       },
       addToWishlist(music_id, music_judul){
         this.$confirm('Add '+music_judul+' to your wishlist?', '', 'question')
@@ -307,9 +361,19 @@
             .then(({ response }) => {
               this.$alert(music_judul+' added to your wishlist', '', 'success')
             })
-            .catch(error => console.error(error));
+            .catch(({error}) => {
+              console.error(error);
+              if(error.response.data.error.statusCode === 401){
+                location.reload();
+              }
+            });
         })
-        .catch(error => console.error(error));
+        .catch(({error}) => {
+          console.error(error);
+          if(error.response.data.error.statusCode === 401){
+            location.reload();
+          }
+        });
       },
       openExtraModal(music_id, music_judul){
         this.modal_music_id = music_id;
@@ -337,7 +401,12 @@
                   this.$alert(music_judul+' removed from '+playlist+' playlist', '', 'success');
                   this.loadMusics();
                 })
-                .catch(({error}) => this.$alert(error.message, '', 'error'));
+                .catch(({error}) => {
+                  this.$alert(error.message, '', 'error');
+                  if(error.response.data.error.statusCode === 401){
+                    location.reload();
+                  }
+                });
             }else{
               this.$confirm('This delete action cannot be undone!', '', 'warning')
                 .then( () => {
@@ -346,12 +415,48 @@
                       this.$alert('Delete Successful', '', 'success');
                       this.loadMusics();
                     })
-                    .catch(({error}) => this.$alert(error.message, '', 'error'));
+                    .catch(({error}) => {
+                      this.$alert(error.message, '', 'error');
+                      if(error.response.data.error.statusCode === 401){
+                        location.reload();
+                      }
+                    });
                 });
             }
           })
-          .catch(error => console.error(error));
+          .catch(({error}) => {
+            console.error(error);
+            if(error.response.data.error.statusCode === 401){
+              location.reload();
+            }
+          });
       },
+      deletePlaylist(id, nama_playlist){
+        this.$confirm('Confirm Delete Playlist '+nama_playlist+' and all the content?', '', 'error')
+          .then(res => {
+            axios.delete(window.location.origin+'/api/playlist/'+id).then(result => {
+              this.$alert('Delete Success', '', 'success');
+              location.reload();
+            });
+          }
+        );
+      },
+      renamePlaylist(id, nama_playlist){
+        //this.$confirm('Confirm Delete Playlist '+nama_playlist+' and all the content?', '', 'error')
+        this.$prompt("Rename Playlist", nama_playlist).then((text) => { //console.log(text);
+          //.then(res => {
+            let renamePlaylist = {
+              'act' : 'rename_playlist',
+              'playlist_id' : id,
+              'playlist_new_name' : text,
+            }
+            axios.post(window.location.origin+'/api/playlist', renamePlaylist).then(result => {
+              this.$alert('Delete Success', '', 'success');
+              location.reload();
+            });
+          }
+        );
+      }
     },
     watch: {
       '$route.params.playlist_id': function(playlist_id){
@@ -364,9 +469,32 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+  .fixed-content{
+    position: fixed;
+    z-index: 99;
+    background-color: #ecf0f5;
+    padding: 0;
+
+    & > h3{
+      margin-bottom: 0;
+    }
+  }
+
   .card-tools, .card-header{
     text-align: right;
+  }
+
+  .button-container{
+    float: left;
+  }
+
+  #header-table{
+    margin-bottom: 0;
+  }
+
+  #content-table{
+    margin-top: 213px;
   }
 
   .headerButton:hover{

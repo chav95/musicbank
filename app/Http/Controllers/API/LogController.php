@@ -54,6 +54,7 @@ class LogController extends Controller
     {
         $log = new Log;
         $log->music_id = $request->music_id;
+        $log->action = $request->action;
         $log->filename = $request->filename;
         $log->user_id = auth('api')->user()->id;
         $log->save();

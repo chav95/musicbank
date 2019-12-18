@@ -29,14 +29,14 @@
                     <ul style>
                       <!--<playlist :playlist="playlist" :display="'checkbox'"></playlist>-->
                       
-                      <li v-for="item in playlistPath" :key="item.id" style="list-style-type: none">
+                      <li v-for="item in playlistSelect" :key="item.id" style="list-style-type: none">
                           <input type="checkbox" class="playlist"
                               v-model="selectedPlaylistArr"
                               :value="item.id" 
-                              :id="'playlistPath_'+item.id"
-                              :ref="'playlistPath_'+item.id"
+                              :id="'playlistSelect_'+item.id"
+                              :ref="'playlistSelect_'+item.id"
                           />
-                          <label :for ="'playlistPath_'+item.id" :ref="'label_'+item.id">
+                          <label :for ="'playlistSelect_'+item.id" :ref="'label_'+item.id">
                               {{item.path | capitalize}}
                           </label>
                       </li>
@@ -74,7 +74,7 @@
         filenameList: [],
         selectedFile: null,
         playlist: null,
-        playlistPath: [],
+        playlistSelect: [],
         selectedPlaylistArr: [],
 
         isUploading: false,
@@ -91,9 +91,9 @@
     methods:{
       loadPlaylist(){
         //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
-        axios.get(window.location.origin+'/api/playlist/playlistSelection').then(({data}) => (this.playlistPath = data));
+        axios.get(window.location.origin+'/api/playlist/playlistSelection').then(({data}) => (this.playlistSelect = data));
       },
-      onFileSelected(event){
+      onFileSelected(event){ console.log(event);
         this.filenameList = [];
         this.toUpload = new FormData();
         this.selectedFile = event.target.files;

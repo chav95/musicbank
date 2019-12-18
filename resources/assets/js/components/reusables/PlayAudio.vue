@@ -139,8 +139,9 @@
             download() {
                 this.stop();
 
-                let filename = this.file.replace('/storage/uploadedMusic/', '');
+                let filename = this.file;//.replace('/storage/uploadedMusic/', '');
                 this.postToLog.judul = this.judul;
+                this.postToLog.action = 'download';
                 this.postToLog.music_id = this.file_id;
                 this.postToLog.filename = filename;
 

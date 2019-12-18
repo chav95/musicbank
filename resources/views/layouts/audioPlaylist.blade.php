@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
 
-    <title>{{ucwords(str_replace('_', ' ', config('app.name')))}}</title>
+    <title>{{preg_replace('/\b(\w)|./', '$1', ucwords(str_replace('_', ' ', config('app.name'))))}}</title>
   </head>
   <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper" id="app">
@@ -26,7 +26,7 @@
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>A</b>LT</span>
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg">{{ucwords(str_replace('_', ' ', config('app.name')))}}</span>
+          <span class="logo-lg">{{preg_replace('/\b(\w)|./', '$1', ucwords(str_replace('_', ' ', config('app.name'))))}}</span>
         </a>
     
         <!-- Header Navbar -->
@@ -76,12 +76,12 @@
                   <span>Upload</span>
                 </a>
               </li>
-            <li>
+            <!--<li>
               <router-link to="/all-music">
                 <i class="fas fa-database nav-icon color-blue fa-fw"></i>
                 <span>All Music</span>
               </router-link>
-            </li>
+            </li>-->
             <li>
               <router-link to="/wishlist">
                 <i class="nav-icon fas fa-headphones color-purple fa-fw"></i>

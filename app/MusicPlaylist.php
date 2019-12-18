@@ -4,8 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PlaylistDetail extends Model
+class MusicPlaylist extends Model
 {
+    protected $table = 'music_playlist';
+
     public function playlist(){
         return $this->belongsTo('App\Playlist');
     }

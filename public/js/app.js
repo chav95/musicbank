@@ -4095,6 +4095,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4131,7 +4156,12 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       if (this.dataLoaded == 1) {
-        return this.musics.data.filter(function (item) {
+        /*if(typeof(this.musics) === 'object' && this.musics !== null){
+          this.musics = Object.keys(this.musics).map(function(key){
+            return [Number(key), this.musics[key]];
+          });
+        }*/
+        return this.musics.filter(function (item) {
           return item.judul.toLowerCase().match(_this.searchContent.toLowerCase());
         });
       } else {
@@ -4162,10 +4192,11 @@ __webpack_require__.r(__webpack_exports__);
           var _iteratorError = undefined;
 
           try {
-            for (var _iterator = data.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var item = _step.value;
+              console.log(item.filepath);
 
-              _this2.fileArr.push('/storage/' + item.path);
+              _this2.fileArr.push(item.filename);
 
               _this2.judulArr.push(item.judul);
             }
@@ -4200,10 +4231,10 @@ __webpack_require__.r(__webpack_exports__);
             var _iteratorError2 = undefined;
 
             try {
-              for (var _iterator2 = data.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              for (var _iterator2 = data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                 var item = _step2.value;
 
-                _this2.fileArr.push('/storage/' + item.path);
+                _this2.fileArr.push(item.filename);
 
                 _this2.judulArr.push(item.judul);
               }
@@ -4233,10 +4264,10 @@ __webpack_require__.r(__webpack_exports__);
             var _iteratorError3 = undefined;
 
             try {
-              for (var _iterator3 = data.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              for (var _iterator3 = data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                 var item = _step3.value;
 
-                _this2.fileArr.push('/storage/' + item.path);
+                _this2.fileArr.push(item.filename);
 
                 _this2.judulArr.push(item.judul);
               }
@@ -4260,115 +4291,44 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
-    getResults: function getResults() {
-      var _this3 = this;
 
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
-      if (this.$route.params.playlist_id) {
-        axios.get(window.location.origin + '/api/music/playlist_' + this.sortParam + '-' + this.$route.params.playlist_id + '?page=' + page).then(function (response) {
-          _this3.musics = response.data;
-          var _iteratorNormalCompletion4 = true;
-          var _didIteratorError4 = false;
-          var _iteratorError4 = undefined;
-
-          try {
-            for (var _iterator4 = data.data[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-              var item = _step4.value;
-
-              _this3.fileArr.push('/storage/' + item.path);
-
-              _this3.judulArr.push(item.judul);
+    /*getResults(page = 1){
+      if(this.$route.params.playlist_id){
+        axios.get(window.location.origin+'/api/music/playlist_'+this.sortParam+'-'+this.$route.params.playlist_id+'?page='+page)
+          .then(({response}) => {
+            this.musics = response.data;
+            for(let item of data.data){
+              this.fileArr.push('/storage/'+item.path);
+              this.judulArr.push(item.judul);
             }
-          } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-                _iterator4["return"]();
-              }
-            } finally {
-              if (_didIteratorError4) {
-                throw _iteratorError4;
-              }
-            }
-          }
-
-          _this3.dataLoaded = 1;
-        });
-      } else {
-        var index = this.sortParam.indexOf('@'); //console.log(index);
-
-        var sortingParam = this.sortParam.slice(0, index); //console.log(this.sortParam);
-
-        if (sortingParam == 'judul') {
-          axios.get(window.location.origin + '/api/music/getMusicListByTitle/?page=' + page).then(function (response) {
-            _this3.musics = response.data;
-            var _iteratorNormalCompletion5 = true;
-            var _didIteratorError5 = false;
-            var _iteratorError5 = undefined;
-
-            try {
-              for (var _iterator5 = data.data[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                var item = _step5.value;
-
-                _this3.fileArr.push('/storage/' + item.path);
-
-                _this3.judulArr.push(item.judul);
-              }
-            } catch (err) {
-              _didIteratorError5 = true;
-              _iteratorError5 = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
-                  _iterator5["return"]();
-                }
-              } finally {
-                if (_didIteratorError5) {
-                  throw _iteratorError5;
-                }
-              }
-            }
-
-            _this3.dataLoaded = 1;
+            this.dataLoaded = 1;
           });
-        } else if (sortingParam == 'created_at') {
-          axios.get(window.location.origin + '/api/music/getMusicListByUploadDate/?page=' + page).then(function (response) {
-            _this3.musics = response.data;
-            var _iteratorNormalCompletion6 = true;
-            var _didIteratorError6 = false;
-            var _iteratorError6 = undefined;
-
-            try {
-              for (var _iterator6 = data.data[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                var item = _step6.value;
-
-                _this3.fileArr.push('/storage/' + item.path);
-
-                _this3.judulArr.push(item.judul);
-              }
-            } catch (err) {
-              _didIteratorError6 = true;
-              _iteratorError6 = err;
-            } finally {
-              try {
-                if (!_iteratorNormalCompletion6 && _iterator6["return"] != null) {
-                  _iterator6["return"]();
-                }
-              } finally {
-                if (_didIteratorError6) {
-                  throw _iteratorError6;
-                }
-              }
+      }else{
+        let index = this.sortParam.indexOf('@'); //console.log(index);
+        let sortingParam = this.sortParam.slice(0, index); //console.log(this.sortParam);
+         if(sortingParam == 'judul'){
+          axios.get(window.location.origin+'/api/music/getMusicListByTitle/?page=' + page)
+          .then(({response}) => {
+            this.musics = response.data;
+            for(let item of data.data){
+              this.fileArr.push('/storage/'+item.path);
+              this.judulArr.push(item.judul);
             }
-
-            _this3.dataLoaded = 1;
+            this.dataLoaded = 1;
+          });
+        }else if(sortingParam == 'created_at'){
+          axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/?page=' + page)
+          .then(({response}) => {
+            this.musics = response.data;
+            for(let item of data.data){
+              this.fileArr.push('/storage/'+item.path);
+              this.judulArr.push(item.judul);
+            }
+            this.dataLoaded = 1;
           });
         }
       }
-    },
+    },*/
     formatDatetime: function formatDatetime(datetime) {
       return moment__WEBPACK_IMPORTED_MODULE_0___default()(String(datetime)).format('llll');
     },
@@ -4378,6 +4338,22 @@ __webpack_require__.r(__webpack_exports__);
       this.file_id = id;
       this.autoPlay = true;
       this.playingIndex = index;
+      var postToLog = {
+        'judul': judul,
+        'music_id': id,
+        'action': 'play',
+        'filename': path.split('/')[path.split('/').length - 1]
+      };
+      axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref4) {
+        var data = _ref4.data;
+      })["catch"](function (_ref5) {
+        var error = _ref5.error;
+        console.error(error);
+
+        if (error.response.data.error.statusCode === 401) {
+          location.reload();
+        }
+      });
     },
     nextMusic: function nextMusic() {
       var next = this.playingIndex + 1;
@@ -4393,8 +4369,8 @@ __webpack_require__.r(__webpack_exports__);
     download: function download(judul, path, id) {
       axios.get(path, {
         responseType: 'blob'
-      }).then(function (_ref4) {
-        var data = _ref4.data;
+      }).then(function (_ref6) {
+        var data = _ref6.data;
         var blob = new Blob([data], {
           type: 'audio/mp3'
         });
@@ -4405,33 +4381,55 @@ __webpack_require__.r(__webpack_exports__);
         var postToLog = {
           'judul': judul,
           'music_id': id,
-          'filename': path.replace('/storage/uploadedMusic/', '')
+          'action': 'download',
+          'filename': path.split('/')[path.split('/').length - 1] //path.replace('/storage/uploadedMusic/', ''),
+
         };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref5) {
-          var data = _ref5.data;
-        })["catch"](function (error) {
-          return console.error(error);
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref7) {
+          var data = _ref7.data;
+        })["catch"](function (_ref8) {
+          var error = _ref8.error;
+          console.error(error);
+
+          if (error.response.data.error.statusCode === 401) {
+            location.reload();
+          }
         });
-      })["catch"](function (error) {
-        return console.error(error);
+      })["catch"](function (_ref9) {
+        var error = _ref9.error;
+        console.log(error);
+
+        if (error.response.data.error.statusCode === 401) {
+          location.reload();
+        }
       });
     },
     addToWishlist: function addToWishlist(music_id, music_judul) {
-      var _this4 = this;
+      var _this3 = this;
 
       this.$confirm('Add ' + music_judul + ' to your wishlist?', '', 'question').then(function () {
         var postToWishlist = {
           'music_id': music_id
         };
-        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref6) {
-          var response = _ref6.response;
+        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref10) {
+          var response = _ref10.response;
 
-          _this4.$alert(music_judul + ' added to your wishlist', '', 'success');
-        })["catch"](function (error) {
-          return console.error(error);
+          _this3.$alert(music_judul + ' added to your wishlist', '', 'success');
+        })["catch"](function (_ref11) {
+          var error = _ref11.error;
+          console.error(error);
+
+          if (error.response.data.error.statusCode === 401) {
+            location.reload();
+          }
         });
-      })["catch"](function (error) {
-        return console.error(error);
+      })["catch"](function (_ref12) {
+        var error = _ref12.error;
+        console.error(error);
+
+        if (error.response.data.error.statusCode === 401) {
+          location.reload();
+        }
       });
     },
     openExtraModal: function openExtraModal(music_id, music_judul) {
@@ -4439,7 +4437,7 @@ __webpack_require__.r(__webpack_exports__);
       this.modal_music_judul = music_judul;
     },
     deleteMusic: function deleteMusic(music_id, music_judul) {
-      var _this5 = this;
+      var _this4 = this;
 
       var playlist = 'Music Bank permanently';
       var confirm_type = 'warning';
@@ -4450,38 +4448,83 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.$confirm('Delete ' + music_judul + ' from ' + playlist + '?', '', confirm_type).then(function () {
-        if (_this5.$route.params.playlist_id) {
+        if (_this4.$route.params.playlist_id) {
           var patchMusic = {
             'act': 'remove_from_playlist',
             'playlist_detail_id': music_id,
-            'playlist_id': _this5.$route.params.playlist_id
+            'playlist_id': _this4.$route.params.playlist_id
           };
-          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref7) {
-            var response = _ref7.response;
+          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref13) {
+            var response = _ref13.response;
 
-            _this5.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
+            _this4.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
 
-            _this5.loadMusics();
-          })["catch"](function (_ref8) {
-            var error = _ref8.error;
-            return _this5.$alert(error.message, '', 'error');
+            _this4.loadMusics();
+          })["catch"](function (_ref14) {
+            var error = _ref14.error;
+
+            _this4.$alert(error.message, '', 'error');
+
+            if (error.response.data.error.statusCode === 401) {
+              location.reload();
+            }
           });
         } else {
-          _this5.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
-            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref9) {
-              var response = _ref9.response;
+          _this4.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
+            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref15) {
+              var response = _ref15.response;
 
-              _this5.$alert('Delete Successful', '', 'success');
+              _this4.$alert('Delete Successful', '', 'success');
 
-              _this5.loadMusics();
-            })["catch"](function (_ref10) {
-              var error = _ref10.error;
-              return _this5.$alert(error.message, '', 'error');
+              _this4.loadMusics();
+            })["catch"](function (_ref16) {
+              var error = _ref16.error;
+
+              _this4.$alert(error.message, '', 'error');
+
+              if (error.response.data.error.statusCode === 401) {
+                location.reload();
+              }
             });
           });
         }
-      })["catch"](function (error) {
-        return console.error(error);
+      })["catch"](function (_ref17) {
+        var error = _ref17.error;
+        console.error(error);
+
+        if (error.response.data.error.statusCode === 401) {
+          location.reload();
+        }
+      });
+    },
+    deletePlaylist: function deletePlaylist(id, nama_playlist) {
+      var _this5 = this;
+
+      this.$confirm('Confirm Delete Playlist ' + nama_playlist + ' and all the content?', '', 'error').then(function (res) {
+        axios["delete"](window.location.origin + '/api/playlist/' + id).then(function (result) {
+          _this5.$alert('Delete Success', '', 'success');
+
+          location.reload();
+        });
+      });
+    },
+    renamePlaylist: function renamePlaylist(id, nama_playlist) {
+      var _this6 = this;
+
+      //this.$confirm('Confirm Delete Playlist '+nama_playlist+' and all the content?', '', 'error')
+      this.$prompt("Rename Playlist", nama_playlist).then(function (text) {
+        //console.log(text);
+        //.then(res => {
+        var renamePlaylist = {
+          'act': 'rename_playlist',
+          'playlist_id': id,
+          'playlist_new_name': text
+        };
+        axios.post(window.location.origin + '/api/playlist', renamePlaylist).then(function (result) {
+          _this6.$alert('Delete Success', '', 'success');
+
+          location.reload();
+        });
       });
     }
   },
@@ -4509,12 +4552,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vform */ "./node_modules/vform/dist/vform.common.js");
 /* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vform__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -4569,7 +4606,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     createPlaylist: function createPlaylist() {
       var _this = this;
 
-      this.form.parent_id = this.playlistParentID;
       this.form.post(window.location.origin + '/api/playlist').then(function (res) {
         _this.resetModal();
 
@@ -4582,12 +4618,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       ;
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])(['selectedPlaylist']), {
-    playlistParentID: function playlistParentID() {
-      //console.log(store.state.selectedPlaylist);
-      return this.$store.state.playlistParentID;
+  watch: {
+    '$route.params.playlist_id': function $routeParamsPlaylist_id(playlist_id) {
+      this.form.parent_id = this.$route.params.playlist_id ? this.$route.params.playlist_id : 0;
     }
-  })
+  }
 });
 
 /***/ }),
@@ -4768,7 +4803,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -4913,7 +4947,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       filenameList: [],
       selectedFile: null,
       playlist: null,
-      playlistPath: [],
+      playlistSelect: [],
       selectedPlaylistArr: [],
       isUploading: false,
       uploadProgress: 0,
@@ -4932,10 +4966,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
       axios.get(window.location.origin + '/api/playlist/playlistSelection').then(function (_ref) {
         var data = _ref.data;
-        return _this.playlistPath = data;
+        return _this.playlistSelect = data;
       });
     },
     onFileSelected: function onFileSelected(event) {
+      console.log(event);
       this.filenameList = [];
       this.toUpload = new FormData();
       this.selectedFile = event.target.files;
@@ -5942,8 +5977,10 @@ var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
       var _this = this;
 
       this.stop();
-      var filename = this.file.replace('/storage/uploadedMusic/', '');
+      var filename = this.file; //.replace('/storage/uploadedMusic/', '');
+
       this.postToLog.judul = this.judul;
+      this.postToLog.action = 'download';
       this.postToLog.music_id = this.file_id;
       this.postToLog.filename = filename; //window.open(this.file, 'download');
 
@@ -16757,6 +16794,25 @@ exports.decrypt = function (object, password, config) {
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, ".fixed-content[data-v-41feb83b] {\n  position: fixed;\n  z-index: 99;\n  background-color: #ecf0f5;\n  padding: 0;\n}\n.fixed-content > h3[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n.card-tools[data-v-41feb83b], .card-header[data-v-41feb83b] {\n  text-align: right;\n}\n.button-container[data-v-41feb83b] {\n  float: left;\n}\n#header-table[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n#content-table[data-v-41feb83b] {\n  margin-top: 213px;\n}\n.headerButton[data-v-41feb83b]:hover {\n  background-color: #d5eaf5;\n  cursor: pointer;\n  transition: all 0.4s ease;\n  -webkit-transition: all 0.4s ease;\n}\n.search-container[data-v-41feb83b] {\n  display: inline-block;\n  width: 250px;\n}\n.has-search .form-control-feedback[data-v-41feb83b] {\n  right: initial;\n  left: 0;\n  color: #ccc;\n}\n.has-search .form-control[data-v-41feb83b] {\n  padding-right: 12px;\n  padding-left: 34px;\n}", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Wishlist.vue?vue&type=style&index=0&id=50347708&lang=scss&scoped=true&":
 /*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Wishlist.vue?vue&type=style&index=0&id=50347708&lang=scss&scoped=true& ***!
@@ -16827,25 +16883,6 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 // module
 exports.push([module.i, "\n.playlist_container[data-v-01271bba]{\n    max-height: 500px;\n    overflow: auto;\n}\n.create-wishlist[data-v-01271bba]{\n    float: left;\n}\nh4[data-v-01271bba]{\n    display: inline;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&":
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.card-tools[data-v-41feb83b], .card-header[data-v-41feb83b]{\n  text-align: right;\n}\n.headerButton[data-v-41feb83b]:hover{\n  background-color: #d5eaf5;\n  cursor: pointer;\n  transition: all .4s ease;\n  -webkit-transition: all .4s ease;\n}\n.search-container[data-v-41feb83b]{\n  display: inline-block;\n  width: 250px;\n}\n.has-search .form-control-feedback[data-v-41feb83b]{\n  right: initial;\n  left: 0;\n  color: #ccc;\n}\n.has-search .form-control[data-v-41feb83b]{\n    padding-right: 12px;\n    padding-left: 34px;\n}\n", ""]);
 
 // exports
 
@@ -80009,6 +80046,36 @@ function simpleEnd(buf) {
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true& */ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Wishlist.vue?vue&type=style&index=0&id=50347708&lang=scss&scoped=true&":
 /*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--7-2!./node_modules/sass-loader/dist/cjs.js??ref--7-3!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Wishlist.vue?vue&type=style&index=0&id=50347708&lang=scss&scoped=true& ***!
@@ -80108,36 +80175,6 @@ if(false) {}
 
 
 var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./AddToWishlist.vue?vue&type=style&index=0&id=01271bba&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToWishlist.vue?vue&type=style&index=0&id=01271bba&scoped=true&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&":
-/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& ***!
-  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
@@ -85255,6 +85292,279 @@ exports.createContext = Script.createContext = function (context) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-head/vue-head.js":
+/*!*******************************************!*\
+  !*** ./node_modules/vue-head/vue-head.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* eslint-disable */
+;(function() {
+
+  'use strict'
+
+  var opt = {
+    complement: window.document.title,
+    separator: '|'
+  }
+
+  var diffTitle = {}
+  var els = []
+  var diffEls = []
+  var installed = false
+
+  var util = {
+    /**
+     * Shorthand
+     * @type {Object}
+     */
+    shorthand: {
+      ch: 'charset',
+      tg: 'target',
+      n: 'name',
+      he: 'http-equiv',
+      ip: 'itemprop',
+      c: 'content',
+      p: 'property',
+      sc: 'scheme',
+      r: 'rel',
+      h: 'href',
+      sz: 'sizes',
+      t: 'type',
+      s: 'src',
+      a: 'async',
+      d: 'defer',
+      i: 'inner'
+    },
+
+    /**
+     * This function return the element <head>
+     * @type {Function}
+     * @return {Object}
+     */
+    getPlace: function (place) {
+      return window.document.getElementsByTagName(place)[0]
+    },
+
+    /**
+     * Undo the window.document title for previous state
+     * @type {Function}
+     * @param  {Object} state
+     */
+    undoTitle: function (state) {
+      if (!state.before) return
+      window.document.title = state.before
+    },
+
+    /**
+     * Undo elements to its previous state
+     * @type {Function}
+     */
+    undo: function () {
+      if (!els.length) return
+      els.forEach(function (el) {
+        el.parentElement.removeChild(el)
+      })
+      els = []
+    },
+
+    /**
+     * Set attributes in element
+     * @type {Function}
+     * @param  {Object} obj
+     * @param  {HTMLElement} el
+     * @return {HTMLElement} with defined attributes
+     */
+    prepareElement: function (obj, el) {
+      var self = this
+      Object.keys(obj).forEach(function (prop) {
+        var sh = self.shorthand[prop] || prop
+        if (sh.match(/(body|undo|replace)/g)) return
+        if (sh === 'inner') {
+          el.textContent = obj[prop]
+          return
+        }
+        el.setAttribute(sh, obj[prop])
+      })
+      return el
+    },
+
+    /**
+     * Change window.document title
+     * @type {Function}
+     * @param  {Object} obj
+     */
+    title: function (obj) {
+      if (!obj) return
+      diffTitle.before = opt.complement
+      var title = obj.inner + ' ' + (obj.separator || opt.separator) +
+        ' ' +  (obj.complement || opt.complement)
+      window.document.title = title.trim()
+    },
+
+    /**
+     * Update Element
+     */
+    update: function () {
+      if (!els.length) return
+      els.forEach(function(el, key) {
+        if (diffEls[key] && !diffEls[key].isEqualNode(el)) {
+          el.parentElement.replaceChild(diffEls[key], els[key])
+          els.splice(key, 1, diffEls[key])
+          return
+        }
+      })
+      diffEls = []
+    },
+
+    /**
+     * Add Elements
+     * @param {Object} obj
+     * @param {HTMLElement} el
+     * @param {HTMLElement} parent
+     */
+    add: function (obj, el, parent) {
+      parent.appendChild(el)
+      // Fixed elements that do not suffer removal
+      if (obj.undo !== undefined && !obj.undo) return
+      // Elements which are removed
+      els.push(el)
+    },
+
+    /**
+     * Handle of create elements
+     * @type {Function}
+     * @param  {Array} arr
+     * @param  {String} tag   - style, link, meta, script, base
+     * @param  {String} place - Default 'head'
+     * @param  {Boolean} update
+     */
+    handle: function (arr, tag, place, update) {
+      var self = this
+      if (!arr) return
+      arr.forEach(function (obj) {
+        var parent = (obj.body) ? self.getPlace('body') : self.getPlace(place)
+        var el = window.document.getElementById(obj.id)
+        if (!el) {
+          el = window.document.createElement(tag)
+          update = false
+        }
+        // Elements that will substitute data
+        if (el.hasAttribute('id')) {
+          self.prepareElement(obj, el)
+          return
+        }
+        // Other elements
+        el = self.prepareElement(obj, el)
+        // Updated elements
+        if (update) {
+          diffEls.push(el)
+          return
+        }
+        // Append Elements
+        self.add(obj, el, parent)
+      })
+    }
+  }
+
+  /**
+   * Plugin | vue-head
+   * @param  {Function} Vue
+   * @param  {Object} options
+   */
+  function VueHead (Vue, options) {
+    if (installed) return
+
+    installed = true
+
+    if (options) {
+      Vue.util.extend(opt, options)
+    }
+
+    /**
+     * Initializes and updates the elements in the head
+     * @param  {Boolean} update
+     */
+    function init (update) {
+      var self = this
+      var head = (typeof self.$options.head === 'function') ? self.$options.head.bind(self)() : self.$options.head
+      if (!head) return
+      Object.keys(head).forEach(function (key) {
+        var prop = head[key]
+        if (!prop) return
+        var obj = (typeof prop === 'function') ? head[key].bind(self)() : head[key]
+        if (key === 'title') {
+          util[key](obj)
+          return
+        }
+        util.handle(obj, key, 'head', update)
+      })
+      self.$emit('okHead')
+    }
+
+    /**
+     * Remove the meta tags elements in the head
+     */
+    function destroy () {
+      if (!this.$options.head) return
+      util.undoTitle(diffTitle)
+      util.undo()
+    }
+
+    // v1
+    if (Vue.version.match(/[1].(.)+/g)) {
+      Vue.mixin({
+        ready: function () {
+          init.call(this)
+        },
+        destroyed: function () {
+          destroy.call(this)
+        },
+        events: {
+          updateHead: function () {
+            init.call(this, true)
+            util.update()
+          }
+        }
+      })
+    }
+    // v2
+    if (Vue.version.match(/[2].(.)+/g)) {
+      Vue.mixin({
+        created: function () {
+          var self = this
+          self.$on('updateHead', function () {
+            init.call(this, true)
+            util.update()
+          })
+        },
+        mounted: function () {
+          init.call(this)
+        },
+        beforeDestroy: function () {
+          destroy.call(this)
+        }
+      })
+    }
+  }
+
+  VueHead.version = '2.2.0'
+
+  // auto install
+  if (typeof Vue !== 'undefined') {
+    Vue.use(VueHead)
+  }
+
+  if(true) {
+    module.exports = VueHead
+  } else {}
+
+})()
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947&":
 /*!***********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/AddToPlaylist.vue?vue&type=template&id=355b1947& ***!
@@ -85768,418 +86078,436 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c("section", { staticClass: "content-header" }, [
-        _vm.$route.params.playlist_id
-          ? _c("h1", [
-              _vm._v(
-                "\n      " +
-                  _vm._s(
-                    _vm.$route.params.playlist_name
-                      ? this.$options.filters.capitalize(
-                          _vm.$route.params.playlist_name.replace("-", " ")
-                        )
-                      : ""
-                  ) +
-                  " "
-              ),
-              _c("br"),
+      _c("div", { staticClass: "row justify-content-center mt-4 mb-4 h-100" }, [
+        _c("div", { staticClass: "col-12" }, [
+          _c("div", { staticClass: "card my-auto" }, [
+            _c("div", { staticClass: "container fixed-content" }, [
+              _vm.$route.params.playlist_id
+                ? _c("h3", [
+                    _vm._v(
+                      "\n              " +
+                        _vm._s(
+                          _vm.$route.params.playlist_name
+                            ? _vm.$route.params.playlist_name.replace("-", " ")
+                            : ""
+                        ) +
+                        " "
+                    ),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("small", [_vm._v(_vm._s(_vm.musics.length) + " musics")])
+                  ])
+                : _c("h3", [
+                    _vm._v("\n              All Music "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("small", [_vm._v(_vm._s(_vm.musics.length) + " musics")])
+                  ]),
               _vm._v(" "),
-              _c("small", [_vm._v("List of Playlist Content")])
-            ])
-          : _c("h1", [
-              _vm._v("\n      All Music "),
-              _c("br"),
-              _vm._v(" "),
-              _c("small", [_vm._v("List of All Uploaded Music")])
-            ])
-      ]),
-      _vm._v(" "),
-      _c("section", { staticClass: "content container-fluid" }, [
-        _c(
-          "div",
-          { staticClass: "row justify-content-center mt-4 mb-4 h-100" },
-          [
-            _c("div", { staticClass: "col-12" }, [
-              _c("div", { staticClass: "card my-auto" }, [
-                _c("div", { staticClass: "card-header" }, [
+              _c("div", { staticClass: "card-header" }, [
+                _c("div", { staticClass: "button-container" }, [
                   _c(
-                    "div",
+                    "button",
                     {
-                      staticClass:
-                        "search-container form-group has-feedback has-search"
+                      staticClass: "btn btn-primary",
+                      attrs: {
+                        "data-toggle": "modal",
+                        "data-target": "#CreatePlaylist",
+                        id: _vm.$route.params.playlist_id
+                          ? _vm.$route.params.playlist_id
+                          : 0
+                      }
                     },
-                    [
-                      _c("span", {
-                        staticClass:
-                          "glyphicon glyphicon-search form-control-feedback"
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.searchContent,
-                            expression: "searchContent"
-                          }
-                        ],
-                        staticClass: "form-control",
-                        attrs: { type: "text", placeholder: "Search" },
-                        domProps: { value: _vm.searchContent },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
+                    [_vm._v("Create Child Playlist")]
+                  ),
+                  _vm._v(" "),
+                  _vm.$route.params.playlist_id
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          on: {
+                            click: function($event) {
+                              return _vm.renamePlaylist(
+                                _vm.$route.params.playlist_id,
+                                _vm.$route.params.playlist_name
+                              )
                             }
-                            _vm.searchContent = $event.target.value
                           }
-                        }
-                      })
-                    ]
-                  )
+                        },
+                        [_vm._v("Rename")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.$route.params.playlist_id
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          on: {
+                            click: function($event) {
+                              return _vm.deletePlaylist(
+                                _vm.$route.params.playlist_id,
+                                _vm.$route.params.playlist_name
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Delete")]
+                      )
+                    : _vm._e()
                 ]),
                 _vm._v(" "),
                 _c(
                   "div",
                   {
-                    staticClass: "card-body table-responsive p-0",
-                    staticStyle: { height: "100%" }
+                    staticClass:
+                      "search-container form-group has-feedback has-search"
+                  },
+                  [
+                    _c("span", {
+                      staticClass:
+                        "glyphicon glyphicon-search form-control-feedback"
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.searchContent,
+                          expression: "searchContent"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Search" },
+                      domProps: { value: _vm.searchContent },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.searchContent = $event.target.value
+                        }
+                      }
+                    })
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "card-tools" },
+                [
+                  _c("audio-player", {
+                    attrs: {
+                      file: _vm.file,
+                      file_id: _vm.file_id,
+                      judul: _vm.judul,
+                      autoPlay: _vm.autoPlay
+                    },
+                    on: { playNext: _vm.nextMusic }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "table",
+                {
+                  staticClass: "table table-head-fixed",
+                  attrs: { id: "header-table" }
+                },
+                [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("thead", [
+                    _c("tr", [
+                      _c(
+                        "th",
+                        {
+                          staticClass: "headerButton",
+                          attrs: { title: "Sort By Title", colspan: "2" },
+                          on: {
+                            click: function($event) {
+                              return _vm.loadMusics("judul@ASC")
+                            }
+                          }
+                        },
+                        [_vm._v("Title")]
+                      ),
+                      _vm._v(" "),
+                      _vm.$route.params.playlist_id
+                        ? _c("th", [_vm._v("Playlist")])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "th",
+                        {
+                          staticClass: "headerButton",
+                          attrs: { title: "Sort By Time Of Upload" },
+                          on: {
+                            click: function($event) {
+                              return _vm.loadMusics("created_at@DESC")
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                    " +
+                              _vm._s(
+                                _vm.$route.params.playlist_id
+                                  ? "Added At"
+                                  : "Uploaded At"
+                              ) +
+                              "\n                  "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("th", [_vm._v("Modify")])
+                    ])
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "card-body table-responsive p-0",
+                staticStyle: { height: "100%" }
+              },
+              [
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-head-fixed",
+                    attrs: { id: "content-table", num: _vm.searchMusic.length }
                   },
                   [
                     _c(
-                      "div",
-                      { staticClass: "card-tools" },
+                      "tbody",
                       [
-                        _c("audio-player", {
-                          attrs: {
-                            file: _vm.file,
-                            file_id: _vm.file_id,
-                            judul: _vm.judul,
-                            autoPlay: _vm.autoPlay
-                          },
-                          on: { playNext: _vm.nextMusic }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c("pagination", {
-                      attrs: { data: _vm.musics },
-                      on: { "pagination-change-page": _vm.getResults }
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "table",
-                      { staticClass: "table table-head-fixed" },
-                      [
-                        _c("thead", [
-                          _c("tr", [
-                            _c(
-                              "th",
-                              {
-                                staticClass: "headerButton",
-                                attrs: { title: "Sort By Title", colspan: "2" },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.loadMusics("judul@ASC")
+                        _vm.searchMusic !== "" && _vm.searchMusic != 0
+                          ? _vm._l(_vm.searchMusic, function(music, index) {
+                              return _c(
+                                "tr",
+                                {
+                                  key: index,
+                                  attrs: {
+                                    "hover:bg-blue": "",
+                                    "px-4": "",
+                                    py2: ""
                                   }
-                                }
-                              },
-                              [_vm._v("Title")]
-                            ),
-                            _vm._v(" "),
-                            _vm.$route.params.playlist_id
-                              ? _c("th", [_vm._v("Playlist")])
-                              : _vm._e(),
-                            _vm._v(" "),
-                            _c(
-                              "th",
-                              {
-                                staticClass: "headerButton",
-                                attrs: { title: "Sort By Time Of Upload" },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.loadMusics("created_at@DESC")
-                                  }
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n                    " +
-                                    _vm._s(
-                                      _vm.$route.params.playlist_id
-                                        ? "Added At"
-                                        : "Uploaded At"
-                                    ) +
-                                    "\n                  "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c("th", [_vm._v("Modify")])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "draggable",
-                          {
-                            attrs: {
-                              options: {
-                                group: { judul: _vm.musics.data.judul },
-                                pull: "clone"
-                              },
-                              element: "tbody"
-                            },
-                            on: {
-                              start: function($event) {
-                                _vm.drag = true
-                              }
-                            },
-                            model: {
-                              value: _vm.musics.data,
-                              callback: function($$v) {
-                                _vm.$set(_vm.musics, "data", $$v)
-                              },
-                              expression: "musics.data"
-                            }
-                          },
-                          [
-                            _vm.searchMusic !== ""
-                              ? _vm._l(_vm.searchMusic, function(music, index) {
-                                  return _c(
-                                    "tr",
-                                    {
-                                      key: index,
-                                      attrs: {
-                                        "hover:bg-blue": "",
-                                        "px-4": "",
-                                        py2: ""
-                                      }
-                                    },
-                                    [
-                                      _c("td", [_vm._v(_vm._s(music.judul))]),
-                                      _vm._v(" "),
-                                      _c("td", [
+                                },
+                                [
+                                  _c("td", [_vm._v(_vm._s(music.judul))]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass:
+                                          "btn btn-primary playlist-play-btn",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.playAudio(
+                                              music.judul,
+                                              music.filename,
+                                              music.id,
+                                              index
+                                            )
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                        Play\n                        "
+                                        ),
+                                        _c("i", {
+                                          staticClass:
+                                            "fas fa-play-circle nav-icon"
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm.$route.params.playlist_id
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-capitalize" },
+                                        [_vm._v(_vm._s(music.folder_path))]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.formatDatetime(music.created_at)
+                                      )
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "modify-btn-container" },
+                                      [
                                         _c(
-                                          "button",
+                                          "a",
                                           {
-                                            staticClass:
-                                              "btn btn-primary playlist-play-btn",
-                                            attrs: { type: "button" },
+                                            staticClass: "modify-btn",
+                                            attrs: {
+                                              title: "Add To Playlist",
+                                              "data-toggle": "modal",
+                                              "data-target": "#PlaylistModal"
+                                            },
                                             on: {
                                               click: function($event) {
-                                                return _vm.playAudio(
-                                                  music.judul,
-                                                  "/storage/" + music.path,
+                                                return _vm.openExtraModal(
                                                   music.id,
-                                                  index
+                                                  music.judul
                                                 )
                                               }
                                             }
                                           },
                                           [
-                                            _vm._v(
-                                              "\n                        Play\n                        "
-                                            ),
                                             _c("i", {
                                               staticClass:
-                                                "fas fa-play-circle nav-icon"
+                                                "fas fa-compact-disc color-cyan fa-fw fa-lg"
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "a",
+                                          {
+                                            staticClass: "modify-btn",
+                                            attrs: {
+                                              title: "Add To Wishlist",
+                                              "data-toggle": "modal",
+                                              "data-target": "#AddWishlistModal"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.openExtraModal(
+                                                  music.id,
+                                                  music.judul
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass:
+                                                "fa fa-folder-plus color-purple fa-fw fa-lg"
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "a",
+                                          {
+                                            staticClass: "modify-btn",
+                                            attrs: { title: "Download" },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.download(
+                                                  music.judul,
+                                                  music.filename,
+                                                  music.id
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass:
+                                                "fa fa-download color-green fa-fw fa-lg"
+                                            })
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "a",
+                                          {
+                                            staticClass: "modify-btn",
+                                            attrs: { title: "Delete" },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.deleteMusic(
+                                                  music.id,
+                                                  music.judul
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass:
+                                                "fa fa-trash color-red fa-fw fa-lg"
                                             })
                                           ]
                                         )
-                                      ]),
-                                      _vm._v(" "),
-                                      _vm.$route.params.playlist_id
-                                        ? _c(
-                                            "td",
-                                            { staticClass: "text-capitalize" },
-                                            [
-                                              _vm._v(
-                                                _vm._s(music.nama_playlist)
-                                              )
-                                            ]
-                                          )
-                                        : _vm._e(),
-                                      _vm._v(" "),
-                                      _c("td", [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.formatDatetime(music.created_at)
-                                          )
-                                        )
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("td", [
-                                        _c(
-                                          "div",
-                                          {
-                                            staticClass: "modify-btn-container"
-                                          },
-                                          [
-                                            _c(
-                                              "a",
-                                              {
-                                                staticClass: "modify-btn",
-                                                attrs: {
-                                                  title: "Add To Playlist",
-                                                  "data-toggle": "modal",
-                                                  "data-target":
-                                                    "#PlaylistModal"
-                                                },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.openExtraModal(
-                                                      music.id,
-                                                      music.judul
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("i", {
-                                                  staticClass:
-                                                    "fas fa-compact-disc color-cyan fa-fw fa-lg"
-                                                })
-                                              ]
-                                            ),
-                                            _vm._v(" "),
-                                            _c(
-                                              "a",
-                                              {
-                                                staticClass: "modify-btn",
-                                                attrs: {
-                                                  title: "Add To Wishlist",
-                                                  "data-toggle": "modal",
-                                                  "data-target":
-                                                    "#AddWishlistModal"
-                                                },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.openExtraModal(
-                                                      music.id,
-                                                      music.judul
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("i", {
-                                                  staticClass:
-                                                    "fa fa-folder-plus color-purple fa-fw fa-lg"
-                                                })
-                                              ]
-                                            ),
-                                            _vm._v(" "),
-                                            _c(
-                                              "a",
-                                              {
-                                                staticClass: "modify-btn",
-                                                attrs: { title: "Download" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.download(
-                                                      music.judul,
-                                                      "/storage/" + music.path,
-                                                      music.id
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("i", {
-                                                  staticClass:
-                                                    "fa fa-download color-green fa-fw fa-lg"
-                                                })
-                                              ]
-                                            ),
-                                            _vm._v(" "),
-                                            _c(
-                                              "a",
-                                              {
-                                                staticClass: "modify-btn",
-                                                attrs: { title: "Delete" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.deleteMusic(
-                                                      music.id,
-                                                      music.judul
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("i", {
-                                                  staticClass:
-                                                    "fa fa-trash color-red fa-fw fa-lg"
-                                                })
-                                              ]
-                                            )
-                                          ]
-                                        )
-                                      ])
-                                    ]
-                                  )
-                                })
-                              : _vm.searchMusic.length == 0
-                              ? [
-                                  _c("tr", [
-                                    _vm.$route.params.playlist_id
-                                      ? _c(
-                                          "td",
-                                          { attrs: { colspan: "100%" } },
-                                          [
-                                            _c(
-                                              "h3",
-                                              { staticClass: "text-center" },
-                                              [_vm._v("Playlist Is Empty")]
-                                            )
-                                          ]
-                                        )
-                                      : _c(
-                                          "td",
-                                          { attrs: { colspan: "100%" } },
-                                          [
-                                            _c(
-                                              "h3",
-                                              { staticClass: "text-center" },
-                                              [_vm._v("Music Bank Is Empty")]
-                                            )
-                                          ]
-                                        )
+                                      ]
+                                    )
                                   ])
                                 ]
-                              : _vm._e()
-                          ],
-                          2
-                        )
+                              )
+                            })
+                          : [
+                              _c("tr", [
+                                _c("td", { attrs: { colspan: "100%" } }, [
+                                  _vm.$route.params.playlist_id &&
+                                  _vm.musics.length == 0
+                                    ? _c("h3", { staticClass: "text-center" }, [
+                                        _vm._v("Playlist Is Empty")
+                                      ])
+                                    : !_vm.$route.params.playlist_id &&
+                                      _vm.musics.length == 0
+                                    ? _c("h3", { staticClass: "text-center" }, [
+                                        _vm._v("Music Bank Is Empty")
+                                      ])
+                                    : _c("h3", { staticClass: "text-center" }, [
+                                        _vm._v("No Match Found")
+                                      ])
+                                ])
+                              ])
+                            ]
                       ],
-                      1
+                      2
                     )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "card-footer" },
-                  [
-                    _c("pagination", {
-                      attrs: { data: _vm.musics },
-                      on: { "pagination-change-page": _vm.getResults }
-                    })
-                  ],
-                  1
+                  ]
                 )
-              ])
-            ])
-          ]
-        )
+              ]
+            ),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-footer" })
+          ])
+        ])
       ])
     ],
     1
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("colgroup", [
+      _c("col", { attrs: { width: "652px" } }),
+      _vm._v(" "),
+      _c("col", { attrs: { width: "113px" } }),
+      _vm._v(" "),
+      _c("col", { attrs: { width: "253px" } }),
+      _vm._v(" "),
+      _c("col", { attrs: { width: "152px" } })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -86549,71 +86877,57 @@ var render = function() {
   return _c(
     "ul",
     { staticClass: "treeview-menu" },
-    [
-      _vm._l(_vm.playlist, function(item) {
-        return _c(
-          "li",
-          { key: item.id, staticClass: "treeview" },
-          [
-            _c(
-              "router-link",
-              {
-                attrs: {
-                  to: {
-                    name: "playlist",
-                    params: {
-                      playlist_id: item.id,
-                      playlist_name: item.nama_playlist.replace(" ", "-"),
-                      playlist_title: item.nama_playlist
-                    }
+    _vm._l(_vm.playlist, function(item) {
+      return _c(
+        "li",
+        { key: item.id, staticClass: "treeview" },
+        [
+          _c(
+            "router-link",
+            {
+              attrs: {
+                to: {
+                  name: "playlist",
+                  params: {
+                    playlist_id: item.id,
+                    playlist_name: item.nama_playlist.replace(" ", "-"),
+                    playlist_title: item.nama_playlist
                   }
                 }
-              },
-              [
-                _c("i", {
-                  staticClass: "far fa-trash-alt nav-icon color-red",
-                  attrs: { title: "Delete Playlist" },
-                  on: {
-                    click: function($event) {
-                      return _vm.deletePlaylist(item.id, item.nama_playlist)
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c("span", { staticClass: "text-capitalize" }, [
-                  _vm._v(_vm._s(item.nama_playlist))
-                ]),
-                _vm._v(" "),
-                item.children.length > 0
-                  ? _c("span", { staticClass: "pull-right-container" }, [
-                      _c("i", { staticClass: "fa fa-angle-left pull-right" })
-                    ])
-                  : _vm._e()
-              ]
-            ),
-            _vm._v(" "),
-            item.children.length > 0
-              ? _c("playlist-sidebar", {
-                  attrs: {
-                    playlist: item.children,
-                    addParentID: item.id,
-                    level: _vm.selfLevel + 1
-                  }
-                })
-              : _c(
-                  "ul",
-                  { staticClass: "treeview-menu" },
-                  [_c("add-playlist", { attrs: { parent_id: item.id } })],
-                  1
-                )
-          ],
-          1
-        )
-      }),
-      _vm._v(" "),
-      _c("add-playlist", { attrs: { parent_id: _vm.addParentID } })
-    ],
-    2
+              }
+            },
+            [
+              _c("i", {
+                staticClass: "far fa-file-audio nav-icon color-blue",
+                attrs: { title: "Delete Playlist" }
+              }),
+              _vm._v(" "),
+              _c("span", { staticClass: "text-capitalize" }, [
+                _vm._v(_vm._s(item.nama_playlist))
+              ]),
+              _vm._v(" "),
+              item.children.length > 0
+                ? _c("span", { staticClass: "pull-right-container" }, [
+                    _c("i", { staticClass: "fa fa-angle-left pull-right" })
+                  ])
+                : _vm._e()
+            ]
+          ),
+          _vm._v(" "),
+          item.children.length > 0
+            ? _c("playlist-sidebar", {
+                attrs: {
+                  playlist: item.children,
+                  addParentID: item.id,
+                  level: _vm.selfLevel + 1
+                }
+              })
+            : _vm._e()
+        ],
+        1
+      )
+    }),
+    0
   )
 }
 var staticRenderFns = []
@@ -86736,7 +87050,7 @@ var render = function() {
                             _c(
                               "ul",
                               {},
-                              _vm._l(_vm.playlistPath, function(item) {
+                              _vm._l(_vm.playlistSelect, function(item) {
                                 return _c(
                                   "li",
                                   {
@@ -86753,12 +87067,12 @@ var render = function() {
                                           expression: "selectedPlaylistArr"
                                         }
                                       ],
-                                      ref: "playlistPath_" + item.id,
+                                      ref: "playlistSelect_" + item.id,
                                       refInFor: true,
                                       staticClass: "playlist",
                                       attrs: {
                                         type: "checkbox",
-                                        id: "playlistPath_" + item.id
+                                        id: "playlistSelect_" + item.id
                                       },
                                       domProps: {
                                         value: item.id,
@@ -86803,7 +87117,7 @@ var render = function() {
                                         ref: "label_" + item.id,
                                         refInFor: true,
                                         attrs: {
-                                          for: "playlistPath_" + item.id
+                                          for: "playlistSelect_" + item.id
                                         }
                                       },
                                       [
@@ -108132,6 +108446,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var v_session__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! v-session */ "./node_modules/v-session/index.js");
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vuedraggable */ "./node_modules/vuedraggable/dist/vuedraggable.common.js");
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var vue_head__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue-head */ "./node_modules/vue-head/vue-head.js");
+/* harmony import */ var vue_head__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(vue_head__WEBPACK_IMPORTED_MODULE_8__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -108151,6 +108467,7 @@ Vue.component(vform__WEBPACK_IMPORTED_MODULE_0__["AlertError"].name, vform__WEBP
 
 
 
+
 Vue.use(vue_simple_alert__WEBPACK_IMPORTED_MODULE_1__["default"]);
 Vue.use(moment__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -108158,6 +108475,7 @@ Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]);
 Vue.use(vue_fuse__WEBPACK_IMPORTED_MODULE_5___default.a);
 Vue.use(v_session__WEBPACK_IMPORTED_MODULE_6__["default"]);
 Vue.use(vuedraggable__WEBPACK_IMPORTED_MODULE_7___default.a);
+Vue.use(vue_head__WEBPACK_IMPORTED_MODULE_8___default.a);
 var routes = [{
   path: '/all-music',
   component: __webpack_require__(/*! ./components/AllMusic.vue */ "./resources/assets/js/components/AllMusic.vue")["default"]
@@ -108536,7 +108854,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AllMusic_vue_vue_type_template_id_41feb83b_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AllMusic.vue?vue&type=template&id=41feb83b&scoped=true& */ "./resources/assets/js/components/AllMusic.vue?vue&type=template&id=41feb83b&scoped=true&");
 /* harmony import */ var _AllMusic_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AllMusic.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/AllMusic.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& */ "./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&");
+/* empty/unused harmony star reexport *//* harmony import */ var _AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true& */ "./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -108578,19 +108896,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&":
-/*!**************************************************************************************************************!*\
-  !*** ./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& ***!
-  \**************************************************************************************************************/
+/***/ "./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true&":
+/*!***************************************************************************************************************!*\
+  !*** ./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true& ***!
+  \***************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&scoped=true&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--7-2!../../../../node_modules/sass-loader/dist/cjs.js??ref--7-3!../../../../node_modules/vue-loader/lib??vue-loader-options!./AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/sass-loader/dist/cjs.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/AllMusic.vue?vue&type=style&index=0&id=41feb83b&lang=scss&scoped=true&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_7_2_node_modules_sass_loader_dist_cjs_js_ref_7_3_node_modules_vue_loader_lib_index_js_vue_loader_options_AllMusic_vue_vue_type_style_index_0_id_41feb83b_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 

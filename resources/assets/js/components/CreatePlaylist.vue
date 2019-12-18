@@ -43,7 +43,7 @@
       return{
         form: new Form({
             nama_playlist: '',
-            parent_id: 0
+            parent_id: 0,
         })
       }
     },
@@ -52,7 +52,6 @@
         this.form.playlistName = '';
       },
       createPlaylist(){
-        this.form.parent_id = this.playlistParentID;
         this.form.post(window.location.origin+'/api/playlist')
           .then(res=>{
             this.resetModal();
@@ -62,14 +61,11 @@
             this.$alert('Failed: '+err.message, '', 'error');
           });;
       },
-    },
-    computed: {
-      ...mapState([
-        'selectedPlaylist'
-      ]),
-      playlistParentID(){ //console.log(store.state.selectedPlaylist);
-        return this.$store.state.playlistParentID;
-      }
+    }, 
+    watch: {
+      '$route.params.playlist_id': function(playlist_id){
+        this.form.parent_id = (this.$route.params.playlist_id ? this.$route.params.playlist_id : 0)
+      },
     },
   }
 </script>

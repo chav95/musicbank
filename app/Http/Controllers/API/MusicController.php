@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Storage;
+use Aws\S3\S3Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Playlist;
 use App\Music;
-use App\PlaylistDetail;
+use App\MusicPlaylist;
 use Auth;
 
 class MusicController extends Controller
@@ -47,6 +50,11 @@ class MusicController extends Controller
     public function store(Request $request){
         $playlist = $request->playlist;
         if($request->hasFile('file_name')){ //return json_encode($request);
+            $s3Client = new S3Client([
+                'region' => 'us-west-2',
+                'version' => '2006-03-01',
+            ]);
+
             foreach($request->file_name as $item){
                 $originalFilename = $item->getClientOriginalName();
                 $extension = $item->getClientOriginalExtension();
@@ -58,15 +66,37 @@ class MusicController extends Controller
                 $music->judul = $filenameOnly;
                 $music->path = 'uploadedMusic/'.$filename;
                 $music->uploaded_by = auth('api')->user()->id;
+                $music->filetype = $extension;
+                
+                $file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true);
+                if(isset($file->artist)){
+                    $music->artis = $file->artist;
+                }
+                if(isset($file->album)){
+                    $music->album = $file->album;
+                }
+                if(isset($file->genre)){
+                    $music->genre = $file->genre;
+                }
+                if(isset($file->composer)){
+                    $music->composer = $file->composer;
+                }
+                if(isset($file->tahun)){
+                    $music->tahun = $file->tahun;
+                }
+                $music->durasi = $file->duration;
+                $music->bit_rate = $file->bitRate;
+                $music->sample_rate = $file->sampleRate;
+
                 $music->save();
 
                 $music_id = $music->id;
                 $playlist_arr = explode(',', $request->playlist);
                 foreach($playlist_arr as $id){
-                    $playlist_detail = new PlaylistDetail;
-                    $playlist_detail->music_id = $music_id;
-                    $playlist_detail->playlist_id = $id;
-                    $playlist_detail->save();
+                    $music_playlist = new MusicPlaylist;
+                    $music_playlist->music_id = $music_id;
+                    $music_playlist->playlist_id = $id;
+                    $music_playlist->save();
                 }
             }
             return response()->json(array('success' => true), 200);
@@ -82,7 +112,7 @@ class MusicController extends Controller
                     ->where('id', $request->music_id)
                     ->update(['di_playlist' => $di_playlist]);*/
 
-                return PlaylistDetail::where('id', $request->playlist_detail_id)->update(['status' => -1]);
+                return MusicPlaylist::where('id', $request->music_playlist_id)->update(['status' => -1]);
             }
             return $request->act;
         }
@@ -97,13 +127,12 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id){
-        //return $id;
         if($id == 'plain_playlist'){ //return $id;
             return Playlist::where('status', '1')->orderBy('nama_playlist', 'asc')->get();
         }else if($id == 'getMusicListByUploadDate'){
-            return Music::latest()->where('status', '=', '1')->paginate(10);
+            return Music::latest()->where('status', '=', '1')->get();
         }else if($id == 'getMusicListByTitle'){
-            return Music::orderBy('judul', 'ASC')->where('status', '=', '1')->paginate(10);
+            return Music::orderBy('judul', 'ASC')->where('status', '=', '1')->get();
         }else if(strpos($id, 'playlist') !== false){
             //get playlist index
             $index = strpos($id, '-');
@@ -115,21 +144,46 @@ class MusicController extends Controller
 
             //return $playlist;
             //return Music::where('di_playlist', 'LIKE', "%$playlist%")->latest()->where('status', '=', '1')->paginate(10);
-
-            return DB::table('playlists')
-                ->select('playlists.nama_playlist', 'playlist_details.id', 'musics.judul', 'musics.path', 'playlist_details.created_at')
-                ->leftJoin('playlist_details', 'playlist_details.playlist_id', '=', 'playlists.id')
-                ->leftJoin('musics', 'playlist_details.music_id', '=', 'musics.id')
+            
+            /*return DB::table('playlists')
+                ->select('playlists.nama_playlist', 'music_playlists.id', 'musics.judul', 'musics.path', 'music_playlists.created_at')
+                ->leftJoin('music_playlists', 'music_playlists.playlist_id', '=', 'playlists.id')
+                ->leftJoin('musics', 'music_playlists.music_id', '=', 'musics.id')
                 ->where([
                     ['playlists.id', '=', $playlist],
-                    ['playlist_details.status', '=', 1],
+                    ['music_playlists.status', '=', 1],
                 ])
-                ->orderBy($param[1], $ascdesc[1])->orderBy('playlist_details.created_at', 'DESC')->paginate(10);
+                ->orderBy($param[1], $ascdesc[1])->orderBy('music_playlists.created_at', 'DESC')->paginate(10);*/
+            
+            $result = self::flatten(Playlist::where('id', $playlist)->with('music')->with('allChildrenContent')->get(), '');
+            //$result = collect($result)->paginate(10); //$result['data'] = json_decode(json_encode($result->items())); //return $result;
+            //is_object($result['data']) ? $result['data'] = $result['data']->toArray() : $result['data'];
+            return $result;//collect($result)->paginate(10);
+            /*return Playlist::where('id', $playlist)
+                ->with('music')
+                ->with('allChildrenContent')
+                ->paginate(10);*/
         }
     }
 
-    protected function get_child_playlist_music(){
-        
+    protected function flatten($object, $path){
+        $result = [];
+        foreach ($object as $array){
+            //return $array;
+            $curr_path = $path.'/'.$array['nama_playlist'];
+            foreach($array['music'] as $item){
+                /*$result[] = array_filter($array, function($object){
+                    return ! is_array($object);
+                });*/
+                $item['folder_path'] = $curr_path;
+                //return $item;
+                //result[] = $item;
+                array_push($result, $item);
+            }
+            $result = array_merge($result, self::flatten($array['allChildrenContent'], $curr_path));         
+        }
+        is_object($result) ? $result = $result->toArray() : $result;
+        return array_filter($result);
     }
 
     /**
@@ -150,7 +204,7 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
-        PlaylistDetail::where('music_id', $id)->delete();
+        MusicPlaylist::where('music_id', $id)->delete();
         return Music::where('id', $id)->update(['status' => -1]);
     }
 }
