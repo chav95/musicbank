@@ -47,7 +47,7 @@
                       <td>
                         <button 
                           type="button" class="btn btn-primary playlist-play-btn"
-                          @click="playAudio(wishlist.music.judul, '/storage/'+wishlist.music.path, wishlist.music.id, index)"
+                          @click="playAudio(wishlist.music.judul, wishlist.music.filename, wishlist.music.id, index)"
                         >
                           Play
                           <i class="fas fa-play-circle nav-icon"></i>
@@ -57,7 +57,7 @@
                       <td>
                         <div class="modify-btn-container">
                           <a class="modify-btn" title="Download" 
-                            v-on:click="download(wishlist.music.judul, '/storage/'+wishlist.music.path, wishlist.music.id)"
+                            v-on:click="download(wishlist.music.judul, wishlist.music.filename, wishlist.music.id)"
                           >
                             <i class="fa fa-download color-green fa-fw fa-lg"></i>
                           </a>
@@ -95,7 +95,7 @@
                             name: 'wishlist',
                             params: {
                               'wishlist_id': item.id,
-                              'wishlist_name': item.wishlist_label.replace(' ', '-'),
+                              'wishlist_name': item.wishlist_label.replace(' ', '-').replace('/%20/g', '-'),
                               'wishlist_title': item.wishlist_label
                             }
                           }"
@@ -200,7 +200,7 @@
           axios.get(window.location.origin+'/api/wishlist/get_wishlist_detail-'+this.$route.params.wishlist_id).then(({data}) => {
             this.wishlist = data;
             for(let item of data.data){
-              this.fileArr.push('/storage/'+item.music.path);
+              this.fileArr.push(item.music.filename);
               this.judulArr.push(item.music.judul);
             }
           });
@@ -215,7 +215,7 @@
           then(({response}) => {
             this.wishlist = response.data; //console.log(response.data)
             for(let item of response.data){
-              this.fileArr.push('/storage/'+item.music.path);
+              this.fileArr.push(item.music.filename);
               this.judulArr.push(item.music.judul);
             }
           });
@@ -251,7 +251,7 @@
             let postToLog = {
               'judul' : judul,
               'music_id' : id,
-              'filename' : path.replace('/storage/uploadedMusic/', '')
+              'filename' : path.split('/')[path.split('/').length - 1]
             }
             axios.post(window.location.origin+'/api/log', postToLog)
             .then(({ data }) => {

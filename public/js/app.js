@@ -5531,7 +5531,7 @@ __webpack_require__.r(__webpack_exports__);
             for (var _iterator = data.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var item = _step.value;
 
-              _this2.fileArr.push('/storage/' + item.music.path);
+              _this2.fileArr.push(item.music.filename);
 
               _this2.judulArr.push(item.music.judul);
             }
@@ -5574,7 +5574,7 @@ __webpack_require__.r(__webpack_exports__);
           for (var _iterator2 = response.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var item = _step2.value;
 
-            _this3.fileArr.push('/storage/' + item.music.path);
+            _this3.fileArr.push(item.music.filename);
 
             _this3.judulArr.push(item.music.judul);
           }
@@ -5630,7 +5630,7 @@ __webpack_require__.r(__webpack_exports__);
         var postToLog = {
           'judul': judul,
           'music_id': id,
-          'filename': path.replace('/storage/uploadedMusic/', '')
+          'filename': path.split('/')[path.split('/').length - 1]
         };
         axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref6) {
           var data = _ref6.data;
@@ -90881,8 +90881,7 @@ var render = function() {
                                                 click: function($event) {
                                                   return _vm.playAudio(
                                                     wishlist.music.judul,
-                                                    "/storage/" +
-                                                      wishlist.music.path,
+                                                    wishlist.music.filename,
                                                     wishlist.music.id,
                                                     index
                                                   )
@@ -90928,8 +90927,7 @@ var render = function() {
                                                     click: function($event) {
                                                       return _vm.download(
                                                         wishlist.music.judul,
-                                                        "/storage/" +
-                                                          wishlist.music.path,
+                                                        wishlist.music.filename,
                                                         wishlist.music.id
                                                       )
                                                     }
@@ -91029,10 +91027,9 @@ var render = function() {
                                                     name: "wishlist",
                                                     params: {
                                                       wishlist_id: item.id,
-                                                      wishlist_name: item.wishlist_label.replace(
-                                                        " ",
-                                                        "-"
-                                                      ),
+                                                      wishlist_name: item.wishlist_label
+                                                        .replace(" ", "-")
+                                                        .replace("/%20/g", "-"),
                                                       wishlist_title:
                                                         item.wishlist_label
                                                     }
