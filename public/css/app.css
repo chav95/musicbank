@@ -21508,10 +21508,6 @@ readers do not read off random characters that represent icons */
   font-weight: bold;
 }
 
-.main-header .sidebar-toggle:before {
-  content: "\F0C9" !important;
-}
-
 .vcenter-parent {
   position: relative;
 }

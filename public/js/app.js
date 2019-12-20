@@ -4170,6 +4170,13 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    createWaveSurfer: function createWaveSurfer() {
+      /*this.wavesurfer = WaveSurfer.create({
+        container: "#waveform",
+        barWidth: 3
+      });
+      this.wavesurfer.load(this.file);*/
+    },
     successAlert: function successAlert(type) {
       $('#PlaylistModal').modal('hide');
       this.$alert(this.modal_music_judul + ' added to selected ' + type, '', 'success');
@@ -4187,6 +4194,7 @@ __webpack_require__.r(__webpack_exports__);
         var musicList = axios.get(window.location.origin + '/api/music/playlist_' + sortingParam + '-' + this.$route.params.playlist_id).then(function (_ref) {
           var data = _ref.data;
           _this2.musics = data;
+          _this2.file = musics[0].filename;
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
           var _iteratorError = undefined;
@@ -5899,6 +5907,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
   var hhmmss = new Date(val * 1000).toISOString().substr(11, 8);
   return hhmmss.indexOf("00:") === 0 ? hhmmss.substr(3) : hhmmss;
@@ -5916,7 +5928,7 @@ var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
     },
     file_id: {
       type: Number,
-      "default": null
+      "default": 0
     },
     autoPlay: {
       type: Boolean,
@@ -5936,7 +5948,7 @@ var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
       loaded: false,
       playing: false,
       previousVolume: 35,
-      showVolume: false,
+      showVolume: true,
       volume: 100,
       postToLog: {
         judul: String,
@@ -5968,7 +5980,7 @@ var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
       this.audio.pause();
     },
     volume: function volume(value) {
-      this.showVolume = false;
+      //this.showVolume = false;
       this.audio.volume = this.volume / 100;
     }
   },
@@ -16806,7 +16818,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".fixed-content[data-v-41feb83b] {\n  position: fixed;\n  z-index: 99;\n  background-color: #ecf0f5;\n  padding: 0;\n}\n.fixed-content > h3[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n.card-tools[data-v-41feb83b], .card-header[data-v-41feb83b] {\n  text-align: right;\n}\n.button-container[data-v-41feb83b] {\n  float: left;\n}\n#header-table[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n#content-table[data-v-41feb83b] {\n  margin-top: 213px;\n}\n.headerButton[data-v-41feb83b]:hover {\n  background-color: #d5eaf5;\n  cursor: pointer;\n  transition: all 0.4s ease;\n  -webkit-transition: all 0.4s ease;\n}\n.search-container[data-v-41feb83b] {\n  display: inline-block;\n  width: 250px;\n}\n.has-search .form-control-feedback[data-v-41feb83b] {\n  right: initial;\n  left: 0;\n  color: #ccc;\n}\n.has-search .form-control[data-v-41feb83b] {\n  padding-right: 12px;\n  padding-left: 34px;\n}", ""]);
+exports.push([module.i, ".fixed-content[data-v-41feb83b] {\n  position: fixed;\n  z-index: 99;\n  background-color: #ecf0f5;\n  padding: 0;\n}\n.fixed-content > h3[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n.waveform-container[data-v-41feb83b] {\n  display: -webkit-inline-box;\n  display: inline-flex;\n}\n.audio-player[data-v-41feb83b] {\n  width: 500px;\n}\n.card-tools[data-v-41feb83b], .card-header[data-v-41feb83b] {\n  text-align: right;\n}\n.button-container[data-v-41feb83b] {\n  float: left;\n}\n#header-table[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n#content-table[data-v-41feb83b] {\n  margin-top: 213px;\n}\n.headerButton[data-v-41feb83b]:hover {\n  background-color: #d5eaf5;\n  cursor: pointer;\n  transition: all 0.4s ease;\n  -webkit-transition: all 0.4s ease;\n}\n.search-container[data-v-41feb83b] {\n  display: inline-block;\n  width: 250px;\n}\n.has-search .form-control-feedback[data-v-41feb83b] {\n  right: initial;\n  left: 0;\n  color: #ccc;\n}\n.has-search .form-control[data-v-41feb83b] {\n  padding-right: 12px;\n  padding-left: 34px;\n}", ""]);
 
 // exports
 
@@ -16844,7 +16856,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Nunito:400,700);", ""]);
 
 // module
-exports.push([module.i, "body {\n  font-family: \"Nunito\", sans-serif;\n}\n.player-wrapper {\n  -webkit-box-align: center;\n          align-items: center;\n  background-color: #fff;\n  background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #fff), to(#e0e0e0));\n  background-image: linear-gradient(90deg, #fff 0, #e0e0e0);\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: center;\n          justify-content: center;\n  height: 100vh;\n}\n.player {\n  background-color: #fff;\n  border: 1px solid #e0e0e0;\n  border-radius: 5px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);\n  color: #404040;\n  display: inline-block;\n  line-height: 1.5625;\n}\n.player-controls {\n  display: -webkit-box;\n  display: flex;\n  vertical-align: middle;\n}\n.player-controls > div {\n  border-right: 1px solid #e0e0e0;\n}\n.player-controls > div:last-child {\n  border-right: none;\n}\n.player-controls > div a {\n  color: #404040;\n  display: block;\n  line-height: 0;\n  padding: 1em;\n  text-decoration: none;\n}\n.player-progress {\n  background-color: #e0e0e0;\n  cursor: pointer;\n  height: 50%;\n  min-width: 200px;\n  position: relative;\n}\n.player-progress .player-seeker {\n  background-color: #404040;\n  bottom: 0;\n  left: 0;\n  position: absolute;\n  top: 0;\n}\n.player-time {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: justify;\n          justify-content: space-between;\n}\n.player-time .player-time-current {\n  font-weight: 700;\n  padding-left: 5px;\n}\n.player-time .player-time-total {\n  opacity: 0.5;\n  padding-right: 5px;\n}\n.playing-title {\n  text-align: right;\n  vertical-align: middle;\n  margin: 8px 8px 8px 8px;\n}", ""]);
+exports.push([module.i, ".waveform-container {\n  padding: 2px 3px;\n}\nbody {\n  font-family: \"Nunito\", sans-serif;\n}\n.player-wrapper {\n  -webkit-box-align: center;\n          align-items: center;\n  background-color: #fff;\n  background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #fff), to(#e0e0e0));\n  background-image: linear-gradient(90deg, #fff 0, #e0e0e0);\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: center;\n          justify-content: center;\n  height: 100vh;\n}\n.player {\n  background-color: #fff;\n  border: 1px solid #e0e0e0;\n  border-radius: 5px;\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);\n  color: #404040;\n  display: inline-block;\n  line-height: 1.5625;\n}\n.player-controls {\n  display: -webkit-box;\n  display: flex;\n  vertical-align: middle;\n}\n.player-controls > div {\n  border-right: 1px solid #e0e0e0;\n}\n.player-controls > div:last-child {\n  border-right: none;\n}\n.player-controls > div a {\n  color: #404040;\n  display: block;\n  line-height: 0;\n  padding: 1em;\n  text-decoration: none;\n}\n.player-progress {\n  background-color: #e0e0e0;\n  cursor: pointer;\n  height: 50%;\n  min-width: 200px;\n  position: relative;\n}\n.player-progress .player-seeker {\n  background-color: #404040;\n  bottom: 0;\n  left: 0;\n  position: absolute;\n  top: 0;\n}\n.player-time {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-pack: justify;\n          justify-content: space-between;\n}\n.player-time .player-time-current {\n  font-weight: 700;\n  padding-left: 5px;\n}\n.player-time .player-time-total {\n  opacity: 0.5;\n  padding-right: 5px;\n}\n.playing-title {\n  text-align: right;\n  vertical-align: middle;\n  margin: 8px 8px 8px 8px;\n}", ""]);
 
 // exports
 
@@ -85271,6 +85283,3020 @@ exports.createContext = Script.createContext = function (context) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/index.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/index.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/vue-audio-visual/node_modules/axios/lib/axios.js");
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/adapters/xhr.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/adapters/xhr.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/settle.js");
+var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/buildURL.js");
+var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/parseHeaders.js");
+var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/isURLSameOrigin.js");
+var createError = __webpack_require__(/*! ../core/createError */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/createError.js");
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        status: request.status,
+        statusText: request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config, null, request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
+        request));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/cookies.js");
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
+        // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
+        if (config.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/axios.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/axios.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/bind.js");
+var Axios = __webpack_require__(/*! ./core/Axios */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/Axios.js");
+var defaults = __webpack_require__(/*! ./defaults */ "./node_modules/vue-audio-visual/node_modules/axios/lib/defaults.js");
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(utils.merge(defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = __webpack_require__(/*! ./cancel/Cancel */ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/Cancel.js");
+axios.CancelToken = __webpack_require__(/*! ./cancel/CancelToken */ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/CancelToken.js");
+axios.isCancel = __webpack_require__(/*! ./cancel/isCancel */ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/isCancel.js");
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = __webpack_require__(/*! ./helpers/spread */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/spread.js");
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/Cancel.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/Cancel.js ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/CancelToken.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/CancelToken.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Cancel = __webpack_require__(/*! ./Cancel */ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/Cancel.js");
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/isCancel.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/isCancel.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/Axios.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/Axios.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var defaults = __webpack_require__(/*! ./../defaults */ "./node_modules/vue-audio-visual/node_modules/axios/lib/defaults.js");
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/InterceptorManager.js");
+var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/dispatchRequest.js");
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = utils.merge({
+      url: arguments[0]
+    }, arguments[1]);
+  }
+
+  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
+  config.method = config.method.toLowerCase();
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/InterceptorManager.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/InterceptorManager.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/createError.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/createError.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var enhanceError = __webpack_require__(/*! ./enhanceError */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/enhanceError.js");
+
+/**
+ * Create an Error with the specified message, config, error code, request and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, request, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, request, response);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/dispatchRequest.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/dispatchRequest.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+var transformData = __webpack_require__(/*! ./transformData */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/transformData.js");
+var isCancel = __webpack_require__(/*! ../cancel/isCancel */ "./node_modules/vue-audio-visual/node_modules/axios/lib/cancel/isCancel.js");
+var defaults = __webpack_require__(/*! ../defaults */ "./node_modules/vue-audio-visual/node_modules/axios/lib/defaults.js");
+var isAbsoluteURL = __webpack_require__(/*! ./../helpers/isAbsoluteURL */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/isAbsoluteURL.js");
+var combineURLs = __webpack_require__(/*! ./../helpers/combineURLs */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/combineURLs.js");
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Support baseURL config
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/enhanceError.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/enhanceError.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+  error.request = request;
+  error.response = response;
+  return error;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/settle.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/settle.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var createError = __webpack_require__(/*! ./createError */ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/createError.js");
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  // Note: status is not exposed by XDomainRequest
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/core/transformData.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/core/transformData.js ***!
+  \************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/defaults.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/defaults.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(/*! ./utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+var normalizeHeaderName = __webpack_require__(/*! ./helpers/normalizeHeaderName */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/normalizeHeaderName.js");
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/vue-audio-visual/node_modules/axios/lib/adapters/xhr.js");
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/vue-audio-visual/node_modules/axios/lib/adapters/xhr.js");
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/bind.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/bind.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/buildURL.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/buildURL.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%40/gi, '@').
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/combineURLs.js":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/combineURLs.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/cookies.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/cookies.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+  (function standardBrowserEnv() {
+    return {
+      write: function write(name, value, expires, path, domain, secure) {
+        var cookie = [];
+        cookie.push(name + '=' + encodeURIComponent(value));
+
+        if (utils.isNumber(expires)) {
+          cookie.push('expires=' + new Date(expires).toGMTString());
+        }
+
+        if (utils.isString(path)) {
+          cookie.push('path=' + path);
+        }
+
+        if (utils.isString(domain)) {
+          cookie.push('domain=' + domain);
+        }
+
+        if (secure === true) {
+          cookie.push('secure');
+        }
+
+        document.cookie = cookie.join('; ');
+      },
+
+      read: function read(name) {
+        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+        return (match ? decodeURIComponent(match[3]) : null);
+      },
+
+      remove: function remove(name) {
+        this.write(name, '', Date.now() - 86400000);
+      }
+    };
+  })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return {
+      write: function write() {},
+      read: function read() { return null; },
+      remove: function remove() {}
+    };
+  })()
+);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/isAbsoluteURL.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/isAbsoluteURL.js ***!
+  \***************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/isURLSameOrigin.js":
+/*!*****************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/isURLSameOrigin.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+  (function standardBrowserEnv() {
+    var msie = /(msie|trident)/i.test(navigator.userAgent);
+    var urlParsingNode = document.createElement('a');
+    var originURL;
+
+    /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+    function resolveURL(url) {
+      var href = url;
+
+      if (msie) {
+        // IE needs attribute set twice to normalize properties
+        urlParsingNode.setAttribute('href', href);
+        href = urlParsingNode.href;
+      }
+
+      urlParsingNode.setAttribute('href', href);
+
+      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+      return {
+        href: urlParsingNode.href,
+        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+        host: urlParsingNode.host,
+        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+        hostname: urlParsingNode.hostname,
+        port: urlParsingNode.port,
+        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+                  urlParsingNode.pathname :
+                  '/' + urlParsingNode.pathname
+      };
+    }
+
+    originURL = resolveURL(window.location.href);
+
+    /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+    return function isURLSameOrigin(requestURL) {
+      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+      return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+    };
+  })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return function isURLSameOrigin() {
+      return true;
+    };
+  })()
+);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/normalizeHeaderName.js":
+/*!*********************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/normalizeHeaderName.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/parseHeaders.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/parseHeaders.js ***!
+  \**************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ./../utils */ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js");
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+  'age', 'authorization', 'content-length', 'content-type', 'etag',
+  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+  'referer', 'retry-after', 'user-agent'
+];
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
+      }
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+      } else {
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+      }
+    }
+  });
+
+  return parsed;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/spread.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/spread.js ***!
+  \********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/axios/lib/utils.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/vue-audio-visual/node_modules/axios/lib/helpers/bind.js");
+var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/vue-audio-visual/node_modules/is-buffer/index.js");
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return (typeof FormData !== 'undefined') && (val instanceof FormData);
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  navigator.product -> 'ReactNative'
+ */
+function isStandardBrowserEnv() {
+  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+    return false;
+  }
+  return (
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined'
+  );
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if (typeof obj !== 'object') {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isBuffer: isBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/node_modules/is-buffer/index.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/node_modules/is-buffer/index.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/src/components/AvBars.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/src/components/AvBars.js ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AvBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AvBase */ "./node_modules/vue-audio-visual/src/components/AvBase.js");
+
+/**
+ * Component props Object
+ */
+const props = {
+  /**
+   * prop: 'bar-width'
+   * Width of the bar in pixels.
+   * Default: 5
+   */
+  barWidth: {
+    type: Number,
+    default: 5
+  },
+  /**
+   * prop: 'bar-space'
+   * Space between bars.
+   * Default: 1
+   */
+  barSpace: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'bar-color'
+   * Bar fill color. Can be string RGB color or canvas gradients array.
+   */
+  barColor: {
+    type: [String, Array],
+    default: '#0A0AFF'
+  },
+  /**
+   * prop: 'caps-height'
+   * Create caps on bars with given height in pixels.
+   * If zero caps then skip creating bars.
+   * Default: 0
+   */
+  capsHeight: {
+    type: Number,
+    default: 0
+  },
+  /**
+   * prop: 'caps-drop-speed'
+   * Caps drop down animation speed.
+   * Default: 0.9
+   */
+  capsDropSpeed: {
+    type: Number,
+    default: 0.9
+  },
+  /**
+   * prop: 'caps-color'
+   * Caps rectangles RGB color.
+   */
+  capsColor: {
+    type: String,
+    default: '#A0A0FF'
+  },
+  /**
+   * prop: 'brick-height'
+   * Draw bar as bricks with set height.
+   */
+  brickHeight: {
+    type: Number,
+    default: 0
+  },
+  /**
+   * prop: 'brick-space'
+   * Space between bricks.
+   */
+  brickSpace: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'symmetric'
+   * Draw bars symmetric to canvas vertical center
+   * Default: false
+   */
+  symmetric: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'fft-size'
+   * Represents the window size in samples that is used when performing
+   * a Fast Fourier Transform (FFT) to get frequency domain data.
+   * Must be power of 2 between 2^5 and 2^15
+   * Default: 1024
+   */
+  fftSize: {
+    type: Number,
+    default: 1024
+  }
+}
+
+/**
+ * Component AvBars
+ */
+const AvBars = {
+  name: 'av-bars',
+  mixins: [ _AvBase__WEBPACK_IMPORTED_MODULE_0__["default"] ],
+  props,
+  data () {
+    return {
+      audio: null,
+      analyser: null,
+      ctx: null,
+      audioCtx: null,
+      caps: Array.apply(null, Array(this.fftSize / 2)).map(() => 0)
+    }
+  },
+  methods: {
+    /**
+     * Main loop. Draws visualization.
+     */
+    mainLoop: function () {
+      const frqBits = this.analyser.frequencyBinCount
+      const data = new Uint8Array(frqBits)
+      const barWidth = this.barWidth >= this.canvWidth ? this.canvWidth : this.barWidth
+      const step = Math.round((barWidth + this.barSpace) / frqBits * this.canvWidth)
+      const barFill = Array.isArray(this.barColor)
+        ? this.fillGradient(this.barColor)
+        : this.barColor
+      let x = 0
+
+      this.analyser.getByteFrequencyData(data)
+      this._fillCanvasBG()
+
+      data.forEach((_, index) => {
+        if (index % step) return
+        const bits = Math.round(data.slice(index, index + step)
+          .reduce((v, t) => t + v, 0) / step)
+        const barHeight = bits / 255 * this.canvHeight
+        if (this.capsHeight) {
+          this._drawCap(index, barWidth, x, bits)
+        }
+        this.ctx.fillStyle = barFill
+        this._drawBar(barWidth, barHeight, x)
+        x += barWidth + this.barSpace
+      })
+      requestAnimationFrame(this.mainLoop)
+    },
+    /**
+     * Canvas background fill
+     * @private
+     */
+    _fillCanvasBG: function () {
+      const w = this.canvWidth
+      const h = this.canvHeight
+      this.ctx.clearRect(0, 0, w, h)
+      if (this.canvFillColor) {
+        this.ctx.fillStyle = Array.isArray(this.canvFillColor)
+          ? this.fillGradient(this.canvFillColor)
+          : this.canvFillColor
+        this.ctx.fillRect(0, 0, w, h)
+      }
+    },
+    /**
+     * Draw bar. Solid bar or brick bar.
+     * @private
+     */
+    _drawBar: function (barWidth, barHeight, barX) {
+      if (this.brickHeight) {
+        this._drawBrickBar(barWidth, barHeight, barX)
+      } else {
+        this.ctx.fillRect(
+          barX, this.canvHeight - barHeight - this._symAlign(barHeight),
+          barWidth, barHeight
+        )
+      }
+    },
+    /**
+     * Draw bricks bar.
+     * @private
+     */
+    _drawBrickBar: function (barWidth, barHeight, barX) {
+      for (let b = 0; b < barHeight; b += this.brickHeight + this.brickSpace) {
+        this.ctx.fillRect(
+          barX, this.canvHeight - barHeight + b - this._symAlign(barHeight),
+          barWidth, this.brickHeight
+        )
+      }
+    },
+    /**
+     * Draw cap for each bar and animate caps falling down.
+     * @private
+     */
+    _drawCap: function (index, barwidth, barX, barY) {
+      const cap = this.caps[index] <= barY
+        ? barY
+        : this.caps[index] - this.capsDropSpeed
+      const y = (cap / 255.0 * this.canvHeight)
+      const capY = this.canvHeight - y - this.capsHeight - this._symAlign(y)
+      this.ctx.fillStyle = this.capsColor
+      this.ctx.fillRect(barX, capY, barwidth, this.capsHeight)
+      if (this.symmetric) {
+        this.ctx.fillRect(
+          barX, this.canvHeight - capY - this.capsHeight,
+          barwidth, this.capsHeight)
+      }
+      this.caps[index] = cap
+    },
+    /**
+     * Shift for symmetric alignment
+     * @private
+     */
+    _symAlign: function (barHeight) {
+      return this.symmetric ? ((this.canvHeight - barHeight) / 2) : 0
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (AvBars);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/src/components/AvBase.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/src/components/AvBase.js ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Mixin component with base and common properties and functions.
+ */
+
+/**
+ * Base properties common for the audio-visual components
+ */
+const props = {
+  /**
+   * prop: 'audio-src'
+   * Audio element src attribute. When provided creates audio element
+   */
+  audioSrc: {
+    type: String,
+    default: null
+  },
+  /**
+   * prop: 'ref-link'
+   * Refrence to Audio element. When provided, then local audio element
+   * is not created and use refrence to the element. Component will
+   * search only for its parent refs.
+   */
+  refLink: {
+    type: String,
+    default: null
+  },
+  /**
+   * prop: 'audio-controls'
+   * Audio element controls attribute. When provided should
+   * display audio element with controls
+   */
+  audioControls: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * prop: 'cors-anonym'
+   * CORS requests for this element will not have the credentials flag set.
+   * Set crossOrigin property of audio element to 'anonymous'.
+   * Default: null
+   */
+  corsAnonym: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'audio-class'
+   * Audio element css class name.
+   */
+  audioClass: {
+    type: String,
+    default: null
+  },
+  /**
+   * prop: 'canv-width'
+   * Canvas element width. Default 300
+   */
+  canvWidth: {
+    type: Number,
+    default: 300
+  },
+  /**
+   * prop: 'canv-height'
+   * Canvas element height. Default 80
+   */
+  canvHeight: {
+    type: Number,
+    default: 80
+  },
+  /**
+   * prop: 'canv-class'
+   * Canvas element css class name.
+   */
+  canvClass: {
+    type: String,
+    default: null
+  },
+  /**
+   * prop: 'canv-top'
+   * Canvas element position on top relatively to audio element.
+   * Default: false
+   */
+  canvTop: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'canv-fill-color'
+   * Canvas fill background color. Can be string RGB color or canvas gradients array.
+   * Default is transperent.
+   */
+  canvFillColor: {
+    type: [String, Array],
+    default: null
+  }
+}
+
+const methods = {
+  /**
+   * Create audio and canvas elements and insert in the HTML template.
+   * Using document.createElement to avoid Vue virtual DOM re-rendering
+   * which can lead to infinit loops.
+   */
+  createHTMLElements: function () {
+    const canv = document.createElement('canvas')
+    const canvDiv = document.createElement('div')
+    let audioDiv = null
+    let audio = null
+
+    if (this.refLink) {
+      audio = this.$parent.$refs[this.refLink]
+    } else {
+      audio = document.createElement('audio')
+      audioDiv = document.createElement('div')
+      audio.setAttribute('src', this.audioSrc)
+      if (this.audioControls) audio.setAttribute('controls', true)
+      if (this.audioClass) audio.setAttribute('class', this.audioClass)
+      if (this.corsAnonym) audio.crossOrigin = 'anonymous'
+      audioDiv.appendChild(audio)
+      this.$el.appendChild(audioDiv)
+    }
+
+    if (this.canvClass) canv.setAttribute('class', this.canvClass)
+    if (this.canvWidth) canv.setAttribute('width', this.canvWidth)
+    if (this.canvHeight) canv.setAttribute('height', this.canvHeight)
+    canvDiv.appendChild(canv)
+
+    if (this.canvTop) {
+      this.$el.insertBefore(canvDiv, audioDiv)
+    } else {
+      this.$el.appendChild(canvDiv)
+    }
+    this.ctxWrapper = canv
+    this.ctx = canv.getContext('2d')
+
+    this.audio = audio
+  },
+
+  /**
+   * Set audio context analyser.
+   */
+  setAnalyser: function () {
+    let src = null
+    let ctx = null
+    if (this.refLink) {
+      if (this.$avAudioRefs[this.refLink]) {
+        src = this.$avAudioRefs[this.refLink].src
+        ctx = this.$avAudioRefs[this.refLink].ctx
+        this.analyser = ctx.createAnalyser()
+      } else {
+        ctx = new AudioContext()
+        this.analyser = ctx.createAnalyser()
+        src = ctx.createMediaElementSource(this.audio)
+        this.$avAudioRefs[this.refLink] = {src: src, ctx: ctx}
+      }
+    } else {
+      ctx = new AudioContext()
+      this.analyser = ctx.createAnalyser()
+      src = ctx.createMediaElementSource(this.audio)
+    }
+
+    src.connect(this.analyser)
+    this.analyser.fftSize = this.fftSize
+    this.analyser.connect(ctx.destination)
+
+    this.audioCtx = ctx
+    this.audioCtx.suspend()
+  },
+
+  /**
+   * Canvas gradient. Vertical, from top down
+   */
+  fillGradient: function (colorsArray) {
+    const w = this.canvWidth
+    const h = this.canvHeight
+    const gradient = this.ctx.createLinearGradient(w / 2, 0, w / 2, h)
+    let offset = 0
+    colorsArray.forEach(color => {
+      gradient.addColorStop(offset, color)
+      offset += (1 / colorsArray.length)
+    })
+    return gradient
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props,
+  render: h => h('div'),
+  mounted () {
+    this.createHTMLElements()
+    this.setAnalyser()
+    this.mainLoop()
+    this.audio.onplay = () => {
+      if (this.audioCtx) { // not defined for waveform
+        this.audioCtx.resume()
+      }
+    }
+    this.audio.onpause = () => {
+      if (this.audioCtx) {
+        this.audioCtx.suspend()
+        cancelAnimationFrame(this.mainLoop)
+      }
+    }
+  },
+  beforeDestroy () {
+    if (this.audioCtx) {
+      this.audioCtx.suspend()
+    }
+  },
+  methods
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/src/components/AvCircle.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/src/components/AvCircle.js ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AvBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AvBase */ "./node_modules/vue-audio-visual/src/components/AvBase.js");
+
+
+/**
+ * Component props
+ */
+const props = {
+  /**
+   * prop: 'fft-size'
+   * Represents the window size in samples that is used when performing
+   * a Fast Fourier Transform (FFT) to get frequency domain data.
+   * Must be power of 2 between 2^5 and 2^15
+   * Default: 1024
+   */
+  fftSize: {
+    type: Number,
+    default: 1024
+  },
+  /**
+   * prop: 'canv-width'
+   * Canvas element width. Default 100
+   */
+  canvWidth: {
+    type: Number,
+    default: 100
+  },
+  /**
+   * prop: 'canv-height'
+   * Canvas element height. Default 100
+   */
+  canvHeight: {
+    type: Number,
+    default: 100
+  },
+  /**
+   * prop: 'radius'
+   * Set cercle radius. If zero will be calculated from canvas
+   * width: (canv-width / 2) * 0.7
+   * Default: 0
+   */
+  radius: {
+    type: Number,
+    default: 0
+  },
+  /**
+   * prop: 'line-width'
+   * Frequency bit line width to draw.
+   */
+  lineWidth: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'line-space'
+   * Space between lines to draw.
+   */
+  lineSpace: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'outline-color'
+   * Outline (contour) style RGB color.
+   * Default: #00f
+   */
+  outlineColor: {
+    type: String,
+    default: '#0000FF'
+  },
+  /**
+   * prop: 'outline-width'
+   * Outline (contour) line width. Float value.
+   * Default: 0.3
+   */
+  outlineWidth: {
+    type: Number,
+    default: 0.3
+  },
+  /**
+   * prop: 'bar-width'
+   * Frequency graph bar width.
+   */
+  barWidth: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'bar-length'
+   * Frequency graph bar length.
+   * Default is a difference between radius and canvas width.
+   */
+  barLength: {
+    type: Number,
+    default: 0
+  },
+  /**
+   * prop: 'bar-color'
+   * Bar style RGB color or radient gradient when array.
+   * Default: [ #FFFFFF, #0000FF ]
+   */
+  barColor: {
+    type: [String, Array],
+    default: () => [ '#FFFFFF', '#0000FF' ]
+  },
+  /**
+   * prop: 'progress'
+   * Draw play progress meter.
+   * Default: false
+   */
+  progress: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * prop: 'progress-width'
+   * Progress meter width.
+   * Default: 1
+   */
+  progressWidth: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'progress-color'
+   * Progress meter color.
+   * Default: 1
+   */
+  progressColor: {
+    type: String,
+    default: '#0000FF'
+  },
+  /**
+   * prop: 'progress-clockwise'
+   * Progress meter arc draw direction. Default clockwise
+   * Default: true
+   */
+  progressClockwise: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'outline-meter-space'
+   * Space between outline and progress meter.
+   * Default: 2
+   */
+  outlineMeterSpace: {
+    type: Number,
+    default: 3
+  },
+  /**
+   * prop: 'playtime'
+   * Draw playtime text in the center of the circle.
+   * Default: false
+   */
+  playtime: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'playtime-font'
+   * Played time print font.
+   * Default: '14px Monaco'
+   */
+  playtimeFont: {
+    type: String,
+    default: '14px Monaco'
+  },
+  /**
+  * prop: 'playtime-color'
+  * Played time font color.
+  * Default: '#00f'
+  */
+  playtimeColor: {
+    type: String,
+    default: '#00f'
+  },
+  /**
+   * prop: 'rotate-graph'
+   * Rotate graph clockwise enable.
+   * Default: false
+   */
+  rotateGraph: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'rotate-speed'
+   * Rotate graph speed.
+   * Default: 0.001
+   */
+  rotateSpeed: {
+    type: Number,
+    default: 0.001
+  }
+}
+
+/**
+ * Component AvCircle
+ */
+const AvCircle = {
+  name: 'av-circle',
+  mixins: [ _AvBase__WEBPACK_IMPORTED_MODULE_0__["default"] ],
+  props,
+  data () {
+    return {
+      rotate: 1.5,
+      audio: null,
+      analyser: null,
+      ctx: null,
+      audioCtx: null
+    }
+  },
+  methods: {
+    /**
+     * Main loop. Draws visualization.
+     */
+    mainLoop: function () {
+      const cx = this.canvWidth / 2 // center X
+      const cy = this.canvHeight / 2 // center Y
+      const r = this.radius ? this.radius : Math.round(this.canvWidth / 2 * 0.7)
+      const lineWidth = this.lineWidth
+      const lineSpace = this.lineSpace
+      const arcStep = Math.ceil(lineWidth + lineSpace)
+      const frqBits = this.analyser.frequencyBinCount
+      const data = new Uint8Array(frqBits)
+      const step = ((lineWidth + lineSpace) / data.length) * (2 * Math.PI)
+      const barLen = this.barLength > 0
+        ? this.barLength
+        : (this.canvWidth / 2) - r
+      let angle = Math.PI * this._rotate() // start from top
+
+      this._setCanvas()
+      this.analyser.getByteFrequencyData(data)
+
+      // contour outline
+      if (this.outlineWidth > 0) {
+        this._drawOutline(r, cx, cy)
+      }
+
+      // draw play progress meter
+      if (this.progress) {
+        this._drawProgress(r, cx, cy)
+      }
+
+      // draw played time
+      if (this.playtime) {
+        this._drawPlaytime(cx, cy)
+      }
+
+      // circle bar lines
+      this.ctx.lineWidth = this.barWidth
+      this.ctx.strokeStyle = this._setBarColor(cx, cy)
+
+      data.forEach((_, index) => {
+        angle += step
+        if (index % arcStep) {
+          return
+        }
+        const bits = Math.round(data.slice(index, index + arcStep)
+          .reduce((v, t) => t + v, 0) / arcStep)
+
+        const blen = r + (bits / 255.0 * barLen)
+        this.ctx.beginPath()
+        this.ctx.moveTo(r * Math.cos(angle) + cx, r * Math.sin(angle) + cy)
+        this.ctx.lineTo(blen * Math.cos(angle) + cx, blen * Math.sin(angle) + cy)
+        this.ctx.stroke()
+      })
+
+      requestAnimationFrame(this.mainLoop)
+    },
+    /**
+     * Canvas clear background fill
+     * @private
+     */
+    _setCanvas: function () {
+      this.ctx.clearRect(0, 0, this.canvWidth, this.canvHeight)
+
+      if (!this.canvFillColor) return
+
+      this.ctx.fillStyle = Array.isArray(this.canvFillColor)
+        ? this.fillGradient(this.canvFillColor)
+        : this.canvFillColor
+      this.ctx.fillRect(0, 0, this.canvWidth, this.canvHeight)
+    },
+    /**
+     * Draw play progress meter
+     */
+    _drawProgress: function (r, cx, cy) {
+      const elapsed = this.audio.currentTime / this.audio.duration * 2 * Math.PI
+      const angleEnd = Math.PI * 1.5 + elapsed
+
+      if (!elapsed) return
+
+      this.ctx.lineWidth = this.progressWidth
+      this.ctx.strokeStyle = this.progressColor
+
+      this.ctx.beginPath()
+      this.ctx.arc(cx, cy, r - this.outlineWidth - this.outlineMeterSpace,
+        1.5 * Math.PI, angleEnd, this.progressClockwise)
+      this.ctx.stroke()
+    },
+    /**
+     * Draw outline circle
+     */
+    _drawOutline: function (r, cx, cy) {
+      this.ctx.beginPath()
+      this.ctx.strokeStyle = this.outlineColor
+      this.ctx.lineWidth = this.outlineWidth
+      this.ctx.arc(cx, cy, r, 0, 2 * Math.PI)
+      this.ctx.stroke()
+    },
+    /**
+     * Draw played time
+     */
+    _drawPlaytime: function (cx, cy) {
+      const m = Math.floor(this.audio.currentTime / 60)
+      const sec = Math.floor(this.audio.currentTime) % 60
+      const s = sec < 10 ? `0${sec}` : `${sec}`
+      const text = `${m}:${s}`
+      const tsizew = Math.ceil(this.ctx.measureText(text).width)
+
+      this.ctx.font = this.playtimeFont
+      this.ctx.fillStyle = this.playtimeColor
+      this.ctx.fillText(text, cx - Math.round(tsizew / 2), cy + 0.25 * parseInt(this.playtimeFont))
+    },
+    /**
+     * If rotate is enabled will return rotated angle
+     */
+    _rotate: function () {
+      if (this.rotateGraph) {
+        this.rotate = this.rotate === 3.5 ? 1.5 : this.rotate + this.rotateSpeed
+      } else {
+        this.rotate = 1.5
+      }
+      return this.rotate
+    },
+    /**
+     * Set bars color.
+     */
+    _setBarColor: function (cx, cy) {
+      if (!Array.isArray(this.barColor)) {
+        return this.barColor
+      }
+      const gradient = this.ctx.createRadialGradient(cx, cy, this.canvWidth / 2, cx, cy, 0)
+      let offset = 0
+
+      this.barColor.forEach(color => {
+        gradient.addColorStop(offset, color)
+        offset += (1 / this.barColor.length)
+      })
+      return gradient
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (AvCircle);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/src/components/AvLine.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/src/components/AvLine.js ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AvBase__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AvBase */ "./node_modules/vue-audio-visual/src/components/AvBase.js");
+
+
+/**
+ * Component props
+ */
+const props = {
+  /**
+   * prop: 'line-width'
+   * Draw line width in px
+   */
+  lineWidth: {
+    type: Number,
+    default: 2
+  },
+  /**
+   * prop: 'line-color'
+   * Draw line color or gradient array
+   */
+  lineColor: {
+    type: [String, Array],
+    default: '#9F9'
+  },
+  /**
+   * prop: 'fft-size'
+   * Represents the window size in samples that is used when performing
+   * a Fast Fourier Transform (FFT) to get frequency domain data.
+   * Must be power of 2 between 2^5 and 2^15
+   * Default: 128
+   */
+  fftSize: {
+    type: Number,
+    default: 128
+  }
+}
+
+/**
+ * Component AvLine
+ */
+const AvLine = {
+  name: 'av-line',
+  mixins: [ _AvBase__WEBPACK_IMPORTED_MODULE_0__["default"] ],
+  props,
+  data () {
+    return {
+      audio: null,
+      analyser: null,
+      ctx: null,
+      audioCtx: null
+    }
+  },
+  methods: {
+    /**
+     * Main loop. Draws visualization.
+     */
+    mainLoop: function () {
+      const frqBits = this.analyser.frequencyBinCount
+      const step = (this.canvWidth / 2.0) / frqBits
+      const data = new Uint8Array(frqBits)
+      let x = 0
+
+      this._setCanvas()
+      this.analyser.getByteFrequencyData(data)
+
+      this.ctx.lineWidth = this.lineWidth
+      this.ctx.strokeStyle = Array.isArray(this.lineColor)
+        ? this.fillGradient(this.lineColor)
+        : this.lineColor
+      this.ctx.beginPath()
+
+      data.reverse()
+      this.ctx.moveTo(x, this.canvHeight / 2)
+      x = this._drawLine(data, x, step)
+      data.reverse()
+      x = this._drawLine(data, x, step)
+      this.ctx.lineTo(this.canvWidth, this.canvHeight / 2)
+      this.ctx.stroke()
+
+      requestAnimationFrame(this.mainLoop)
+    },
+    /**
+     * Canvas clear background fill
+     * @private
+     */
+    _setCanvas: function () {
+      const w = this.canvWidth
+      const h = this.canvHeight
+      const canvColor = this.canvFillColor
+      const gradient = this.ctx.createLinearGradient(w / 2, 0, w / 2, h)
+      let offset = 0
+      this.ctx.clearRect(0, 0, w, h)
+
+      if (!canvColor) return
+
+      if (Array.isArray(canvColor)) {
+        canvColor.forEach(color => {
+          gradient.addColorStop(offset, color)
+          offset += (1 / canvColor.length)
+        })
+        this.ctx.fillStyle = gradient
+      } else {
+        this.ctx.fillStyle = canvColor
+      }
+      this.ctx.fillRect(0, 0, w, h)
+    },
+    /**
+     * Draw line and return last X
+     * @private
+     */
+    _drawLine: function (data, x, step) {
+      const h = this.canvHeight
+      let y = 0
+      data.forEach((v, i) => {
+        // (h / 2) - v / 255 * (h / 2)
+        y = h * (255 - v) / 510
+        if (i % 2) y = h - y
+        this.ctx.lineTo(x, y)
+        x += step
+      })
+      return x
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (AvLine);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/src/components/AvWaveform.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/vue-audio-visual/src/components/AvWaveform.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/vue-audio-visual/node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _AvBase__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AvBase */ "./node_modules/vue-audio-visual/src/components/AvBase.js");
+
+
+
+/**
+ * Component props
+ */
+const props = {
+  /**
+   * prop: 'canv-width'
+   * Canvas element width. Default 500
+   */
+  canvWidth: {
+    type: Number,
+    default: 500
+  },
+  /**
+   * prop: 'canv-height'
+   * Canvas element height. Default 80
+   */
+  canvHeight: {
+    type: Number,
+    default: 80
+  },
+  /**
+   * prop: 'played-line-width'
+   * Waveform line width for played segment of audio
+   * Default: 0.5
+   */
+  playedLineWidth: {
+    type: Number,
+    default: 0.5
+  },
+  /**
+   * prop: 'played-line-color'
+   * Waveform line color for played segment of audio
+   * Default: navy
+   */
+  playedLineColor: {
+    type: String,
+    default: 'navy'
+  },
+  /**
+   * prop: 'noplayed-line-width'
+   * Waveform line width for not yet played segment of audio
+   * Default: 0.5
+   */
+  noplayedLineWidth: {
+    type: Number,
+    default: 0.5
+  },
+  /**
+   * prop: 'noplayed-line-color'
+   * Waveform line color for not yet played segment of audio
+   * Default: lime
+   */
+  noplayedLineColor: {
+    type: String,
+    default: 'lime'
+  },
+  /**
+   * prop: 'playtime'
+   * Display played time next to progress slider.
+   * Default: true
+   */
+  playtime: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * prop: 'playtime-with-ms'
+   * Display milliseconds in played when true.
+   * For example: 02:55.054
+   * Default: true
+   */
+  playtimeWithMs: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * prop: 'playtime-font-size'
+   * Played time print font size in pixels.
+   * Default: 12
+   */
+  playtimeFontSize: {
+    type: Number,
+    default: 12
+  },
+  /**
+   * prop: 'playtime-font-family'
+   * Played time print font family.
+   * Default: monospace
+   */
+  playtimeFontFamily: {
+    type: String,
+    default: 'monospace'
+  },
+  /**
+   * prop: 'playtime-font-color'
+   * Played time print font RGB color string.
+   * Default: grey
+   */
+  playtimeFontColor: {
+    type: String,
+    default: 'grey'
+  },
+  /**
+   * prop: 'playtime-text-bottom'
+   * Position playtime text bottom.
+   * Default on top.
+   * Default: false
+   */
+  playtimeTextBottom: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * prop: 'playtime-slider'
+   * Draw played slider
+   * Default: true
+   */
+  playtimeSlider: {
+    type: Boolean,
+    default: true
+  },
+  /**
+   * prop: 'playtime-slider-color'
+   * Played slider color
+   * Default: red
+   */
+  playtimeSliderColor: {
+    type: String,
+    default: 'red'
+  },
+  /**
+   * prop: 'playtime-slider-width'
+   * Played slider width
+   * Default: 1
+   */
+  playtimeSliderWidth: {
+    type: Number,
+    default: 1
+  },
+  /**
+   * prop: 'playtime-clickable'
+   * Allow click on waveform to change playtime.
+   * Default: true
+   */
+  playtimeClickable: {
+    type: Boolean,
+    default: true
+  }
+}
+
+/**
+ * Component AvLine
+ */
+const AvWaveform = {
+  name: 'av-waveform',
+  mixins: [ _AvBase__WEBPACK_IMPORTED_MODULE_1__["default"] ],
+  props,
+  data () {
+    return {
+      ctxWrapper: null,
+      ctx: null,
+      audio: null,
+      duration: null,
+      peaks: []
+    }
+  },
+  mounted () {
+    const conf = {
+      responseType: 'arraybuffer',
+      onDownloadProgress: this.downloadProgress
+    }
+    axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(this.audio.src, conf)
+      .then(response => this.decode(response))
+      .catch(err => {
+        console.error(`Failed to get file '${this.audio.src}'`)
+        console.log(err)
+      })
+  },
+  methods: {
+    // Stub set analyser method from Mixin AvBase
+    // as there is no need of analyser in that component
+    // this method is called from mixin mounted()
+    setAnalyser: function () {
+      /* istanbul ignore next */
+      return null
+    },
+    // Stub mainLoop method from Mixin AvBase as
+    // here different init method will be used.
+    // This method is called from mixin mounted()
+    mainLoop: function () {
+      /* istanbul ignore next */
+      return null
+    },
+    /**
+     * Decode audio source response array buffer
+     */
+    decode: function (response) {
+      /* istanbul ignore next */
+      const ctx = new AudioContext()
+      /* istanbul ignore next */
+      ctx.decodeAudioData(response.data)
+        .then(audioBuffer => this.setPeaks(audioBuffer))
+        .catch(err => {
+          console.error('Failed to decode audio data.')
+          console.log(err)
+        })
+    },
+    /**
+     * Set peaks array for waveform.
+     * For now use only one channel
+     */
+    setPeaks: function (buffer) {
+      const peaks = []
+      let min = 0
+      let max = 0
+      let top = 0
+      let bottom = 0
+      const segSize = Math.ceil(buffer.length / this.canvWidth)
+      const width = this.canvWidth
+      const height = this.canvHeight
+      this.duration = buffer.duration // while we have buffer why we don't use it ?
+
+      for (let c = 0; c < buffer.numberOfChannels; c++) {
+        const data = buffer.getChannelData(c)
+        for (let s = 0; s < width; s++) {
+          const start = ~~(s * segSize)
+          const end = ~~(start + segSize)
+          min = 0
+          max = 0
+          for (let i = start; i < end; i++) {
+            min = data[i] < min ? data[i] : min
+            max = data[i] > max ? data[i] : max
+          }
+          // merge multi channel data
+          if (peaks[s]) {
+            peaks[s][0] = peaks[s][0] < max ? max : peaks[s][0]
+            peaks[s][1] = peaks[s][1] > min ? min : peaks[s][1]
+          }
+          peaks[s] = [max, min]
+        }
+      }
+      // set peaks relativelly to canvas dimensions
+      for (let i = 0; i < peaks.length; i++) {
+        max = peaks[i][0]
+        min = peaks[i][1]
+        top = ((height / 2) - (max * height / 2))
+        bottom = ((height / 2) - (min * height / 2))
+        peaks[i] = [top, bottom === top ? top + 1 : bottom]
+      }
+      this.peaks = peaks
+
+      if (this.playtimeClickable) {
+        this.ctxWrapper.addEventListener('click', (e) => this.updateTime(e))
+      }
+      this.waveform()
+    },
+    /**
+     * Draw wave form.
+     */
+    waveform: function () {
+      const peaks = this.peaks
+      const time = this.audio.currentTime
+      const playX = this.playX(time)
+      let x = 0
+      this.ctx.clearRect(0, 0, this.canvWidth, this.canvHeight)
+      x = this.draw(peaks.slice(0, playX), this.playedLineWidth, this.playedLineColor, x)
+      this.draw(peaks.slice(playX), this.noplayedLineWidth, this.noplayedLineColor, x)
+      this.drawSlider(time)
+      this.drawTime(time)
+
+      requestAnimationFrame(this.waveform)
+    },
+    /**
+     * Draw segment.
+     */
+    draw: function (data, lineWidth, color, x) {
+      this.ctx.lineWidth = lineWidth
+      this.ctx.strokeStyle = color
+      this.ctx.beginPath()
+      data.forEach(v => {
+        this.ctx.moveTo(x, v[0])
+        this.ctx.lineTo(x, v[1])
+        x++
+      })
+      this.ctx.stroke()
+      return x
+    },
+    /**
+     * Formatted string of current play time.
+     * @param {Number} Current play time
+     * @return {String}
+     */
+    timeFormat: function (timeSec) {
+      let frmStr = ''
+      const time = parseFloat(timeSec)
+      if (isNaN(time)) {
+        return frmStr
+      }
+
+      const min = ~~(time / 60)
+      const sec = ~~(time % 60)
+      const ms = ~~(time % 1 * 1000)
+
+      frmStr = (min < 10) ? `0${min}:` : `${min}:`
+      frmStr += `0${sec}`.substr(-2)
+      if (this.playtimeWithMs) {
+        frmStr += '.' + `00${ms}`.substr(-3)
+      }
+
+      return frmStr
+    },
+    /**
+     * Draw play time next to slider.
+     * @param {Number} Played time sec.millisec.
+     * @return {Void}
+     */
+    drawTime: function (time) {
+      const timeStr = this.timeFormat(time)
+      const offset = 3
+      const textWidth = ~~this.ctx.measureText(timeStr).width
+      const playX = this.playX(time)
+      const textX = playX > (this.canvWidth - textWidth - offset)
+        ? playX - textWidth - offset
+        : playX + offset
+      const textY = this.playtimeTextBottom
+        ? this.canvHeight - this.playtimeFontSize + offset
+        : this.playtimeFontSize + offset
+      this.ctx.fillStyle = this.playtimeFontColor
+      this.ctx.font = `${this.playtimeFontSize}px ${this.playtimeFontFamily}`
+      this.ctx.fillText(timeStr, textX, textY)
+    },
+    /**
+     * Draw played slider.
+     * @param {Number} Played time sec.millisec.
+     * @return {Void}
+     */
+    drawSlider: function (time) {
+      const playX = this.playX(time)
+      this.ctx.lineWidth = this.playtimeSliderWidth
+      this.ctx.strokeStyle = this.playtimeSliderColor
+      this.ctx.beginPath()
+      this.ctx.moveTo(playX, 0)
+      this.ctx.lineTo(playX, this.canvHeight)
+      this.ctx.stroke()
+    },
+    /**
+     * Get x coodrinate for play time.
+     * @param {Number}
+     * @return {Number}
+     */
+    playX: function (time) {
+      return ~~(time / this.duration * this.canvWidth)
+    },
+    /**
+     * Audio playback update time callback.
+     * @param event
+     */
+    updateTime: function (e) {
+      this.audio.currentTime = e.offsetX / this.canvWidth * this.duration
+    },
+    /**
+     * Audio source download progress
+     */
+    downloadProgress: function (ev) {
+      const progressX = Math.round(ev.loaded / ev.total * this.canvWidth)
+      this.ctx.clearRect(0, 0, this.canvWidth, this.canvHeight)
+      this.ctx.beginPath()
+      this.ctx.strokeStyle = this.noplayedLineColor
+      this.ctx.moveTo(0, this.canvHeight / 2)
+      this.ctx.lineTo(progressX, this.canvHeight / 2)
+      this.ctx.stroke()
+    }
+  }
+}
+/* harmony default export */ __webpack_exports__["default"] = (AvWaveform);
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-audio-visual/src/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vue-audio-visual/src/index.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_AvBars__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/AvBars */ "./node_modules/vue-audio-visual/src/components/AvBars.js");
+/* harmony import */ var _components_AvLine__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/AvLine */ "./node_modules/vue-audio-visual/src/components/AvLine.js");
+/* harmony import */ var _components_AvCircle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/AvCircle */ "./node_modules/vue-audio-visual/src/components/AvCircle.js");
+/* harmony import */ var _components_AvWaveform__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/AvWaveform */ "./node_modules/vue-audio-visual/src/components/AvWaveform.js");
+
+
+
+
+
+const AVPlugin = {}
+
+AVPlugin.install = function (Vue) {
+  // browsers compatibility
+  window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext
+  window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame
+  // Components
+  Vue.component(_components_AvBars__WEBPACK_IMPORTED_MODULE_0__["default"].name, _components_AvBars__WEBPACK_IMPORTED_MODULE_0__["default"])
+  Vue.component(_components_AvLine__WEBPACK_IMPORTED_MODULE_1__["default"].name, _components_AvLine__WEBPACK_IMPORTED_MODULE_1__["default"])
+  Vue.component(_components_AvCircle__WEBPACK_IMPORTED_MODULE_2__["default"].name, _components_AvCircle__WEBPACK_IMPORTED_MODULE_2__["default"])
+  Vue.component(_components_AvWaveform__WEBPACK_IMPORTED_MODULE_3__["default"].name, _components_AvWaveform__WEBPACK_IMPORTED_MODULE_3__["default"])
+  Vue.prototype.$avAudioRefs = {}
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (AVPlugin);
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-fuse/dist/vue-fuse.umd.min.js":
 /*!********************************************************!*\
   !*** ./node_modules/vue-fuse/dist/vue-fuse.umd.min.js ***!
@@ -86313,12 +89339,13 @@ var render = function() {
                                         attrs: { type: "button" },
                                         on: {
                                           click: function($event) {
-                                            return _vm.playAudio(
+                                            _vm.playAudio(
                                               music.judul,
                                               music.filename,
                                               music.id,
                                               index
                                             )
+                                            _vm.createWaveSurfer
                                           }
                                         }
                                       },
@@ -88456,325 +91483,311 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "player" }, [
-    _c("div", { staticClass: "player-controls d-flex h-100" }, [
-      _c("div", { staticClass: "align-self-center" }, [
-        _vm.judul !== null
-          ? _c("h6", { staticClass: "playing-title" }, [
-              _vm._v(_vm._s(_vm.judul))
-            ])
-          : _c("h6", { staticClass: "text-capitalize playing-title" }, [
-              _vm._v("- Select Music To Play -")
-            ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "align-self-center" }, [
-        _c(
-          "a",
-          {
-            attrs: { title: "Stop", href: "#" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.stop($event)
-              }
+    _c(
+      "div",
+      { staticClass: "player-controls d-flex h-100" },
+      [
+        _c("audio", {
+          ref: "audiofile",
+          staticStyle: { display: "none" },
+          attrs: { loop: _vm.innerLoop, src: _vm.file, preload: "auto" },
+          on: {
+            ended: function($event) {
+              return _vm.$emit("playNext")
             }
-          },
-          [
-            _c(
-              "svg",
-              {
-                attrs: {
-                  width: "18px",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 20 20"
-                }
-              },
-              [
-                _c("path", {
-                  attrs: {
-                    fill: "currentColor",
-                    d:
-                      "M16,4.995v9.808C16,15.464,15.464,16,14.804,16H4.997C4.446,16,4,15.554,4,15.003V5.196C4,4.536,4.536,4,5.196,4h9.808C15.554,4,16,4.446,16,4.995z"
-                  }
-                })
-              ]
-            )
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "align-self-center" }, [
-        _c(
-          "a",
-          {
-            attrs: { title: "Play/Pause", href: "#" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                _vm.playing = !_vm.playing
-              }
-            }
-          },
-          [
-            _c(
-              "svg",
-              {
-                attrs: {
-                  width: "18px",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 20 20"
-                }
-              },
-              [
-                !_vm.playing
-                  ? _c("path", {
-                      attrs: {
-                        fill: "currentColor",
-                        d:
-                          "M15,10.001c0,0.299-0.305,0.514-0.305,0.514l-8.561,5.303C5.51,16.227,5,15.924,5,15.149V4.852c0-0.777,0.51-1.078,1.135-0.67l8.561,5.305C14.695,9.487,15,9.702,15,10.001z"
-                      }
-                    })
-                  : _c("path", {
-                      attrs: {
-                        fill: "currentColor",
-                        d:
-                          "M15,3h-2c-0.553,0-1,0.048-1,0.6v12.8c0,0.552,0.447,0.6,1,0.6h2c0.553,0,1-0.048,1-0.6V3.6C16,3.048,15.553,3,15,3z M7,3H5C4.447,3,4,3.048,4,3.6v12.8C4,16.952,4.447,17,5,17h2c0.553,0,1-0.048,1-0.6V3.6C8,3.048,7.553,3,7,3z"
-                      }
-                    })
-              ]
-            )
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", [
-        _c(
-          "div",
-          {
-            staticClass: "player-progress",
-            attrs: { title: "Time played : Total time" },
-            on: { click: _vm.seek }
-          },
-          [
-            _c("div", {
-              staticClass: "player-seeker",
-              style: { width: this.percentComplete + "%" }
-            })
-          ]
-        ),
+          }
+        }),
         _vm._v(" "),
-        _c("div", { staticClass: "player-time" }, [
-          _c("div", { staticClass: "player-time-current" }, [
-            _vm._v(_vm._s(_vm.currentTime))
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "player-time-total" }, [
-            _vm._v(_vm._s(_vm.durationTime))
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "align-self-center" }, [
-        _c(
-          "a",
-          {
-            attrs: { href: "#", title: "Download" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.download($event)
-              }
-            }
-          },
-          [
-            _c(
-              "svg",
-              {
-                attrs: {
-                  width: "18px",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 20 20"
-                }
-              },
-              [
-                _c("path", {
-                  attrs: {
-                    fill: "currentColor",
-                    d:
-                      "M15,7h-3V1H8v6H5l5,5L15,7z M19.338,13.532c-0.21-0.224-1.611-1.723-2.011-2.114C17.062,11.159,16.683,11,16.285,11h-1.757l3.064,2.994h-3.544c-0.102,0-0.194,0.052-0.24,0.133L12.992,16H7.008l-0.816-1.873c-0.046-0.081-0.139-0.133-0.24-0.133H2.408L5.471,11H3.715c-0.397,0-0.776,0.159-1.042,0.418c-0.4,0.392-1.801,1.891-2.011,2.114c-0.489,0.521-0.758,0.936-0.63,1.449l0.561,3.074c0.128,0.514,0.691,0.936,1.252,0.936h16.312c0.561,0,1.124-0.422,1.252-0.936l0.561-3.074C20.096,14.468,19.828,14.053,19.338,13.532z"
-                  }
-                })
-              ]
-            )
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "align-self-center" }, [
-        _c(
-          "a",
-          {
-            attrs: { href: "#", title: "Toggle Repeat File / Repeat Playlist" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                _vm.innerLoop = !_vm.innerLoop
-              }
-            }
-          },
-          [
-            _c(
-              "svg",
-              {
-                attrs: {
-                  width: "18px",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 20 20"
-                }
-              },
-              [
-                !_vm.innerLoop
-                  ? _c("path", {
-                      attrs: {
-                        fill: "currentColor",
-                        d:
-                          "M1,12V5h3v6h10V8l5,4.5L14,17v-3H3C1.895,14,1,13.104,1,12z"
-                      }
-                    })
-                  : _c("path", {
-                      attrs: {
-                        fill: "currentColor",
-                        d:
-                          "M20,7v7c0,1.103-0.896,2-2,2H2c-1.104,0-2-0.897-2-2V7c0-1.104,0.896-2,2-2h7V3l4,3.5L9,10V8H3v5h14V8h-3V5h4C19.104,5,20,5.896,20,7z"
-                      }
-                    })
-              ]
-            )
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "align-self-center" }, [
-        _c(
-          "a",
-          {
-            attrs: { title: "Mute", href: "#" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.mute($event)
-              }
-            }
-          },
-          [
-            _c(
-              "svg",
-              {
-                attrs: {
-                  width: "18px",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 20 20"
-                }
-              },
-              [
-                !_vm.muted
-                  ? _c("path", {
-                      attrs: {
-                        fill: "currentColor",
-                        d:
-                          "M5.312,4.566C4.19,5.685-0.715,12.681,3.523,16.918c4.236,4.238,11.23-0.668,12.354-1.789c1.121-1.119-0.335-4.395-3.252-7.312C9.706,4.898,6.434,3.441,5.312,4.566z M14.576,14.156c-0.332,0.328-2.895-0.457-5.364-2.928C6.745,8.759,5.956,6.195,6.288,5.865c0.328-0.332,2.894,0.457,5.36,2.926C14.119,11.258,14.906,13.824,14.576,14.156zM15.434,5.982l1.904-1.906c0.391-0.391,0.391-1.023,0-1.414c-0.39-0.391-1.023-0.391-1.414,0L14.02,4.568c-0.391,0.391-0.391,1.024,0,1.414C14.41,6.372,15.043,6.372,15.434,5.982z M11.124,3.8c0.483,0.268,1.091,0.095,1.36-0.388l1.087-1.926c0.268-0.483,0.095-1.091-0.388-1.36c-0.482-0.269-1.091-0.095-1.36,0.388L10.736,2.44C10.468,2.924,10.642,3.533,11.124,3.8z M19.872,6.816c-0.267-0.483-0.877-0.657-1.36-0.388l-1.94,1.061c-0.483,0.268-0.657,0.878-0.388,1.36c0.268,0.483,0.877,0.657,1.36,0.388l1.94-1.061C19.967,7.907,20.141,7.299,19.872,6.816z"
-                      }
-                    })
-                  : _c("path", {
-                      attrs: {
-                        fill: "currentColor",
-                        d:
-                          "M14.201,9.194c1.389,1.883,1.818,3.517,1.559,3.777c-0.26,0.258-1.893-0.17-3.778-1.559l-5.526,5.527c4.186,1.838,9.627-2.018,10.605-2.996c0.925-0.922,0.097-3.309-1.856-5.754L14.201,9.194z M8.667,7.941c-1.099-1.658-1.431-3.023-1.194-3.26c0.233-0.234,1.6,0.096,3.257,1.197l1.023-1.025C9.489,3.179,7.358,2.519,6.496,3.384C5.568,4.31,2.048,9.261,3.265,13.341L8.667,7.941z M18.521,1.478c-0.39-0.391-1.023-0.391-1.414,0L1.478,17.108c-0.391,0.391-0.391,1.024,0,1.414c0.391,0.391,1.023,0.391,1.414,0l15.629-15.63C18.912,2.501,18.912,1.868,18.521,1.478z"
-                      }
-                    })
-              ]
-            )
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "align-self-center" }, [
-        _c(
-          "a",
-          {
-            attrs: { title: "Volume", href: "#" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-              },
-              mouseenter: function($event) {
-                _vm.showVolume = true
-              }
-            }
-          },
-          [
-            _c(
-              "svg",
-              {
-                attrs: {
-                  width: "18px",
-                  xmlns: "http://www.w3.org/2000/svg",
-                  viewBox: "0 0 20 20"
-                }
-              },
-              [
-                _c("path", {
-                  attrs: {
-                    fill: "currentColor",
-                    d:
-                      "M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"
-                  }
-                })
-              ]
-            ),
-            _vm._v(" "),
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model.lazy.number",
-                  value: _vm.volume,
-                  expression: "volume",
-                  modifiers: { lazy: true, number: true }
-                },
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.showVolume,
-                  expression: "showVolume"
-                }
-              ],
-              attrs: { type: "range", min: "0", max: "100" },
-              domProps: { value: _vm.volume },
+        _c("div", { staticClass: "align-self-center" }, [
+          _vm.judul !== null
+            ? _c("h6", { staticClass: "playing-title" }, [
+                _vm._v(_vm._s(_vm.judul))
+              ])
+            : _c("h6", { staticClass: "text-capitalize playing-title" }, [
+                _vm._v("- Select Music To Play -")
+              ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "align-self-center" }, [
+          _c(
+            "a",
+            {
+              attrs: { title: "Stop", href: "#" },
               on: {
-                change: function($event) {
-                  _vm.volume = _vm._n($event.target.value)
-                },
-                blur: function($event) {
-                  return _vm.$forceUpdate()
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.stop($event)
                 }
               }
-            })
-          ]
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("audio", {
-      ref: "audiofile",
-      staticStyle: { display: "none" },
-      attrs: { loop: _vm.innerLoop, src: _vm.file, preload: "auto" },
-      on: {
-        ended: function($event) {
-          return _vm.$emit("playNext")
-        }
-      }
-    })
+            },
+            [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    width: "18px",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      fill: "currentColor",
+                      d:
+                        "M16,4.995v9.808C16,15.464,15.464,16,14.804,16H4.997C4.446,16,4,15.554,4,15.003V5.196C4,4.536,4.536,4,5.196,4h9.808C15.554,4,16,4.446,16,4.995z"
+                    }
+                  })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "align-self-center" }, [
+          _c(
+            "a",
+            {
+              attrs: { title: "Play/Pause", href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.playing = !_vm.playing
+                }
+              }
+            },
+            [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    width: "18px",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  !_vm.playing
+                    ? _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M15,10.001c0,0.299-0.305,0.514-0.305,0.514l-8.561,5.303C5.51,16.227,5,15.924,5,15.149V4.852c0-0.777,0.51-1.078,1.135-0.67l8.561,5.305C14.695,9.487,15,9.702,15,10.001z"
+                        }
+                      })
+                    : _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M15,3h-2c-0.553,0-1,0.048-1,0.6v12.8c0,0.552,0.447,0.6,1,0.6h2c0.553,0,1-0.048,1-0.6V3.6C16,3.048,15.553,3,15,3z M7,3H5C4.447,3,4,3.048,4,3.6v12.8C4,16.952,4.447,17,5,17h2c0.553,0,1-0.048,1-0.6V3.6C8,3.048,7.553,3,7,3z"
+                        }
+                      })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("av-waveform", {
+          key: _vm.file_id,
+          staticClass: "waveform-container",
+          attrs: {
+            "audio-controls": true,
+            "played-line-color": "#3490dc",
+            "noplayed-line-color": "#6cb2eb",
+            "canv-height": 50,
+            playtime: true,
+            "progress-width": 5,
+            "audio-class": "audio-player",
+            "canvas-class": "waveform-player",
+            "canv-width": 300,
+            "ref-link": "audiofile"
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "align-self-center" }, [
+          _c(
+            "a",
+            {
+              attrs: { href: "#", title: "Download" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.download($event)
+                }
+              }
+            },
+            [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    width: "18px",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  _c("path", {
+                    attrs: {
+                      fill: "currentColor",
+                      d:
+                        "M15,7h-3V1H8v6H5l5,5L15,7z M19.338,13.532c-0.21-0.224-1.611-1.723-2.011-2.114C17.062,11.159,16.683,11,16.285,11h-1.757l3.064,2.994h-3.544c-0.102,0-0.194,0.052-0.24,0.133L12.992,16H7.008l-0.816-1.873c-0.046-0.081-0.139-0.133-0.24-0.133H2.408L5.471,11H3.715c-0.397,0-0.776,0.159-1.042,0.418c-0.4,0.392-1.801,1.891-2.011,2.114c-0.489,0.521-0.758,0.936-0.63,1.449l0.561,3.074c0.128,0.514,0.691,0.936,1.252,0.936h16.312c0.561,0,1.124-0.422,1.252-0.936l0.561-3.074C20.096,14.468,19.828,14.053,19.338,13.532z"
+                    }
+                  })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "align-self-center" }, [
+          _c(
+            "a",
+            {
+              attrs: {
+                href: "#",
+                title: "Toggle Repeat File / Repeat Playlist"
+              },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  _vm.innerLoop = !_vm.innerLoop
+                }
+              }
+            },
+            [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    width: "18px",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  !_vm.innerLoop
+                    ? _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M1,12V5h3v6h10V8l5,4.5L14,17v-3H3C1.895,14,1,13.104,1,12z"
+                        }
+                      })
+                    : _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M20,7v7c0,1.103-0.896,2-2,2H2c-1.104,0-2-0.897-2-2V7c0-1.104,0.896-2,2-2h7V3l4,3.5L9,10V8H3v5h14V8h-3V5h4C19.104,5,20,5.896,20,7z"
+                        }
+                      })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "align-self-center" }, [
+          _c(
+            "a",
+            {
+              attrs: { title: "Mute", href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                  return _vm.mute($event)
+                }
+              }
+            },
+            [
+              _c(
+                "svg",
+                {
+                  attrs: {
+                    width: "18px",
+                    xmlns: "http://www.w3.org/2000/svg",
+                    viewBox: "0 0 20 20"
+                  }
+                },
+                [
+                  !_vm.muted
+                    ? _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M5.312,4.566C4.19,5.685-0.715,12.681,3.523,16.918c4.236,4.238,11.23-0.668,12.354-1.789c1.121-1.119-0.335-4.395-3.252-7.312C9.706,4.898,6.434,3.441,5.312,4.566z M14.576,14.156c-0.332,0.328-2.895-0.457-5.364-2.928C6.745,8.759,5.956,6.195,6.288,5.865c0.328-0.332,2.894,0.457,5.36,2.926C14.119,11.258,14.906,13.824,14.576,14.156zM15.434,5.982l1.904-1.906c0.391-0.391,0.391-1.023,0-1.414c-0.39-0.391-1.023-0.391-1.414,0L14.02,4.568c-0.391,0.391-0.391,1.024,0,1.414C14.41,6.372,15.043,6.372,15.434,5.982z M11.124,3.8c0.483,0.268,1.091,0.095,1.36-0.388l1.087-1.926c0.268-0.483,0.095-1.091-0.388-1.36c-0.482-0.269-1.091-0.095-1.36,0.388L10.736,2.44C10.468,2.924,10.642,3.533,11.124,3.8z M19.872,6.816c-0.267-0.483-0.877-0.657-1.36-0.388l-1.94,1.061c-0.483,0.268-0.657,0.878-0.388,1.36c0.268,0.483,0.877,0.657,1.36,0.388l1.94-1.061C19.967,7.907,20.141,7.299,19.872,6.816z"
+                        }
+                      })
+                    : _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M14.201,9.194c1.389,1.883,1.818,3.517,1.559,3.777c-0.26,0.258-1.893-0.17-3.778-1.559l-5.526,5.527c4.186,1.838,9.627-2.018,10.605-2.996c0.925-0.922,0.097-3.309-1.856-5.754L14.201,9.194z M8.667,7.941c-1.099-1.658-1.431-3.023-1.194-3.26c0.233-0.234,1.6,0.096,3.257,1.197l1.023-1.025C9.489,3.179,7.358,2.519,6.496,3.384C5.568,4.31,2.048,9.261,3.265,13.341L8.667,7.941z M18.521,1.478c-0.39-0.391-1.023-0.391-1.414,0L1.478,17.108c-0.391,0.391-0.391,1.024,0,1.414c0.391,0.391,1.023,0.391,1.414,0l15.629-15.63C18.912,2.501,18.912,1.868,18.521,1.478z"
+                        }
+                      })
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "align-self-center" }, [
+          _c(
+            "a",
+            {
+              attrs: { title: "Volume", href: "#" },
+              on: {
+                click: function($event) {
+                  $event.preventDefault()
+                },
+                mouseenter: function($event) {
+                  _vm.showVolume = true
+                }
+              }
+            },
+            [
+              _c("path", {
+                attrs: {
+                  fill: "currentColor",
+                  d:
+                    "M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"
+                }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model.lazy.number",
+                    value: _vm.volume,
+                    expression: "volume",
+                    modifiers: { lazy: true, number: true }
+                  },
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.showVolume,
+                    expression: "showVolume"
+                  }
+                ],
+                attrs: { type: "range", min: "0", max: "100" },
+                domProps: { value: _vm.volume },
+                on: {
+                  change: function($event) {
+                    _vm.volume = _vm._n($event.target.value)
+                  },
+                  blur: function($event) {
+                    return _vm.$forceUpdate()
+                  }
+                }
+              })
+            ]
+          )
+        ])
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []
@@ -108448,6 +111461,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuedraggable__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(vuedraggable__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var vue_head__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue-head */ "./node_modules/vue-head/vue-head.js");
 /* harmony import */ var vue_head__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(vue_head__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var vue_audio_visual__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-audio-visual */ "./node_modules/vue-audio-visual/src/index.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -108468,6 +111482,7 @@ Vue.component(vform__WEBPACK_IMPORTED_MODULE_0__["AlertError"].name, vform__WEBP
 
 
 
+
 Vue.use(vue_simple_alert__WEBPACK_IMPORTED_MODULE_1__["default"]);
 Vue.use(moment__WEBPACK_IMPORTED_MODULE_2___default.a);
 Vue.use(vuex__WEBPACK_IMPORTED_MODULE_3__["default"]);
@@ -108476,6 +111491,7 @@ Vue.use(vue_fuse__WEBPACK_IMPORTED_MODULE_5___default.a);
 Vue.use(v_session__WEBPACK_IMPORTED_MODULE_6__["default"]);
 Vue.use(vuedraggable__WEBPACK_IMPORTED_MODULE_7___default.a);
 Vue.use(vue_head__WEBPACK_IMPORTED_MODULE_8___default.a);
+Vue.use(vue_audio_visual__WEBPACK_IMPORTED_MODULE_9__["default"]);
 var routes = [{
   path: '/all-music',
   component: __webpack_require__(/*! ./components/AllMusic.vue */ "./resources/assets/js/components/AllMusic.vue")["default"]

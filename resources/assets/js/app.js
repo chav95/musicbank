@@ -22,6 +22,7 @@ import VueFuse from 'vue-fuse'
 import V_Session from 'v-session'
 import draggable from 'vuedraggable'
 import VueHead from 'vue-head'
+import AudioVisual from 'vue-audio-visual'
 
 Vue.use(VueSimpleAlert)
 Vue.use(moment)
@@ -31,6 +32,7 @@ Vue.use(VueFuse)
 Vue.use(V_Session)
 Vue.use(draggable)
 Vue.use(VueHead)
+Vue.use(AudioVisual)
 
 let routes = [
     {path: '/all-music', component: require('./components/AllMusic.vue').default},

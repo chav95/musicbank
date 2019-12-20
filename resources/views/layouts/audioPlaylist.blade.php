@@ -35,6 +35,9 @@
           <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
           </a>
+          <!--<button class="btn">
+            <i class="fas fa-bars"></i>
+          </div>-->
         </nav>
       </header>
       <!-- Left side column. contains the logo and sidebar -->

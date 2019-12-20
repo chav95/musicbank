@@ -10,7 +10,7 @@
       :selectedMusicJudul="modal_music_judul"
       v-on:success="successAlert('Wishlist')"
     ></add-to-wishlist>
-
+    
     <!--<section class="content container-fluid">-->
       <div class="row justify-content-center mt-4 mb-4 h-100">
         <div class="col-12">
@@ -84,7 +84,7 @@
                       <td>
                         <button 
                           type="button" class="btn btn-primary playlist-play-btn"
-                          @click="playAudio(music.judul, music.filename, music.id, index)"
+                          @click="playAudio(music.judul, music.filename, music.id, index); createWaveSurfer"
                         >
                           Play
                           <i class="fas fa-play-circle nav-icon"></i>
@@ -204,6 +204,13 @@
       }
     },
     methods:{
+      createWaveSurfer() {
+        /*this.wavesurfer = WaveSurfer.create({
+          container: "#waveform",
+          barWidth: 3
+        });
+        this.wavesurfer.load(this.file);*/
+      },
       successAlert(type){
         $('#PlaylistModal').modal('hide');
         this.$alert(this.modal_music_judul+' added to selected '+type, '', 'success');
@@ -216,7 +223,7 @@
 
         if(this.$route.params.playlist_id){
           let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id).then(({data}) => { 
-            this.musics = data;
+            this.musics = data; this.file = musics[0].filename;
             for(let item of data){ console.log(item.filepath);
               this.fileArr.push(item.filename);
               this.judulArr.push(item.judul);
@@ -479,6 +486,14 @@
     & > h3{
       margin-bottom: 0;
     }
+  }
+
+  .waveform-container{
+    display: inline-flex;
+  }
+
+  .audio-player{
+    width: 500px;
   }
 
   .card-tools, .card-header{

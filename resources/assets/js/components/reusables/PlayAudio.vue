@@ -1,6 +1,7 @@
 <template>
         <div class="player">
 			<div class="player-controls d-flex h-100">
+			    <audio :loop="innerLoop" ref="audiofile" :src="file" preload="auto" @ended="$emit('playNext')" style="display: none;"></audio>
                 <div class="align-self-center">
                     <h6 v-if="judul !== null" class="playing-title">{{judul}}</h6>
                     <h6 v-else class="text-capitalize playing-title">- Select Music To Play -</h6>
@@ -20,7 +21,7 @@
 						</svg>
 					</a>
 				</div>
-				<div>
+				<!--<div>
 					<div v-on:click="seek" class="player-progress" title="Time played : Total time">
 						<div :style="{ width: this.percentComplete + '%' }" class="player-seeker"></div>
 					</div>
@@ -28,7 +29,11 @@
 						<div class="player-time-current">{{ currentTime }}</div>
 						<div class="player-time-total">{{ durationTime }}</div>
 					</div>
-				</div>
+				</div>-->
+                <av-waveform :audio-controls="true" played-line-color="#3490dc" noplayed-line-color="#6cb2eb" :canv-height="50"
+                  :playtime="true" :progress-width="5" audio-class="audio-player" canvas-class="waveform-player" :canv-width="300"
+                  ref-link="audiofile" class="waveform-container" :key="file_id">
+                </av-waveform>
 				<div class="align-self-center">
 					<a v-on:click.prevent="download" href="#" title="Download">
 						<svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -54,14 +59,13 @@
 				</div>
 				<div class="align-self-center">
 					<a v-on:click.prevent="" v-on:mouseenter="showVolume = true" title="Volume" href="#">
-						<svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+						<!--<svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">-->
 							<path fill="currentColor" d="M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"/>
-						</svg>
+						<!--</svg>-->
 						<input v-model.lazy.number="volume" v-show="showVolume" type="range" min="0" max="100"/>
 					</a>
 				</div>
 			</div>
-			<audio :loop="innerLoop" ref="audiofile" :src="file" preload="auto" @ended="$emit('playNext')" style="display: none;"></audio>
 		</div>
 </template>
 
@@ -83,7 +87,7 @@
             },
             file_id: {
                 type: Number,
-                default: null
+                default: 0
             },
             autoPlay: {
                 type: Boolean,
@@ -102,7 +106,7 @@
             loaded: false,
             playing: false,
             previousVolume: 35,
-            showVolume: false,
+            showVolume: true,
             volume: 100,
 
             postToLog: {
@@ -131,7 +135,7 @@
                 this.audio.pause();
             },
             volume(value) {
-                this.showVolume = false;
+                //this.showVolume = false;
                 this.audio.volume = this.volume / 100;
             }
         },
@@ -213,6 +217,10 @@
 </script>
 
 <style lang="scss">
+    .waveform-container{
+        padding: 2px 3px;
+    }
+
     @import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
 
     body { font-family: 'Nunito', sans-serif; }
