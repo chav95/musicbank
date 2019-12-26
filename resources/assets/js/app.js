@@ -23,6 +23,7 @@ import V_Session from 'v-session'
 import draggable from 'vuedraggable'
 import VueHead from 'vue-head'
 import AudioVisual from 'vue-audio-visual'
+import infiniteScroll from 'vue-infinite-scroll'
 
 Vue.use(VueSimpleAlert)
 Vue.use(moment)
@@ -33,6 +34,7 @@ Vue.use(V_Session)
 Vue.use(draggable)
 Vue.use(VueHead)
 Vue.use(AudioVisual)
+Vue.use(infiniteScroll)
 
 let routes = [
     {path: '/all-music', component: require('./components/AllMusic.vue').default},
@@ -49,6 +51,7 @@ let routes = [
         component: require('./components/Wishlist.vue').default
     },
     {path: '/log', component: require('./components/Log.vue').default},
+    {path: '/report', component: require('./components/Report.vue').default},
     {path: '/manage-users', component: require('./components/Users.vue').default},
 ]
 

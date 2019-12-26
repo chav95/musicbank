@@ -6,6 +6,8 @@
         <small>Manage Users</small>
       </h1>
       <button class="btn btn-primary" id="createUserBtn" @click="creeateUser">Create New User</button>
+      <button class="btn btn-primary" id="createUserBtn" @click="creeateUser">Create New User Type</button>
+      <button class="btn btn-primary" id="createUserBtn" @click="creeateUser">Create New Dept/Division</button>
     </section>
 
     <section class="content container-fluid">
@@ -23,7 +25,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>User Type</th>
-                    <th>Access Type</th>
+                    <th>Dept/Division</th>
                     <th>Registered At</th>
                     <th>Modify</th>
                   </tr>
@@ -33,8 +35,8 @@
                     <tr  v-for="user in allUser.data" :key="user.id" hover:bg-blue px-4 py2>
                       <td>{{user.name}}</td>
                       <td>{{user.email}}</td>
-                      <td>{{user.privilege}}</td>
-                      <td>{{user.hak_akses}}</td>
+                      <td>{{user.privilege.type}}</td>
+                      <td>{{user.hak_akses.type}}</td>
                       <td>{{formatDatetime(user.created_at)}}</td>
                       <td>
                         <div class="modify-btn-container">
@@ -88,21 +90,25 @@
                   </div>
                   <div class="form-group">
                     <label>User Type</label>
-                    <input v-model="form.privilege" type="text" name="privilege" placeholder="User Type"
-                      class="form-control" :class="{ 'is-invalid': form.errors.has('privilege') }">
+                    <select v-model="form.privilege" name="privilege" class="form-control" :class="{'is-invalid': form.errors.has('privilege')}">
+                      <option value="" selected disabled hidden>Select User Type</option>
+                      <option v-for="(item, index) in privilegeArr" :key="index" :value="item.id">{{item.type}}</option>
+                    </select>
                     <has-error :form="form" field="privilege"></has-error>
                   </div>
                   <div class="form-group">
-                    <label>Hak Akses</label>
-                    <input v-model="form.hak_akses" type="text" name="hak_akses" placeholder="Hak Akses"
-                      class="form-control" :class="{ 'is-invalid': form.errors.has('hak_akses') }">
+                    <label>Dept/Division</label>
+                    <select v-model="form.hak_akses" name="hak_akses" class="form-control" :class="{'is-invalid': form.errors.has('privilege')}">
+                      <option value="" selected disabled hidden>Select Dept/Division</option>
+                      <option v-for="(item, index) in hakAksesArr" :key="index" :value="item.id">{{item.type}}</option>
+                    </select>
                     <has-error :form="form" field="hak_akses"></has-error>
                   </div>
                 </div>
 
                 <div class="modal-footer">
                   <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Submit Edit</button>
+                  <button type="submit" class="btn btn-primary">{{modalBtnText}}</button>
                 </div>
               </form>
             </div>
@@ -121,20 +127,25 @@
     data(){
       return{
         modalTitle: String,
+        modalBtnText: String,
         form: new Form({
           act: String,
           selectedUserId: Number,
           name: String,
           email: String,
-          privilege: String,
-          hak_akses: String,
+          privilege: Number,
+          hak_akses: Number,
         }),
         allUser: {data: {}},
+        privilegeArr: [],
+        hakAksesArr: [],
       }
     },
     methods: {
       loadAllUser(){
         axios.get(window.location.origin+'/api/user').then(({data}) => (this.allUser = data));
+        axios.get(window.location.origin+'/api/user_type').then(({data}) => (this.privilegeArr = data));
+        axios.get(window.location.origin+'/api/hak_akses').then(({data}) => (this.hakAksesArr = data));
       },
       formatDatetime(datetime){
         return moment(String(datetime)).format('llll');
@@ -147,6 +158,7 @@
       },
       creeateUser(){
         this.modalTitle = 'Create New User';
+        this.modalBtnText = 'Create New',
         this.form.selectedUserId = 0;
         this.form.act = 'new_user';
         this.form.name = '';
@@ -157,12 +169,13 @@
       },
       editUser(selectedUser){
         this.modalTitle = 'Edit User';
+        this.modalBtnText = 'Submit Edit',
         this.form.selectedUserId = selectedUser.id;
         this.form.act = 'edit_user';
         this.form.name = selectedUser.name;
         this.form.email = selectedUser.email;
-        this.form.privilege = selectedUser.privilege;
-        this.form.hak_akses = selectedUser.hak_akses;
+        this.form.privilege = selectedUser.privilege.id;
+        this.form.hak_akses = selectedUser.hak_akses.id;
         $('#modifyModal').modal('show');
       },
       submitUser(){

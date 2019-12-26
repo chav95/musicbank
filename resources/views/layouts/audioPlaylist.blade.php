@@ -97,7 +97,13 @@
                 <span>Log</span>
               </router-link>
             </li>
-            @if(Auth::user()->privilege == 'admin')
+            <li>
+              <router-link to="/report">
+                <i class="fas fa-chart-line nav-icon color-blue fa-fw"></i>
+                <span>Report</span>
+              </router-link>
+            </li>
+            @if(Auth::user()->privilege == 1)
               <li>
                 <router-link to="/manage-users">
                   <i class="nav-icon fas fa-cog color-green fa-fw"></i>

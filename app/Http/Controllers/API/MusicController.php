@@ -22,7 +22,7 @@ class MusicController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api');
+        //$this->middleware('auth:api');
     }
 
     /**
@@ -130,9 +130,9 @@ class MusicController extends Controller
         if($id == 'plain_playlist'){ //return $id;
             return Playlist::where('status', '1')->orderBy('nama_playlist', 'asc')->get();
         }else if($id == 'getMusicListByUploadDate'){
-            return Music::latest()->where('status', '=', '1')->get();
+            return Music::latest()->where('status', '=', '1')->paginate(10);
         }else if($id == 'getMusicListByTitle'){
-            return Music::orderBy('judul', 'ASC')->where('status', '=', '1')->get();
+            return Music::orderBy('judul', 'ASC')->where('status', '=', '1')->paginate(10);
         }else if(strpos($id, 'playlist') !== false){
             //get playlist index
             $index = strpos($id, '-');
@@ -156,8 +156,10 @@ class MusicController extends Controller
                 ->orderBy($param[1], $ascdesc[1])->orderBy('music_playlists.created_at', 'DESC')->paginate(10);*/
             
             $result = self::flatten(Playlist::where('id', $playlist)->with('music')->with('allChildrenContent')->get(), '');
-            //$result = collect($result)->paginate(10); //$result['data'] = json_decode(json_encode($result->items())); //return $result;
+            $result = collect($result)->paginate(10); //$result['data'] = json_decode(json_encode($result->items())); //return $result;
             //is_object($result['data']) ? $result['data'] = $result['data']->toArray() : $result['data'];
+
+            //$result = Music::latest()->where('status', '=', '1')->paginate(3);
             return $result;//collect($result)->paginate(10);
             /*return Playlist::where('id', $playlist)
                 ->with('music')

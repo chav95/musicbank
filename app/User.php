@@ -11,6 +11,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
     
+    public function privilege(){
+        return $this->belongsTo('App\UserType', 'privilege');
+    }
+    public function hakAkses(){
+        return $this->belongsTo('App\HakAkses', 'hak_akses');
+    }
     public function wishlistCreated(){
         return $this->hasMany('App\Wishlist', 'user_id');
     }

@@ -62,9 +62,9 @@
                 </colgroup>
                 <thead>
                   <tr>
-                    <th @click="loadMusics('judul@ASC')" title="Sort By Title" colspan="2" class="headerButton">Title</th>
+                    <th @click="loadMusics(1, 'judul@ASC')" title="Sort By Title" colspan="2" class="headerButton">Title</th>
                     <th v-if="$route.params.playlist_id">Playlist</th>
-                    <th @click="loadMusics('created_at@DESC')" title="Sort By Time Of Upload" class="headerButton">
+                    <th @click="loadMusics(1, 'created_at@DESC')" title="Sort By Time Of Upload" class="headerButton">
                       {{$route.params.playlist_id ? 'Added At' : 'Uploaded At'}}
                     </th>
                     <th>Modify</th>
@@ -84,7 +84,7 @@
                       <td>
                         <button 
                           type="button" class="btn btn-primary playlist-play-btn"
-                          @click="playAudio(music.judul, music.filename, music.id, index); createWaveSurfer"
+                          @click="playAudio(music.judul, music.filename, music.id, index)"
                         >
                           Play
                           <i class="fas fa-play-circle nav-icon"></i>
@@ -134,6 +134,7 @@
                     </tr>
                   </template>
                 </tbody>
+                <observer v-on:intersect="intersectEvent"/>
                 <!--</draggable>-->
               </table>
             </div>
@@ -155,6 +156,7 @@
   import AddToPlaylist from './AddToPlaylist.vue';
   import AddToWishlist from './AddToWishlist.vue';
   import draggable from 'vuedraggable'
+  import observer from './reusables/Observer.vue';
 
   export default {
     components: {
@@ -162,17 +164,19 @@
       AddToPlaylist,
       AddToWishlist,
       draggable,
+      observer,
     },
     data(){
       return{
+        page: 1,
+        last_page: 1,
+
         file: null,
         file_id: null,
         judul: null,
 
         autoPlay: false,
-        musics:{
-          data: Array,
-        },
+        musics:[],
         fileArr: [],
         judulArr: [],
         dataLoaded: 0,
@@ -187,7 +191,7 @@
         dragMusic: [],
       }
     },
-    computed: {
+    computed:{
       searchMusic: function(){
         if(this.dataLoaded == 1){
           /*if(typeof(this.musics) === 'object' && this.musics !== null){
@@ -204,55 +208,61 @@
       }
     },
     methods:{
-      createWaveSurfer() {
-        /*this.wavesurfer = WaveSurfer.create({
-          container: "#waveform",
-          barWidth: 3
-        });
-        this.wavesurfer.load(this.file);*/
-      },
       successAlert(type){
         $('#PlaylistModal').modal('hide');
         this.$alert(this.modal_music_judul+' added to selected '+type, '', 'success');
       },
-      loadMusics(sortingParam){
+      loadMusics(page, sortingParam){
+        this.page = page;
         if(sortingParam == undefined){
           sortingParam = 'created_at@DESC';
         }
         this.sortParam = sortingParam;
 
         if(this.$route.params.playlist_id){
-          let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id).then(({data}) => { 
-            this.musics = data; this.file = musics[0].filename;
-            for(let item of data){ console.log(item.filepath);
-              this.fileArr.push(item.filename);
-              this.judulArr.push(item.judul);
-            }
-            this.dataLoaded = 1;
-          });
+          let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id+'?page='+this.page)
+            .then(({data}) => { 
+              this.musics = [...this.musics, ...data.data];
+              this.last_page = data.last_page;
+              //this.file = data.data[0].filename;
+              for(let item of data.data){ //console.log(item.filepath);
+                this.fileArr.push(item.filename);
+                this.judulArr.push(item.judul);
+              }
+              this.dataLoaded = 1;
+            });
         }else{
           let index = sortingParam.indexOf('@'); //console.log(index);
           sortingParam = sortingParam.slice(0, index); //console.log(sortingParam);
 
           if(sortingParam == 'judul'){
-            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByTitle/').then(({data}) => { 
-              this.musics = data;
-              for(let item of data){
+            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByTitle?page='+this.page).then(({data}) => { 
+              this.musics = [...this.musics, ...data.data];
+              this.last_page = data.last_page;
+              for(let item of data.data){
                 this.fileArr.push(item.filename);
                 this.judulArr.push(item.judul);
               }
               this.dataLoaded = 1;
             });
           }else if(sortingParam == 'created_at'){
-            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/').then(({data}) => { 
-              this.musics = data;
-              for(let item of data){
+            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByUploadDate?page='+this.page).then(({data}) => { 
+              this.musics = [...this.musics, ...data.data];
+              this.last_page = data.last_page;
+              //this.musics = [].concat(this.musics, data.data);
+              for(let item of data.data){
                 this.fileArr.push(item.filename);
                 this.judulArr.push(item.judul);
               }
               this.dataLoaded = 1;
             });
           }
+        }
+      },
+      async intersectEvent(){
+        if(this.page < this.last_page){
+          console.log('intersect');
+          this.loadMusics(++this.page);
         }
       },
       /*getResults(page = 1){
@@ -406,7 +416,7 @@
               axios.post(window.location.origin+'/api/music', patchMusic)
                 .then(({response}) => {
                   this.$alert(music_judul+' removed from '+playlist+' playlist', '', 'success');
-                  this.loadMusics();
+                  this.loadMusics(1);
                 })
                 .catch(({error}) => {
                   this.$alert(error.message, '', 'error');
@@ -420,7 +430,7 @@
                   axios.delete(window.location.origin+'/api/music/'+music_id)
                     .then(({response}) => {
                       this.$alert('Delete Successful', '', 'success');
-                      this.loadMusics();
+                      this.loadMusics(1);
                     })
                     .catch(({error}) => {
                       this.$alert(error.message, '', 'error');
@@ -465,13 +475,13 @@
         );
       }
     },
-    watch: {
+    watch:{
       '$route.params.playlist_id': function(playlist_id){
-        this.loadMusics();
+        this.loadMusics(1);
       },
     },
-    mounted() {
-      this.loadMusics();
+    mounted(){
+      this.loadMusics(1);
     }
   }
 </script>
@@ -522,6 +532,7 @@
   .search-container{
     display: inline-block;
     width: 250px;
+    margin-bottom: 6px;
   }
 
   .has-search .form-control-feedback{

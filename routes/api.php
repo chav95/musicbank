@@ -23,6 +23,8 @@ Route::resources([
     'log' => 'API\LogController',
     'wishlist' => 'API\WishlistController',
     'user' => 'API\UserController',
+    'user_type' => 'API\UserTypeController',
+    'hak_akses' => 'API\HakAksesController',
     'sendmail' => 'API\SendMailController',
     /*'sendmail' => function(\Illuminate\Http\Request $request, \Illuminate\Mail\Mailer $mailer){
         $mailer->to('chavinpradana@gmail.com')->send(new \App\Mail\SendMail($request));

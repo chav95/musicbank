@@ -29,6 +29,7 @@ class UserController extends Controller
     public function index()
     {
         return User::select('id', 'name', 'email', 'privilege', 'hak_akses', 'created_at')
+            ->with('privilege')->with('hakAkses')
             ->where('status', '=', '1')->orderBy('name', 'asc')->paginate(10);
     }
 
@@ -47,8 +48,8 @@ class UserController extends Controller
                 $this->validate($request, [
                     'name' => 'required|string|max:191',
                     'email' => 'required|string|email|max:191|unique:users,email,'.$request->selectedUserId,
-                    'privilege' => 'required|string',
-                    'hak_akses' => 'required|string'
+                    'privilege' => 'required|integer',
+                    'hak_akses' => 'required|integer'
                 ]);
 
                 /*$user = User::find($request->selectedUserId);
@@ -65,8 +66,8 @@ class UserController extends Controller
                 $this->validate($request, [
                     'name' => 'required|string|max:191',
                     'email' => 'required|string|email|max:191|unique:users',
-                    'privilege' => 'required|string',
-                    'hak_akses' => 'required|string'
+                    'privilege' => 'required|integer',
+                    'hak_akses' => 'required|integer'
                 ]);
 
                 return User::create([
