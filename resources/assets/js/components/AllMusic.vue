@@ -18,11 +18,11 @@
             <div class="container fixed-content">
               <h3 v-if="$route.params.playlist_id">
                 {{($route.params.playlist_name ? $route.params.playlist_name.replace('-', ' ') : '')}} <br>
-                <small>{{musics.length}} musics</small>
+                <small>{{totalMusics}} musics</small>
               </h3>
               <h3 v-else>
                 All Music <br>
-                <small>{{musics.length}} musics</small>
+                <small>{{totalMusics}} musics</small>
               </h3>
               <div class="card-header">
                 <div class="button-container">
@@ -176,6 +176,7 @@
         judul: null,
 
         autoPlay: false,
+        totalMusics: 0,
         musics:[],
         fileArr: [],
         judulArr: [],
@@ -211,6 +212,19 @@
       successAlert(type){
         $('#PlaylistModal').modal('hide');
         this.$alert(this.modal_music_judul+' added to selected '+type, '', 'success');
+      },
+      loadTotalMusics(sortingParam){
+        if(this.$route.params.playlist_id){ console.log('total playlist');
+          axios.get(window.location.origin+'/api/music/totalPlaylist_'+this.$route.params.playlist_id)
+            .then(({data}) => {
+              this.totalMusics = data;
+            });
+        }else{ console.log('total music');
+          axios.get(window.location.origin+'/api/music/totalMusicList')
+            .then(({data}) => { 
+              this.totalMusics = data;
+            });
+        }
       },
       loadMusics(page, sortingParam){
         this.page = page;
@@ -477,11 +491,14 @@
     },
     watch:{
       '$route.params.playlist_id': function(playlist_id){
+        this.musics = [];
         this.loadMusics(1);
+        this.loadTotalMusics();
       },
     },
     mounted(){
       this.loadMusics(1);
+      this.loadTotalMusics();
     }
   }
 </script>
@@ -519,7 +536,7 @@
   }
 
   #content-table{
-    margin-top: 213px;
+    margin-top: 215px;
   }
 
   .headerButton:hover{

@@ -4168,6 +4168,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       file_id: null,
       judul: null,
       autoPlay: false,
+      totalMusics: 0,
       musics: [],
       fileArr: [],
       judulArr: [],
@@ -4202,8 +4203,25 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       $('#PlaylistModal').modal('hide');
       this.$alert(this.modal_music_judul + ' added to selected ' + type, '', 'success');
     },
-    loadMusics: function loadMusics(page, sortingParam) {
+    loadTotalMusics: function loadTotalMusics(sortingParam) {
       var _this2 = this;
+
+      if (this.$route.params.playlist_id) {
+        console.log('total playlist');
+        axios.get(window.location.origin + '/api/music/totalPlaylist_' + this.$route.params.playlist_id).then(function (_ref) {
+          var data = _ref.data;
+          _this2.totalMusics = data;
+        });
+      } else {
+        console.log('total music');
+        axios.get(window.location.origin + '/api/music/totalMusicList').then(function (_ref2) {
+          var data = _ref2.data;
+          _this2.totalMusics = data;
+        });
+      }
+    },
+    loadMusics: function loadMusics(page, sortingParam) {
+      var _this3 = this;
 
       this.page = page;
 
@@ -4214,10 +4232,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.sortParam = sortingParam;
 
       if (this.$route.params.playlist_id) {
-        var musicList = axios.get(window.location.origin + '/api/music/playlist_' + sortingParam + '-' + this.$route.params.playlist_id + '?page=' + this.page).then(function (_ref) {
-          var data = _ref.data;
-          _this2.musics = [].concat(_toConsumableArray(_this2.musics), _toConsumableArray(data.data));
-          _this2.last_page = data.last_page; //this.file = data.data[0].filename;
+        var musicList = axios.get(window.location.origin + '/api/music/playlist_' + sortingParam + '-' + this.$route.params.playlist_id + '?page=' + this.page).then(function (_ref3) {
+          var data = _ref3.data;
+          _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+          _this3.last_page = data.last_page; //this.file = data.data[0].filename;
 
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
@@ -4228,9 +4246,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               var item = _step.value;
 
               //console.log(item.filepath);
-              _this2.fileArr.push(item.filename);
+              _this3.fileArr.push(item.filename);
 
-              _this2.judulArr.push(item.judul);
+              _this3.judulArr.push(item.judul);
             }
           } catch (err) {
             _didIteratorError = true;
@@ -4247,7 +4265,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             }
           }
 
-          _this2.dataLoaded = 1;
+          _this3.dataLoaded = 1;
         });
       } else {
         var index = sortingParam.indexOf('@'); //console.log(index);
@@ -4255,10 +4273,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         sortingParam = sortingParam.slice(0, index); //console.log(sortingParam);
 
         if (sortingParam == 'judul') {
-          var _musicList = axios.get(window.location.origin + '/api/music/getMusicListByTitle?page=' + this.page).then(function (_ref2) {
-            var data = _ref2.data;
-            _this2.musics = [].concat(_toConsumableArray(_this2.musics), _toConsumableArray(data.data));
-            _this2.last_page = data.last_page;
+          var _musicList = axios.get(window.location.origin + '/api/music/getMusicListByTitle?page=' + this.page).then(function (_ref4) {
+            var data = _ref4.data;
+            _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+            _this3.last_page = data.last_page;
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
             var _iteratorError2 = undefined;
@@ -4267,9 +4285,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               for (var _iterator2 = data.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                 var item = _step2.value;
 
-                _this2.fileArr.push(item.filename);
+                _this3.fileArr.push(item.filename);
 
-                _this2.judulArr.push(item.judul);
+                _this3.judulArr.push(item.judul);
               }
             } catch (err) {
               _didIteratorError2 = true;
@@ -4286,13 +4304,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               }
             }
 
-            _this2.dataLoaded = 1;
+            _this3.dataLoaded = 1;
           });
         } else if (sortingParam == 'created_at') {
-          var _musicList2 = axios.get(window.location.origin + '/api/music/getMusicListByUploadDate?page=' + this.page).then(function (_ref3) {
-            var data = _ref3.data;
-            _this2.musics = [].concat(_toConsumableArray(_this2.musics), _toConsumableArray(data.data));
-            _this2.last_page = data.last_page; //this.musics = [].concat(this.musics, data.data);
+          var _musicList2 = axios.get(window.location.origin + '/api/music/getMusicListByUploadDate?page=' + this.page).then(function (_ref5) {
+            var data = _ref5.data;
+            _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+            _this3.last_page = data.last_page; //this.musics = [].concat(this.musics, data.data);
 
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
@@ -4302,9 +4320,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               for (var _iterator3 = data.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                 var item = _step3.value;
 
-                _this2.fileArr.push(item.filename);
+                _this3.fileArr.push(item.filename);
 
-                _this2.judulArr.push(item.judul);
+                _this3.judulArr.push(item.judul);
               }
             } catch (err) {
               _didIteratorError3 = true;
@@ -4321,7 +4339,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               }
             }
 
-            _this2.dataLoaded = 1;
+            _this3.dataLoaded = 1;
           });
         }
       }
@@ -4396,10 +4414,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         'action': 'play',
         'filename': path.split('/')[path.split('/').length - 1]
       };
-      axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref4) {
-        var data = _ref4.data;
-      })["catch"](function (_ref5) {
-        var error = _ref5.error;
+      axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref6) {
+        var data = _ref6.data;
+      })["catch"](function (_ref7) {
+        var error = _ref7.error;
         console.error(error);
 
         if (error.response.data.error.statusCode === 401) {
@@ -4421,8 +4439,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     download: function download(judul, path, id) {
       axios.get(path, {
         responseType: 'blob'
-      }).then(function (_ref6) {
-        var data = _ref6.data;
+      }).then(function (_ref8) {
+        var data = _ref8.data;
         var blob = new Blob([data], {
           type: 'audio/mp3'
         });
@@ -4437,18 +4455,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           'filename': path.split('/')[path.split('/').length - 1] //path.replace('/storage/uploadedMusic/', ''),
 
         };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref7) {
-          var data = _ref7.data;
-        })["catch"](function (_ref8) {
-          var error = _ref8.error;
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {
+          var data = _ref9.data;
+        })["catch"](function (_ref10) {
+          var error = _ref10.error;
           console.error(error);
 
           if (error.response.data.error.statusCode === 401) {
             location.reload();
           }
         });
-      })["catch"](function (_ref9) {
-        var error = _ref9.error;
+      })["catch"](function (_ref11) {
+        var error = _ref11.error;
         console.log(error);
 
         if (error.response.data.error.statusCode === 401) {
@@ -4457,26 +4475,26 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       });
     },
     addToWishlist: function addToWishlist(music_id, music_judul) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$confirm('Add ' + music_judul + ' to your wishlist?', '', 'question').then(function () {
         var postToWishlist = {
           'music_id': music_id
         };
-        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref10) {
-          var response = _ref10.response;
+        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref12) {
+          var response = _ref12.response;
 
-          _this3.$alert(music_judul + ' added to your wishlist', '', 'success');
-        })["catch"](function (_ref11) {
-          var error = _ref11.error;
+          _this4.$alert(music_judul + ' added to your wishlist', '', 'success');
+        })["catch"](function (_ref13) {
+          var error = _ref13.error;
           console.error(error);
 
           if (error.response.data.error.statusCode === 401) {
             location.reload();
           }
         });
-      })["catch"](function (_ref12) {
-        var error = _ref12.error;
+      })["catch"](function (_ref14) {
+        var error = _ref14.error;
         console.error(error);
 
         if (error.response.data.error.statusCode === 401) {
@@ -4489,7 +4507,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.modal_music_judul = music_judul;
     },
     deleteMusic: function deleteMusic(music_id, music_judul) {
-      var _this4 = this;
+      var _this5 = this;
 
       var playlist = 'Music Bank permanently';
       var confirm_type = 'warning';
@@ -4500,39 +4518,39 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
 
       this.$confirm('Delete ' + music_judul + ' from ' + playlist + '?', '', confirm_type).then(function () {
-        if (_this4.$route.params.playlist_id) {
+        if (_this5.$route.params.playlist_id) {
           var patchMusic = {
             'act': 'remove_from_playlist',
             'playlist_detail_id': music_id,
-            'playlist_id': _this4.$route.params.playlist_id
+            'playlist_id': _this5.$route.params.playlist_id
           };
-          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref13) {
-            var response = _ref13.response;
+          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref15) {
+            var response = _ref15.response;
 
-            _this4.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
+            _this5.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
 
-            _this4.loadMusics(1);
-          })["catch"](function (_ref14) {
-            var error = _ref14.error;
+            _this5.loadMusics(1);
+          })["catch"](function (_ref16) {
+            var error = _ref16.error;
 
-            _this4.$alert(error.message, '', 'error');
+            _this5.$alert(error.message, '', 'error');
 
             if (error.response.data.error.statusCode === 401) {
               location.reload();
             }
           });
         } else {
-          _this4.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
-            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref15) {
-              var response = _ref15.response;
+          _this5.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
+            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref17) {
+              var response = _ref17.response;
 
-              _this4.$alert('Delete Successful', '', 'success');
+              _this5.$alert('Delete Successful', '', 'success');
 
-              _this4.loadMusics(1);
-            })["catch"](function (_ref16) {
-              var error = _ref16.error;
+              _this5.loadMusics(1);
+            })["catch"](function (_ref18) {
+              var error = _ref18.error;
 
-              _this4.$alert(error.message, '', 'error');
+              _this5.$alert(error.message, '', 'error');
 
               if (error.response.data.error.statusCode === 401) {
                 location.reload();
@@ -4540,8 +4558,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             });
           });
         }
-      })["catch"](function (_ref17) {
-        var error = _ref17.error;
+      })["catch"](function (_ref19) {
+        var error = _ref19.error;
         console.error(error);
 
         if (error.response.data.error.statusCode === 401) {
@@ -4550,18 +4568,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       });
     },
     deletePlaylist: function deletePlaylist(id, nama_playlist) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.$confirm('Confirm Delete Playlist ' + nama_playlist + ' and all the content?', '', 'error').then(function (res) {
         axios["delete"](window.location.origin + '/api/playlist/' + id).then(function (result) {
-          _this5.$alert('Delete Success', '', 'success');
+          _this6.$alert('Delete Success', '', 'success');
 
           location.reload();
         });
       });
     },
     renamePlaylist: function renamePlaylist(id, nama_playlist) {
-      var _this6 = this;
+      var _this7 = this;
 
       //this.$confirm('Confirm Delete Playlist '+nama_playlist+' and all the content?', '', 'error')
       this.$prompt("Rename Playlist", nama_playlist).then(function (text) {
@@ -4573,7 +4591,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           'playlist_new_name': text
         };
         axios.post(window.location.origin + '/api/playlist', renamePlaylist).then(function (result) {
-          _this6.$alert('Rename Success', '', 'success');
+          _this7.$alert('Rename Success', '', 'success');
 
           location.reload();
         });
@@ -4582,11 +4600,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   },
   watch: {
     '$route.params.playlist_id': function $routeParamsPlaylist_id(playlist_id) {
+      this.musics = [];
       this.loadMusics(1);
+      this.loadTotalMusics();
     }
   },
   mounted: function mounted() {
     this.loadMusics(1);
+    this.loadTotalMusics();
   }
 });
 
@@ -17137,7 +17158,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".fixed-content[data-v-41feb83b] {\n  position: fixed;\n  z-index: 99;\n  background-color: #ecf0f5;\n  padding: 0;\n}\n.fixed-content > h3[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n.waveform-container[data-v-41feb83b] {\n  display: -webkit-inline-box;\n  display: inline-flex;\n}\n.audio-player[data-v-41feb83b] {\n  width: 500px;\n}\n.card-tools[data-v-41feb83b], .card-header[data-v-41feb83b] {\n  text-align: right;\n}\n.button-container[data-v-41feb83b] {\n  float: left;\n}\n#header-table[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n#content-table[data-v-41feb83b] {\n  margin-top: 213px;\n}\n.headerButton[data-v-41feb83b]:hover {\n  background-color: #d5eaf5;\n  cursor: pointer;\n  transition: all 0.4s ease;\n  -webkit-transition: all 0.4s ease;\n}\n.search-container[data-v-41feb83b] {\n  display: inline-block;\n  width: 250px;\n  margin-bottom: 6px;\n}\n.has-search .form-control-feedback[data-v-41feb83b] {\n  right: initial;\n  left: 0;\n  color: #ccc;\n}\n.has-search .form-control[data-v-41feb83b] {\n  padding-right: 12px;\n  padding-left: 34px;\n}", ""]);
+exports.push([module.i, ".fixed-content[data-v-41feb83b] {\n  position: fixed;\n  z-index: 99;\n  background-color: #ecf0f5;\n  padding: 0;\n}\n.fixed-content > h3[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n.waveform-container[data-v-41feb83b] {\n  display: -webkit-inline-box;\n  display: inline-flex;\n}\n.audio-player[data-v-41feb83b] {\n  width: 500px;\n}\n.card-tools[data-v-41feb83b], .card-header[data-v-41feb83b] {\n  text-align: right;\n}\n.button-container[data-v-41feb83b] {\n  float: left;\n}\n#header-table[data-v-41feb83b] {\n  margin-bottom: 0;\n}\n#content-table[data-v-41feb83b] {\n  margin-top: 215px;\n}\n.headerButton[data-v-41feb83b]:hover {\n  background-color: #d5eaf5;\n  cursor: pointer;\n  transition: all 0.4s ease;\n  -webkit-transition: all 0.4s ease;\n}\n.search-container[data-v-41feb83b] {\n  display: inline-block;\n  width: 250px;\n  margin-bottom: 6px;\n}\n.has-search .form-control-feedback[data-v-41feb83b] {\n  right: initial;\n  left: 0;\n  color: #ccc;\n}\n.has-search .form-control[data-v-41feb83b] {\n  padding-right: 12px;\n  padding-left: 34px;\n}", ""]);
 
 // exports
 
@@ -90519,13 +90540,13 @@ var render = function() {
                     ),
                     _c("br"),
                     _vm._v(" "),
-                    _c("small", [_vm._v(_vm._s(_vm.musics.length) + " musics")])
+                    _c("small", [_vm._v(_vm._s(_vm.totalMusics) + " musics")])
                   ])
                 : _c("h3", [
                     _vm._v("\n              All Music "),
                     _c("br"),
                     _vm._v(" "),
-                    _c("small", [_vm._v(_vm._s(_vm.musics.length) + " musics")])
+                    _c("small", [_vm._v(_vm._s(_vm.totalMusics) + " musics")])
                   ]),
               _vm._v(" "),
               _c("div", { staticClass: "card-header" }, [

@@ -129,6 +129,13 @@ class MusicController extends Controller
     public function show($id){
         if($id == 'plain_playlist'){ //return $id;
             return Playlist::where('status', '1')->orderBy('nama_playlist', 'asc')->get();
+        }else if($id == 'totalMusicList'){
+            return Music::where('status', 1)->count();
+        }else if(strpos($id, 'totalPlaylist') !== false){
+            $index = strpos($id, '_');
+            $playlist = substr($id, ($index+1));
+            return collect(self::flatten(Playlist::where(['status' => 1, 'id' => $playlist])
+                ->with('music')->with('allChildrenContent')->get(), ''))->count();
         }else if($id == 'getMusicListByUploadDate'){
             return Music::latest()->where('status', '=', '1')->paginate(10);
         }else if($id == 'getMusicListByTitle'){
