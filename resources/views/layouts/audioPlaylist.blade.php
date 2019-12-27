@@ -103,7 +103,7 @@
                 <span>Report</span>
               </router-link>
             </li>
-            @if(Auth::user()->privilege == 1)
+            @if(Auth::user()->user_type == 1)
               <li>
                 <router-link to="/manage-users">
                   <i class="nav-icon fas fa-cog color-green fa-fw"></i>

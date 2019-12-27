@@ -468,7 +468,7 @@
               'playlist_new_name' : text,
             }
             axios.post(window.location.origin+'/api/playlist', renamePlaylist).then(result => {
-              this.$alert('Delete Success', '', 'success');
+              this.$alert('Rename Success', '', 'success');
               location.reload();
             });
           }

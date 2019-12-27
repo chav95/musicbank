@@ -9,7 +9,7 @@ class UserType extends Model
     protected $table = 'user_type';
 
     public function user(){
-        return $this->hasMany('App\User', 'privilege');
+        return $this->hasMany('App\User', 'user_type');
     }
 
     public function getTypeAttribute(){ //accessor

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\HakAkses;
+use App\User;
 
 class HakAksesController extends Controller
 {
@@ -35,8 +36,16 @@ class HakAksesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    { 
+        if($request->act){
+            if($request->act == 'create_hak_akses'){
+                $new = new HakAkses;
+                $new->type = $request->type;
+                $new->save();
+
+                return response()->json(array('act' => $request->act, 'success' => true, 'result' => $new->id), 200);
+            }
+        }
     }
 
     /**
@@ -81,6 +90,7 @@ class HakAksesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::where('hak_akses', $id)->update(['user_type' => 0]);
+        return HakAkses::where('id', $id)->delete();
     }
 }

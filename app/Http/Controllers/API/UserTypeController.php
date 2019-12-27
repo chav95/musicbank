@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\UserType;
+use App\User;
 
 class UserTypeController extends Controller
 {
@@ -36,7 +37,15 @@ class UserTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->act){
+            if($request->act == 'create_user_type'){
+                $new = new UserType;
+                $new->type = $request->type;
+                $new->save();
+
+                return response()->json(array('act' => $request->act, 'success' => true, 'result' => $new->id), 200);
+            }
+        }
     }
 
     /**
@@ -81,6 +90,7 @@ class UserTypeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::where('user_type', $id)->update(['user_type' => 0]);
+        return UserType::where('id', $id)->delete();
     }
 }

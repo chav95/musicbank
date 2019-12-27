@@ -11,8 +11,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
     
-    public function privilege(){
-        return $this->belongsTo('App\UserType', 'privilege');
+    public function userType(){
+        return $this->belongsTo('App\UserType', 'user_type');
     }
     public function hakAkses(){
         return $this->belongsTo('App\HakAkses', 'hak_akses');
@@ -33,7 +33,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'api_token', 'privilege', 'hak_akses',
+        'name', 'email', 'password', 'api_token', 'user_type', 'hak_akses',
     ];
 
     /**

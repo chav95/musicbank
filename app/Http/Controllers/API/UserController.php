@@ -28,8 +28,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::select('id', 'name', 'email', 'privilege', 'hak_akses', 'created_at')
-            ->with('privilege')->with('hakAkses')
+        return User::select('id', 'name', 'email', 'user_type', 'hak_akses', 'created_at')
+            ->with('userType')->with('hakAkses')
             ->where('status', '=', '1')->orderBy('name', 'asc')->paginate(10);
     }
 
@@ -48,7 +48,7 @@ class UserController extends Controller
                 $this->validate($request, [
                     'name' => 'required|string|max:191',
                     'email' => 'required|string|email|max:191|unique:users,email,'.$request->selectedUserId,
-                    'privilege' => 'required|integer',
+                    'user_type' => 'required|integer',
                     'hak_akses' => 'required|integer'
                 ]);
 
@@ -59,14 +59,14 @@ class UserController extends Controller
                     ->update([
                         'name' => $request->name,
                         'email' => $request->email,
-                        'privilege' => $request->privilege,
+                        'user_type' => $request->user_type,
                         'hak_akses' => $request->hak_akses,
                     ]);
             }else if($request->act == 'new_user'){
                 $this->validate($request, [
                     'name' => 'required|string|max:191',
                     'email' => 'required|string|email|max:191|unique:users',
-                    'privilege' => 'required|integer',
+                    'user_type' => 'required|integer',
                     'hak_akses' => 'required|integer'
                 ]);
 
@@ -74,7 +74,7 @@ class UserController extends Controller
                     'name' => $request['name'],
                     'email' => $request['email'],
                     'password' => Hash::make('123456'),
-                    'privilege' => $request['privilege'],
+                    'user_type' => $request['user_type'],
                     'hak_akses' => $request['hak_akses'],
                 ]);
             }

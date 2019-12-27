@@ -5,9 +5,10 @@
         Users <br>
         <small>Manage Users</small>
       </h1>
-      <button class="btn btn-primary" id="createUserBtn" @click="creeateUser">Create New User</button>
-      <button class="btn btn-primary" id="createUserBtn" @click="creeateUser">Create New User Type</button>
-      <button class="btn btn-primary" id="createUserBtn" @click="creeateUser">Create New Dept/Division</button>
+      <button class="btn btn-primary createBtn" id="createUserBtn" @click="creeateUser">Create New User</button>
+      <button class="btn btn-primary createBtn" @click="manageUserCategory('user_type')">Manage User Type</button>
+      <button class="btn btn-primary createBtn" @click="manageUserCategory('hak_akses')">Manage Dept/Division</button>
+      <user-category :category="category"></user-category>
     </section>
 
     <section class="content container-fluid">
@@ -35,7 +36,7 @@
                     <tr  v-for="user in allUser.data" :key="user.id" hover:bg-blue px-4 py2>
                       <td>{{user.name}}</td>
                       <td>{{user.email}}</td>
-                      <td>{{user.privilege.type}}</td>
+                      <td>{{user.user_type.type}}</td>
                       <td>{{user.hak_akses.type}}</td>
                       <td>{{formatDatetime(user.created_at)}}</td>
                       <td>
@@ -90,15 +91,15 @@
                   </div>
                   <div class="form-group">
                     <label>User Type</label>
-                    <select v-model="form.privilege" name="privilege" class="form-control" :class="{'is-invalid': form.errors.has('privilege')}">
+                    <select v-model="form.user_type" name="user_type" class="form-control" :class="{'is-invalid': form.errors.has('user_type')}">
                       <option value="" selected disabled hidden>Select User Type</option>
-                      <option v-for="(item, index) in privilegeArr" :key="index" :value="item.id">{{item.type}}</option>
+                      <option v-for="(item, index) in userTypeArr" :key="index" :value="item.id">{{item.type}}</option>
                     </select>
-                    <has-error :form="form" field="privilege"></has-error>
+                    <has-error :form="form" field="user_type"></has-error>
                   </div>
                   <div class="form-group">
                     <label>Dept/Division</label>
-                    <select v-model="form.hak_akses" name="hak_akses" class="form-control" :class="{'is-invalid': form.errors.has('privilege')}">
+                    <select v-model="form.hak_akses" name="hak_akses" class="form-control" :class="{'is-invalid': form.errors.has('hak_akses')}">
                       <option value="" selected disabled hidden>Select Dept/Division</option>
                       <option v-for="(item, index) in hakAksesArr" :key="index" :value="item.id">{{item.type}}</option>
                     </select>
@@ -122,8 +123,12 @@
 <script>
   import Form from 'vform';
   import moment from 'moment';
+  import UserCategory from './reusables/UserCategory.vue';
 
   export default {
+    components: {
+      UserCategory,
+    },
     data(){
       return{
         modalTitle: String,
@@ -133,18 +138,22 @@
           selectedUserId: Number,
           name: String,
           email: String,
-          privilege: Number,
+          user_type: Number,
           hak_akses: Number,
         }),
         allUser: {data: {}},
-        privilegeArr: [],
+        userTypeArr: [],
         hakAksesArr: [],
+
+        category: null,
       }
     },
     methods: {
       loadAllUser(){
         axios.get(window.location.origin+'/api/user').then(({data}) => (this.allUser = data));
-        axios.get(window.location.origin+'/api/user_type').then(({data}) => (this.privilegeArr = data));
+      },
+      loadUserCategory(){
+        axios.get(window.location.origin+'/api/user_type').then(({data}) => (this.userTypeArr = data));
         axios.get(window.location.origin+'/api/hak_akses').then(({data}) => (this.hakAksesArr = data));
       },
       formatDatetime(datetime){
@@ -163,7 +172,7 @@
         this.form.act = 'new_user';
         this.form.name = '';
         this.form.email = '';
-        this.form.privilege = '';
+        this.form.user_type = '';
         this.form.hak_akses = '';
         $('#modifyModal').modal('show');
       },
@@ -174,9 +183,13 @@
         this.form.act = 'edit_user';
         this.form.name = selectedUser.name;
         this.form.email = selectedUser.email;
-        this.form.privilege = selectedUser.privilege.id;
+        this.form.user_type = selectedUser.user_type.id;
         this.form.hak_akses = selectedUser.hak_akses.id;
         $('#modifyModal').modal('show');
+      },
+      manageUserCategory(category){
+        this.category = category;
+        $('#ManageUserCategoryModal').modal('show');
       },
       submitUser(){
         this.form.post(window.location.origin+'/api/user').then(({ data }) => {
@@ -195,7 +208,7 @@
           'id': this.form.selectedUserId,
           'name': this.form.name,
           'email': this.form.email,
-          'privilege': this.form.privilege,
+          'user_type': this.form.user_type,
           'hak_akses': this.form.hak_akses,
         }; console.log(userInfo);*/
 
@@ -229,13 +242,14 @@
     },
     mounted(){
         this.loadAllUser();
+        this.loadUserCategory();
         //console.log('Component mounted.')
     }
   }
 </script>
 
 <style scoped>
-  #createUserBtn{
+  .createBtn{
     margin-top: 4px;
   }
 </style>
