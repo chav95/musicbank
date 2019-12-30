@@ -1,17 +1,13 @@
 <template>
   <div class="container">
-    <section class="content-header">
-      <h1>
-        {{($route.params.wishlist_id ? this.$options.filters.capitalize($route.params.wishlist_title) : 'Wishlist')}} <br>
-        <small>{{($route.params.wishlist_id ? 'Music List' : 'Your Wishlist')}}</small>
-      </h1>
-      <router-link v-if="$route.params.wishlist_id" class="btn btn-primary" to="/wishlist">Back To Wishlist</router-link>
-    </section>
-
-    <section class="content container-fluid">
       <div class="row justify-content-center mt-4 mb-4 h-100">
         <div class="col-12">
           <div class="card my-auto">
+            <h2>
+              {{($route.params.wishlist_id ? this.$options.filters.capitalize($route.params.wishlist_title) : 'Wishlist')}} <br>
+              <small>{{($route.params.wishlist_id ? 'Music List' : 'Your Wishlist')}}</small>
+            </h2>
+            <router-link v-if="$route.params.wishlist_id" class="btn btn-primary" to="/wishlist">Back To Wishlist</router-link>
             <div class="card-header">
               <pagination :data="wishlist" @pagination-change-page="getResults"></pagination>
             </div>
@@ -25,11 +21,11 @@
                   :autoPlay="autoPlay" 
                   v-on:playNext="nextMusic">
                 </audio-player>
-
-                <button v-else type="button" class="btn btn-primary create-wishlist" data-toggle="modal" data-target="#CreateWishlistModal">
-                  Create New Playlist
-                </button>
               </div>
+
+              <button v-if="!$route.params.wishlist_id" type="button" class="btn btn-primary create-wishlist" data-toggle="modal" data-target="#CreateWishlistModal">
+                Create New Playlist
+              </button>
               
               <table v-if="$route.params.wishlist_id" class="table table-head-fixed">
                 <thead>
@@ -144,7 +140,6 @@
           <!-- /.card -->
         </div>        
       </div>
-    </section>
 
     <add-wishlist v-on:wishlistCreated="loadWishlist"></add-wishlist>
   </div>
@@ -323,12 +318,16 @@
 </script>
 
 <style lang="scss" scoped>
-  .card-tools{
-    text-align: right;
+  h2{
+    margin-bottom: 0;
   }
 
-  .create-wishlist{
-    float: left;
+  table{
+    margin-top: 10px;
+  }
+
+  .card-tools{
+    text-align: right;
   }
 
   .status{

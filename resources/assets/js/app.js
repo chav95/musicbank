@@ -14,7 +14,7 @@ window.form = Form
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
 
-import VueSimpleAlert from "vue-simple-alert";
+import VueSimpleAlert from "vue-simple-alert"
 import moment from 'moment'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
@@ -24,6 +24,7 @@ import draggable from 'vuedraggable'
 import VueHead from 'vue-head'
 import AudioVisual from 'vue-audio-visual'
 import infiniteScroll from 'vue-infinite-scroll'
+import VueApexCharts from 'vue-apexcharts'
 
 Vue.use(VueSimpleAlert)
 Vue.use(moment)
@@ -35,6 +36,7 @@ Vue.use(draggable)
 Vue.use(VueHead)
 Vue.use(AudioVisual)
 Vue.use(infiniteScroll)
+Vue.use(VueApexCharts)
 
 let routes = [
     {path: '/all-music', component: require('./components/AllMusic.vue').default},
@@ -51,7 +53,7 @@ let routes = [
         component: require('./components/Wishlist.vue').default
     },
     {path: '/log', component: require('./components/Log.vue').default},
-    {path: '/report', component: require('./components/Report.vue').default},
+    {path: '/dashboard', component: require('./components/Dashboard.vue').default},
     {path: '/manage-users', component: require('./components/Users.vue').default},
 ]
 
@@ -113,6 +115,7 @@ Vue.component('add-playlist', require('./components/reusables/AddPlaylist.vue').
 Vue.component('playlist-sidebar', require('./components/PlaylistSidebar.vue').default);
 
 Vue.component('pagination', require('laravel-vue-pagination'));
+Vue.component('apexchart', VueApexCharts);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

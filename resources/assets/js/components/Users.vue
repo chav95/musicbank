@@ -1,20 +1,16 @@
 <template>
   <div class="container">
-    <section class="content-header">
-      <h1>
-        Users <br>
-        <small>Manage Users</small>
-      </h1>
-      <button class="btn btn-primary createBtn" id="createUserBtn" @click="creeateUser">Create New User</button>
-      <button class="btn btn-primary createBtn" @click="manageUserCategory('user_type')">Manage User Type</button>
-      <button class="btn btn-primary createBtn" @click="manageUserCategory('hak_akses')">Manage Dept/Division</button>
-      <user-category :category="category"></user-category>
-    </section>
-
-    <section class="content container-fluid">
       <div class="row justify-content-center mt-4 mb-4">
         <div class="col-12">
           <div class="card">
+            <h2>
+              Users <br>
+              <small>Manage Users</small>
+            </h2>
+            <button class="btn btn-primary createBtn" id="createUserBtn" @click="creeateUser">Create New User</button>
+            <button class="btn btn-primary createBtn" @click="manageUserCategory('user_type')">Manage User Type</button>
+            <button class="btn btn-primary createBtn" @click="manageUserCategory('hak_akses')">Manage Dept/Division</button>
+            <user-category :category="category"></user-category>
             <div class="card-header">
               <pagination :data="allUser" @pagination-change-page="getResults"></pagination>
             </div>
@@ -116,7 +112,6 @@
           </div>
         </div>
       </div>
-    </section>
   </div>
 </template>
 

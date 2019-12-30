@@ -1,16 +1,12 @@
 <template>
   <div class="container">
-    <section class="content-header">
-      <h1>
-        Log <br>
-        <small>List Of Downloads</small>
-      </h1>
-    </section>
-
-    <section class="content container-fluid">
       <div class="row justify-content-center mt-4 mb-4">
         <div class="col-12">
           <div class="card">
+            <h2>
+              Log <br>
+              <small>List Of Downloads</small>
+            </h2>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0" style="height: 100%;">
               <table class="table table-head-fixed">
@@ -43,7 +39,6 @@
           <!-- /.card -->
         </div>        
       </div>
-    </section>
   </div>
 </template>
 

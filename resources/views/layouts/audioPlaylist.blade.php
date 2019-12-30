@@ -22,7 +22,7 @@
       <header class="main-header">
     
         <!-- Logo -->
-        <a href="index2.html" class="logo">
+        <a href="/dashboard" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>A</b>LT</span>
           <!-- logo for regular state and mobile devices -->
@@ -86,6 +86,12 @@
               </router-link>
             </li>-->
             <li>
+              <router-link to="/dashboard">
+                <i class="fas fa-chart-line nav-icon color-blue fa-fw"></i>
+                <span>Dashboard</span>
+              </router-link>
+            </li>
+            <li>
               <router-link to="/wishlist">
                 <i class="nav-icon fas fa-headphones color-purple fa-fw"></i>
                 <span>Wishlist</span>
@@ -95,12 +101,6 @@
               <router-link to="/log">
                 <i class="nav-icon fas fa-clipboard-list color-orange fa-fw"></i>
                 <span>Log</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link to="/report">
-                <i class="fas fa-chart-line nav-icon color-blue fa-fw"></i>
-                <span>Report</span>
               </router-link>
             </li>
             @if(Auth::user()->user_type == 1)

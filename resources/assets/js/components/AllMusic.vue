@@ -16,14 +16,14 @@
         <div class="col-12">
           <div class="card my-auto">
             <div class="container fixed-content">
-              <h3 v-if="$route.params.playlist_id">
+              <h2 v-if="$route.params.playlist_id">
                 {{($route.params.playlist_name ? $route.params.playlist_name.replace('-', ' ') : '')}} <br>
                 <small>{{totalMusics}} musics</small>
-              </h3>
-              <h3 v-else>
+              </h2>
+              <h2 v-else>
                 All Music <br>
                 <small>{{totalMusics}} musics</small>
-              </h3>
+              </h2>
               <div class="card-header">
                 <div class="button-container">
                   <button class="btn btn-primary" data-toggle="modal" data-target="#CreatePlaylist"
@@ -510,7 +510,7 @@
     background-color: #ecf0f5;
     padding: 0;
 
-    & > h3{
+    & > h2{
       margin-bottom: 0;
     }
   }
@@ -536,7 +536,7 @@
   }
 
   #content-table{
-    margin-top: 215px;
+    margin-top: 230px;
   }
 
   .headerButton:hover{
