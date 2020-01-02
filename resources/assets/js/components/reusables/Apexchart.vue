@@ -1,5 +1,5 @@
 <template>
-    <apexchart :width="width" :type="chartType" :options="options" :series="series"></apexchart>
+    <apexchart :width="width" :type="chartType" :options="options" :series="series" ref="chart"></apexchart>
 </template>
 
 <script>
@@ -10,7 +10,7 @@
         props:{
             chartType: {
                 type: String,
-                default: 'bar',
+                default: '',
             },
             width: Number,
             options: Object,
@@ -22,8 +22,16 @@
             }
         },
         methods: {
-            loadData(){
-                axios.get(window.location.origin+'/api/');
+            updateChart(){
+                this.$refs.chart.updateSeries([{
+                    data: makeData()
+                }])
+            }
+        },
+        watch:{
+            chartType: function(){ console.log('changed');
+                var chart = new ApexCharts(document.querySelector('#'+this.options.chart.id), this.options);
+                chart.render();
             }
         },
         mounted(){

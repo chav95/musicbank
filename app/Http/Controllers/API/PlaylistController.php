@@ -100,10 +100,25 @@ class PlaylistController extends Controller
             $playlist = new Playlist;
             $allPlaylist = $playlist->tree();
 
-            $playlistSelection = self::playlistSelection($allPlaylist);
+            $result = self::playlistSelection($allPlaylist);
+        }else if($id == 'getOuterPlaylistComposition'){
+            $outerPlaylist = Playlist::where(['status' => 1, 'parent_id' => 0])->orderBy('nama_playlist', 'asc')->get();
 
-            return $playlistSelection;
+            $result = [];
+            foreach($outerPlaylist as $item){
+                
+
+                $temp_array = array(
+                    'label' => $item['nama_playlist'],
+                    'number' => collect(self::flatten(Playlist::where(['status' => 1, 'id' => $item['id']])
+                                ->with('music')->with('allChildrenContent')->get(), ''))->count(),
+                );
+                
+                array_push($result, $temp_array);
+            }
+                
         }
+        return $result;
     }
 
     protected function playlistSelection($allPlaylist){
@@ -130,6 +145,26 @@ class PlaylistController extends Controller
         }
 
         return $playlistArr;
+    }
+
+    protected function flatten($object, $path){
+        $result = [];
+        foreach ($object as $array){
+            //return $array;
+            $curr_path = $path.'/'.$array['nama_playlist'];
+            foreach($array['music'] as $item){
+                /*$result[] = array_filter($array, function($object){
+                    return ! is_array($object);
+                });*/
+                $item['folder_path'] = $curr_path;
+                //return $item;
+                //result[] = $item;
+                array_push($result, $item);
+            }
+            $result = array_merge($result, self::flatten($array['allChildrenContent'], $curr_path));         
+        }
+        is_object($result) ? $result = $result->toArray() : $result;
+        return array_filter($result);
     }
 
     /**

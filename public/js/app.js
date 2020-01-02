@@ -4741,6 +4741,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _reusables_Apexchart_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./reusables/Apexchart.vue */ "./resources/assets/js/components/reusables/Apexchart.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4794,7 +4828,10 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      uploaded: {
+      music_data: null,
+      log_data: null,
+      playlist_data: null,
+      uploadedTest: {
         options: {
           chart: {
             id: 'most-downloaded',
@@ -4809,7 +4846,7 @@ __webpack_require__.r(__webpack_exports__);
           data: [91, 82, 70, 63, 41]
         }]
       },
-      uploadedBar: {
+      uploadedBarTest: {
         options: {
           chart: {
             id: 'uploaded-monthly',
@@ -4829,7 +4866,7 @@ __webpack_require__.r(__webpack_exports__);
           data: [50, 49, 60, 70, 91, 82]
         }]
       },
-      uploadedPie: {
+      uploadedPieTest: {
         chartType: 'pie',
         chartOptions: {
           labels: ['01_SOUND_EFFECTS', '02_MUSIC_LIBRARIAN', '03_VOICE_OVER'],
@@ -4852,15 +4889,243 @@ __webpack_require__.r(__webpack_exports__);
           labels: ['01_SOUND_EFFECTS', '02_MUSIC_LIBRARIAN', '03_VOICE_OVER']
         },
         series: [49, 60, 91]
+      },
+      uploadedBar: {
+        options: {
+          chart: {
+            id: 'uploaded-monthly',
+            type: 'bar'
+          },
+          xaxis: {
+            categories: []
+          },
+          plotOptions: {
+            bar: {
+              horizontal: true
+            }
+          }
+        },
+        series: [{
+          name: 'Uploads',
+          data: []
+        }]
+      },
+      mostDownload: {
+        options: {
+          chart: {
+            id: 'most-downloaded',
+            type: 'bar'
+          },
+          xaxis: {
+            categories: []
+          }
+        },
+        series: [{
+          name: 'Download',
+          data: []
+        }]
+      },
+      musicCompositionPie: {
+        chartType: 'pie',
+        chartOptions: {
+          labels: [],
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }]
+        },
+        options: {
+          chart: {
+            id: 'uploaded-category'
+          },
+          labels: []
+        },
+        series: []
       }
     };
   },
   methods: {
     loadData: function loadData() {
-      axios.get(window.location.origin + '/api/');
+      var _this = this;
+
+      axios.get(window.location.origin + '/api/music/getUploadedMusicPerMonth').then(function (_ref) {
+        var data = _ref.data;
+        return _this.music_data = data;
+      });
+      axios.get(window.location.origin + '/api/log').then(function (_ref2) {
+        var data = _ref2.data;
+        return _this.log_data = data;
+      });
+      axios.get(window.location.origin + '/api/playlist').then(function (_ref3) {
+        var data = _ref3.data;
+        return _this.playlist_data = data;
+      });
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    var _this2 = this;
+
+    axios.get(window.location.origin + '/api/log/getMostDownloadThisMonth').then(function (_ref4) {
+      var data = _ref4.data;
+      _this2.log_data = data;
+      var categoryLabel = [];
+      var seriesData = [];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var item = _step.value;
+          console.log(item.music.judul);
+          categoryLabel.push(item.music.judul);
+          seriesData.push(item.download);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      _this2.mostDownload = _objectSpread({}, _this2.mostDownload, {}, {
+        options: {
+          chart: {
+            id: 'most-downloaded',
+            type: 'bar'
+          },
+          xaxis: {
+            categories: categoryLabel
+          }
+        },
+        series: [{
+          name: 'Download',
+          data: seriesData
+        }]
+      });
+    });
+    axios.get(window.location.origin + '/api/music/getUploadedMusicPerMonth').then(function (_ref5) {
+      var data = _ref5.data;
+      _this2.music_data = data;
+      var categoryLabel = [];
+      var seriesData = [];
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var item = _step2.value;
+          categoryLabel.push(item.label);
+          seriesData.push(item.data);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      _this2.uploadedBar = _objectSpread({}, _this2.uploadedBar, {}, {
+        options: {
+          chart: {
+            id: 'uploaded-monthly',
+            type: 'bar'
+          },
+          xaxis: {
+            categories: categoryLabel
+          },
+          plotOptions: {
+            bar: {
+              horizontal: true
+            }
+          }
+        },
+        series: [{
+          name: 'Uploads',
+          data: seriesData
+        }]
+      });
+    });
+    axios.get(window.location.origin + '/api/playlist/getOuterPlaylistComposition').then(function (_ref6) {
+      var data = _ref6.data;
+      _this2.playlist_data = data;
+      var categoryLabel = [];
+      var seriesData = [];
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var item = _step3.value;
+          categoryLabel.push(item.label);
+          seriesData.push(item.number);
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+
+      _this2.musicCompositionPie = _objectSpread({}, _this2.musicCompositionPie, {}, {
+        chartType: 'pie',
+        chartOptions: {
+          labels: categoryLabel,
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }]
+        },
+        options: {
+          chart: {
+            id: 'uploaded-category'
+          },
+          labels: categoryLabel
+        },
+        series: seriesData
+      });
+    });
+  }
 });
 
 /***/ }),
@@ -6100,7 +6365,7 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     chartType: {
       type: String,
-      "default": 'bar'
+      "default": ''
     },
     width: Number,
     options: Object,
@@ -6110,8 +6375,17 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   methods: {
-    loadData: function loadData() {
-      axios.get(window.location.origin + '/api/');
+    updateChart: function updateChart() {
+      this.$refs.chart.updateSeries([{
+        data: makeData()
+      }]);
+    }
+  },
+  watch: {
+    chartType: function chartType() {
+      console.log('changed');
+      var chart = new ApexCharts(document.querySelector('#' + this.options.chart.id), this.options);
+      chart.render();
     }
   },
   mounted: function mounted() {}
@@ -91632,14 +91906,16 @@ var render = function() {
                 "div",
                 { staticClass: "box container-box" },
                 [
-                  _c("h4", [_vm._v("Most Downloaded This Month")]),
+                  _c("h4", [
+                    _vm._v("Most Downloaded This Month (Hardcode Data)")
+                  ]),
                   _vm._v(" "),
                   _c("apex-chart", {
                     attrs: {
-                      chartType: _vm.uploaded.charType,
-                      options: _vm.uploaded.options,
-                      series: _vm.uploaded.series,
-                      extra: _vm.uploaded.tooltip
+                      chartType: _vm.uploadedTest.charType,
+                      options: _vm.uploadedTest.options,
+                      series: _vm.uploadedTest.series,
+                      extra: _vm.uploadedTest.tooltip
                     }
                   })
                 ],
@@ -91648,6 +91924,67 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-md-4" }, [
+              _c(
+                "div",
+                { staticClass: "box container-box" },
+                [
+                  _c("h4", [_vm._v("Uploaded Music (Hardcode Data)")]),
+                  _vm._v(" "),
+                  _c("apex-chart", {
+                    attrs: {
+                      chartType: _vm.uploadedBarTest.chartType,
+                      options: _vm.uploadedBarTest.options,
+                      series: _vm.uploadedBarTest.series
+                    }
+                  })
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-4" }, [
+              _c(
+                "div",
+                { staticClass: "box container-box" },
+                [
+                  _c("h4", [
+                    _vm._v("Uploaded Music This Month (Hardcode Data)")
+                  ]),
+                  _vm._v(" "),
+                  _c("apex-chart", {
+                    attrs: {
+                      chartType: _vm.uploadedPieTest.chartType,
+                      options: _vm.uploadedPieTest.chartOptions,
+                      series: _vm.uploadedPieTest.series
+                    }
+                  })
+                ],
+                1
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("div", { staticClass: "col-md-6" }, [
+              _c(
+                "div",
+                { staticClass: "box container-box" },
+                [
+                  _c("h4", [_vm._v("Most Downloaded This Month")]),
+                  _vm._v(" "),
+                  _c("apex-chart", {
+                    attrs: {
+                      chartType: _vm.mostDownload.charType,
+                      options: _vm.mostDownload.options,
+                      series: _vm.mostDownload.series
+                    }
+                  })
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-md-6" }, [
               _c(
                 "div",
                 { staticClass: "box container-box" },
@@ -91664,20 +92001,22 @@ var render = function() {
                 ],
                 1
               )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-4" }, [
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", [
+            _c("div", { staticClass: "col-md-6" }, [
               _c(
                 "div",
                 { staticClass: "box container-box" },
                 [
-                  _c("h4", [_vm._v("Uploaded Music This Month (By Playlist)")]),
+                  _c("h4", [_vm._v("Total Music Composition (By Playlist)")]),
                   _vm._v(" "),
                   _c("apex-chart", {
                     attrs: {
-                      chartType: _vm.uploadedPie.chartType,
-                      options: _vm.uploadedPie.chartOptions,
-                      series: _vm.uploadedPie.series
+                      chartType: _vm.musicCompositionPie.chartType,
+                      options: _vm.musicCompositionPie.chartOptions,
+                      series: _vm.musicCompositionPie.series
                     }
                   })
                 ],
@@ -93546,6 +93885,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("apexchart", {
+    ref: "chart",
     attrs: {
       width: _vm.width,
       type: _vm.chartType,

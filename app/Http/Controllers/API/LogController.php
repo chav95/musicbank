@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Log;
 
 class LogController extends Controller
@@ -70,7 +71,18 @@ class LogController extends Controller
      */
     public function show($id)
     {
-        //
+        if($id == 'getMostDownloadThisMonth'){
+            $date = Carbon::today();
+            $month_string = $date->format('M Y');
+            $m = $date->format('n');
+            $y = $date->format('Y');
+            $year_month = $y.'-'.$m; //->where('created_at', 'LIKE', "{$year_month}%")
+            $data = Log::select('music_id', DB::raw('COUNT(music_id) as download'))->with('music')
+                ->groupBy('music_id')->orderByRaw('COUNT(*) DESC')->limit(5)->get();
+
+            $result = $data;
+        }
+        return $result;
     }
 
     /**

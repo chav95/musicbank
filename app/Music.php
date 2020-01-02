@@ -11,13 +11,13 @@ class Music extends Model
         return $this->hasMany('App\Log');
     }
 
-    public function playlistDetail(){
+    /*public function playlistDetail(){
         return $this->hasMany('App\PlaylistDetail');
     }
 
     public function belongToPlaylist(){
         return $this->hasManyThrough('App\Playlist', 'App\PlaylistDetail');
-    }
+    }*/
 
     public function playlist(){
         return $this->belongsToMany('App\Playlist');

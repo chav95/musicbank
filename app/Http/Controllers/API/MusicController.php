@@ -11,6 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use App\Playlist;
 use App\Music;
 use App\MusicPlaylist;
+use Carbon\Carbon;
 use Auth;
 
 class MusicController extends Controller
@@ -128,18 +129,18 @@ class MusicController extends Controller
      */
     public function show($id){
         if($id == 'plain_playlist'){ //return $id;
-            return Playlist::where('status', '1')->orderBy('nama_playlist', 'asc')->get();
+            $result = Playlist::where('status', '1')->orderBy('nama_playlist', 'asc')->get();
         }else if($id == 'totalMusicList'){
-            return Music::where('status', 1)->count();
+            $result = Music::where('status', 1)->count();
         }else if(strpos($id, 'totalPlaylist') !== false){
             $index = strpos($id, '_');
             $playlist = substr($id, ($index+1));
-            return collect(self::flatten(Playlist::where(['status' => 1, 'id' => $playlist])
+            $result = collect(self::flatten(Playlist::where(['status' => 1, 'id' => $playlist])
                 ->with('music')->with('allChildrenContent')->get(), ''))->count();
         }else if($id == 'getMusicListByUploadDate'){
-            return Music::latest()->where('status', '=', '1')->paginate(10);
+            $result = Music::latest()->where('status', '=', '1')->paginate(10);
         }else if($id == 'getMusicListByTitle'){
-            return Music::orderBy('judul', 'ASC')->where('status', '=', '1')->paginate(10);
+            $result = Music::orderBy('judul', 'ASC')->where('status', '=', '1')->paginate(10);
         }else if(strpos($id, 'playlist') !== false){
             //get playlist index
             $index = strpos($id, '-');
@@ -167,12 +168,35 @@ class MusicController extends Controller
             //is_object($result['data']) ? $result['data'] = $result['data']->toArray() : $result['data'];
 
             //$result = Music::latest()->where('status', '=', '1')->paginate(3);
-            return $result;//collect($result)->paginate(10);
+            //return $result;//collect($result)->paginate(10);
             /*return Playlist::where('id', $playlist)
                 ->with('music')
                 ->with('allChildrenContent')
                 ->paginate(10);*/
+        }else if($id == 'getUploadedMusicPerMonth'){
+            $lookback = 6;
+            $result = [];
+            
+            for($i=0; $i<$lookback; $i++){
+                $date = Carbon::today()->subMonthsNoOverflow($i);
+                $month_string = $date->format('M Y');
+                $m = $date->format('n'); //return $m;
+                $y = $date->format('Y'); //return $y;
+                $year_month = $y.'-'.$m; //return $year_month;
+                $data = MusicPlaylist::where('created_at', 'LIKE', "{$year_month}%")->count();
+
+                $temp_array = array(
+                    'label' => $month_string,
+                    'data' => $data,
+                );
+                
+                array_push($result, $temp_array);
+            }
+            
+            //$result = MusicPlaylist::where('created_at', 'LIKE', "{$year_month}%")->get();
         }
+
+        return $result;
     }
 
     protected function flatten($object, $path){
