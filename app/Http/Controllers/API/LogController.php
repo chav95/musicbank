@@ -31,6 +31,7 @@ class LogController extends Controller
             ->select('users.name', 'logs.created_at', 'musics.judul')
             ->rightJoin('logs', 'logs.music_id', '=', 'musics.id')
             ->leftJoin('users', 'logs.user_id', '=', 'users.id')
+            ->where('logs.action', 'download')
             ->paginate(10);
         //return Log::latest()->paginate(10);
     }
@@ -74,12 +75,11 @@ class LogController extends Controller
         if($id == 'getMostDownloadThisMonth'){
             $date = Carbon::today();
             $month_string = $date->format('M Y');
-            $m = $date->format('n');
+            $m = $date->format('m');
             $y = $date->format('Y');
-            $year_month = $y.'-'.$m; //->where('created_at', 'LIKE', "{$year_month}%")
+            $year_month = $y.'-'.$m;
             $data = Log::select('music_id', DB::raw('COUNT(music_id) as download'))->with('music')
-                ->groupBy('music_id')->orderByRaw('COUNT(*) DESC')->limit(5)->get();
-
+            ->where('created_at', 'LIKE', "{$year_month}%")->groupBy('music_id')->orderByRaw('COUNT(*) DESC')->limit(5)->get();
             $result = $data;
         }
         return $result;

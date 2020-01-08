@@ -65,11 +65,11 @@ class MusicController extends Controller
                 
                 $music = new Music;
                 $music->judul = $filenameOnly;
-                $music->path = 'uploadedMusic/'.$filename;
+                $music->filename = $filename;
                 $music->uploaded_by = auth('api')->user()->id;
                 $music->filetype = $extension;
                 
-                $file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true);
+                $file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true); 
                 if(isset($file->artist)){
                     $music->artis = $file->artist;
                 }
@@ -85,6 +85,7 @@ class MusicController extends Controller
                 if(isset($file->tahun)){
                     $music->tahun = $file->tahun;
                 }
+                $music->filesize = $file->audioSize;
                 $music->durasi = $file->duration;
                 $music->bit_rate = $file->bitRate;
                 $music->sample_rate = $file->sampleRate;
@@ -99,6 +100,7 @@ class MusicController extends Controller
                     $music_playlist->playlist_id = $id;
                     $music_playlist->save();
                 }
+                //return (array)$file;
             }
             return response()->json(array('success' => true), 200);
         }else if($request->act){ //return $request;
@@ -128,6 +130,8 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id){
+        $lookback = 6; //jumlah bulan utk data dashboard
+
         if($id == 'plain_playlist'){ //return $id;
             $result = Playlist::where('status', '1')->orderBy('nama_playlist', 'asc')->get();
         }else if($id == 'totalMusicList'){
@@ -174,13 +178,12 @@ class MusicController extends Controller
                 ->with('allChildrenContent')
                 ->paginate(10);*/
         }else if($id == 'getUploadedMusicPerMonth'){
-            $lookback = 6;
             $result = [];
             
             for($i=0; $i<$lookback; $i++){
                 $date = Carbon::today()->subMonthsNoOverflow($i);
                 $month_string = $date->format('M Y');
-                $m = $date->format('n'); //return $m;
+                $m = $date->format('m'); //return $m;
                 $y = $date->format('Y'); //return $y;
                 $year_month = $y.'-'.$m; //return $year_month;
                 $data = MusicPlaylist::where('created_at', 'LIKE', "{$year_month}%")->count();
@@ -192,8 +195,24 @@ class MusicController extends Controller
                 
                 array_push($result, $temp_array);
             }
-            
-            //$result = MusicPlaylist::where('created_at', 'LIKE', "{$year_month}%")->get();
+        }else if($id == 'getStorageUsagePerMonth'){
+            $result = [];
+
+            for($i=0; $i<$lookback; $i++){
+                $date = Carbon::today()->subMonthsNoOverflow($i);
+                $month_string = $date->format('M Y');
+                $m = $date->format('m'); //return $m;
+                $y = $date->format('Y'); //return $y;
+                $year_month = $y.'-'.$m; //return $year_month;
+                $data = round(Music::where('created_at', 'LIKE', "{$year_month}%")->sum('filesize')/pow(1024, 3), 2);
+
+                $temp_array = array(
+                    'label' => $month_string,
+                    'data' => $data,
+                );
+                
+                array_push($result, $temp_array);
+            }
         }
 
         return $result;

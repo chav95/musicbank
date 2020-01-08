@@ -19,24 +19,33 @@ import moment from 'moment'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import VueFuse from 'vue-fuse'
-import V_Session from 'v-session'
 import draggable from 'vuedraggable'
 import VueHead from 'vue-head'
 import AudioVisual from 'vue-audio-visual'
 import infiniteScroll from 'vue-infinite-scroll'
 import VueApexCharts from 'vue-apexcharts'
+import VueEasySession from 'vue-easysession'
+import IdleVue from 'idle-vue'
 
 Vue.use(VueSimpleAlert)
 Vue.use(moment)
 Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueFuse)
-Vue.use(V_Session)
 Vue.use(draggable)
 Vue.use(VueHead)
 Vue.use(AudioVisual)
 Vue.use(infiniteScroll)
 Vue.use(VueApexCharts)
+Vue.use(VueEasySession.install, options)
+
+let options = {
+    persist: true,
+    keySession: 'myKeySession',
+    expireSessionCallback: function(){
+        window.location.href = '/logout';
+    }
+}
 
 let routes = [
     {path: '/all-music', component: require('./components/AllMusic.vue').default},
@@ -69,14 +78,14 @@ Vue.filter('capitalize', function (str) {
     if(typeof(str) !== 'undefined' || str !== null){
         let splitStr = str.toLowerCase().split(' ');
         for (var i = 0; i < splitStr.length; i++) {
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
         }
         
         return splitStr.join(' ');
     }else{
         return str;
     }
-})
+});
 
 let store = new Vuex.Store({
     state: {
@@ -171,3 +180,10 @@ const app = new Vue({
         'navbar': require('./components/Upload.vue'),
     }*/
 }).$mount('#app')
+
+Vue.use(IdleVue, {
+    eventEmitter: app,
+    store,
+    idleTime: 3000, // 3 seconds,
+    startAtIdle: false
+})

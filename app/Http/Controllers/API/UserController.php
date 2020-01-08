@@ -105,6 +105,8 @@ class UserController extends Controller
     {
         if($id == 'getUserLogin'){ 
             return auth('api')->user();
+        }else if($id == 'getLoggedUserAccess'){
+             
         }
     }
 

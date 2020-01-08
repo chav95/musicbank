@@ -17,7 +17,7 @@ class CreateMusicsTable extends Migration
             $table->bigIncrements('id');
             $table->string('judul');
             $table->string('filename');
-            $table->string('di_playlist')->nullable();
+            $table->integer('filesize', 15)->nullable();
             $table->string('artis')->nullable();
             $table->string('album')->nullable();
             $table->string('genre')->nullable();

@@ -93,8 +93,8 @@
                       <td v-if="$route.params.playlist_id" class="text-capitalize">{{music.folder_path}}</td>
                       <td>{{formatDatetime(music.created_at)}}</td>
                       <td>
-                        <div class="modify-btn-container">
-                          <a class="modify-btn" title="Add To Playlist"
+                        <div v-if="userLogin !== null" class="modify-btn-container">
+                          <a v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1" class="modify-btn" title="Add To Playlist"
                             data-toggle="modal" data-target="#PlaylistModal"
                             v-on:click="openExtraModal(music.id, music.judul)"
                           >
@@ -104,18 +104,14 @@
                             data-toggle="modal" data-target="#AddWishlistModal"
                             v-on:click="openExtraModal(music.id, music.judul)"
                           >
-                          <!--<a class="modify-btn" title="Add To Wishlist" 
-                            v-on:click="addToWishlist(music.id, music.judul)"
-                          >-->
                             <i class="fa fa-folder-plus color-purple fa-fw fa-lg"></i>
                           </a>
-                          <a class="modify-btn" title="Download" 
+                          <a v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1" class="modify-btn" title="Download" 
                             v-on:click="download(music.judul, music.filename, music.id)"
                           >
                             <i class="fa fa-download color-green fa-fw fa-lg"></i>
                           </a>
-                          <!--<a class="modify-btn" title="Edit"><i class="fa fa-edit color-blue fa-fw fa-lg"></i></a>-->
-                          <a class="modify-btn" title="Delete" 
+                          <a v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1" class="modify-btn" title="Delete" 
                             v-on:click="deleteMusic(music.id, music.judul)"
                           >
                             <i class="fa fa-trash color-red fa-fw fa-lg"></i>
@@ -157,6 +153,7 @@
   import AddToWishlist from './AddToWishlist.vue';
   import draggable from 'vuedraggable'
   import observer from './reusables/Observer.vue';
+  import ModalIdle from './reusables/ModalIdle.vue';
 
   export default {
     components: {
@@ -165,9 +162,12 @@
       AddToWishlist,
       draggable,
       observer,
+      ModalIdle,
     },
     data(){
       return{
+        userLogin: null,
+
         page: 1,
         last_page: 1,
 
@@ -204,8 +204,11 @@
             return item.judul.toLowerCase().match(this.searchContent.toLowerCase());
           });
         }else{
-          return null;
+          return [];
         }
+      },
+      isIdle(){
+        return this.$store.state.idleVue.isIdle;
       }
     },
     methods:{
@@ -214,19 +217,31 @@
         this.$alert(this.modal_music_judul+' added to selected '+type, '', 'success');
       },
       loadTotalMusics(sortingParam){
-        if(this.$route.params.playlist_id){ console.log('total playlist');
+        if(this.$route.params.playlist_id){ //console.log('total playlist');
           axios.get(window.location.origin+'/api/music/totalPlaylist_'+this.$route.params.playlist_id)
-            .then(({data}) => {
-              this.totalMusics = data;
+            .then(({data}) => { //console.log(data);
+              if(data.status == 403){
+                location.reload();
+              }else{
+                this.totalMusics = data;
+              }
             });
-        }else{ console.log('total music');
+        }else{ //console.log('total music');
           axios.get(window.location.origin+'/api/music/totalMusicList')
-            .then(({data}) => { 
-              this.totalMusics = data;
+            .then(({data}) => { //console.log(data);
+              if(data.error){
+                location.reload();
+              }else{
+                this.totalMusics = data;
+              }
             });
         }
       },
       loadMusics(page, sortingParam){
+        axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => {
+          this.userLogin = data;
+        });
+
         this.page = page;
         if(sortingParam == undefined){
           sortingParam = 'created_at@DESC';
@@ -234,41 +249,53 @@
         this.sortParam = sortingParam;
 
         if(this.$route.params.playlist_id){
-          let musicList = axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id+'?page='+this.page)
+          axios.get(window.location.origin+'/api/music/playlist_'+sortingParam+'-'+this.$route.params.playlist_id+'?page='+this.page)
             .then(({data}) => { 
-              this.musics = [...this.musics, ...data.data];
-              this.last_page = data.last_page;
-              //this.file = data.data[0].filename;
-              for(let item of data.data){ //console.log(item.filepath);
-                this.fileArr.push(item.filename);
-                this.judulArr.push(item.judul);
+              if(data.error){
+                location.reload();
+              }else{
+                this.musics = [...this.musics, ...data.data];
+                this.last_page = data.last_page;
+                //this.file = data.data[0].filename;
+                for(let item of data.data){ //console.log(item.filepath);
+                  this.fileArr.push(item.filename);
+                  this.judulArr.push(item.judul);
+                }
+                this.dataLoaded = 1;
               }
-              this.dataLoaded = 1;
             });
         }else{
           let index = sortingParam.indexOf('@'); //console.log(index);
           sortingParam = sortingParam.slice(0, index); //console.log(sortingParam);
 
           if(sortingParam == 'judul'){
-            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByTitle?page='+this.page).then(({data}) => { 
-              this.musics = [...this.musics, ...data.data];
-              this.last_page = data.last_page;
-              for(let item of data.data){
-                this.fileArr.push(item.filename);
-                this.judulArr.push(item.judul);
+            axios.get(window.location.origin+'/api/music/getMusicListByTitle?page='+this.page).then(({data}) => {
+              if(data.error){
+                location.reload();
+              }else{ 
+                this.musics = [...this.musics, ...data.data];
+                this.last_page = data.last_page;
+                for(let item of data.data){
+                  this.fileArr.push(item.filename);
+                  this.judulArr.push(item.judul);
+                }
+                this.dataLoaded = 1;
               }
-              this.dataLoaded = 1;
             });
           }else if(sortingParam == 'created_at'){
-            let musicList = axios.get(window.location.origin+'/api/music/getMusicListByUploadDate?page='+this.page).then(({data}) => { 
-              this.musics = [...this.musics, ...data.data];
-              this.last_page = data.last_page;
-              //this.musics = [].concat(this.musics, data.data);
-              for(let item of data.data){
-                this.fileArr.push(item.filename);
-                this.judulArr.push(item.judul);
+            axios.get(window.location.origin+'/api/music/getMusicListByUploadDate?page='+this.page).then(({data}) => { 
+              if(data.error){
+                location.reload();
+              }else{
+                this.musics = [...this.musics, ...data.data];
+                this.last_page = data.last_page;
+                //this.musics = [].concat(this.musics, data.data);
+                for(let item of data.data){
+                  this.fileArr.push(item.filename);
+                  this.judulArr.push(item.judul);
+                }
+                this.dataLoaded = 1;
               }
-              this.dataLoaded = 1;
             });
           }
         }
@@ -279,68 +306,34 @@
           this.loadMusics(++this.page);
         }
       },
-      /*getResults(page = 1){
-        if(this.$route.params.playlist_id){
-          axios.get(window.location.origin+'/api/music/playlist_'+this.sortParam+'-'+this.$route.params.playlist_id+'?page='+page)
-            .then(({response}) => {
-              this.musics = response.data;
-              for(let item of data.data){
-                this.fileArr.push('/storage/'+item.path);
-                this.judulArr.push(item.judul);
-              }
-              this.dataLoaded = 1;
-            });
-        }else{
-          let index = this.sortParam.indexOf('@'); //console.log(index);
-          let sortingParam = this.sortParam.slice(0, index); //console.log(this.sortParam);
-
-          if(sortingParam == 'judul'){
-            axios.get(window.location.origin+'/api/music/getMusicListByTitle/?page=' + page)
-            .then(({response}) => {
-              this.musics = response.data;
-              for(let item of data.data){
-                this.fileArr.push('/storage/'+item.path);
-                this.judulArr.push(item.judul);
-              }
-              this.dataLoaded = 1;
-            });
-          }else if(sortingParam == 'created_at'){
-            axios.get(window.location.origin+'/api/music/getMusicListByUploadDate/?page=' + page)
-            .then(({response}) => {
-              this.musics = response.data;
-              for(let item of data.data){
-                this.fileArr.push('/storage/'+item.path);
-                this.judulArr.push(item.judul);
-              }
-              this.dataLoaded = 1;
-            });
-          }
-        }
-      },*/
       formatDatetime(datetime){
         return moment(String(datetime)).format('llll');
       },
-      playAudio(judul, path, id, index){
-        this.judul = judul;
-        this.file = path;
-        this.file_id = id;
-        this.autoPlay = true;
-        this.playingIndex = index;
+      playAudio(judul, path, id, index){ console.log('play');
+        if(path){
+          this.judul = judul;
+          this.file = path;
+          this.file_id = id;
+          this.autoPlay = true;
+          this.playingIndex = index;
 
-        let postToLog = {
-          'judul' : judul,
-          'music_id' : id,
-          'action': 'play',
-          'filename' : path.split('/')[path.split('/').length - 1],
-        }
-        axios.post(window.location.origin+'/api/log', postToLog)
-        .then(({ data }) => {})
-        .catch(({error}) => {
-          console.error(error);
-          if(error.response.data.error.statusCode === 401){
-            location.reload();
+          let postToLog = {
+            'judul' : judul,
+            'music_id' : id,
+            'action': 'play',
+            'filename' : path.split('/')[path.split('/').length - 1],
           }
-        });
+          axios.post(window.location.origin+'/api/log', postToLog)
+          .then(({ data }) => {})
+          .catch(({error}) => {
+            console.error(error);
+            if(error.error){
+              location.reload();
+            }
+          });
+        }else{
+          this.$alert('No file to play', '', 'error')
+        }
       },
       nextMusic(){
         let next = this.playingIndex+1;
@@ -370,14 +363,14 @@
             .then(({ data }) => {})
             .catch(({error}) => {
               console.error(error);
-              if(error.response.data.error.statusCode === 401){
+              if(error.error){
                 location.reload();
               }
             });
         })
         .catch(({error}) => {
           console.log(error);
-          if(error.response.data.error.statusCode === 401){
+          if(error.error){
             location.reload();
           }
         });
@@ -394,14 +387,14 @@
             })
             .catch(({error}) => {
               console.error(error);
-              if(error.response.data.error.statusCode === 401){
+              if(error.error){
                 location.reload();
               }
             });
         })
         .catch(({error}) => {
           console.error(error);
-          if(error.response.data.error.statusCode === 401){
+          if(error.error){
             location.reload();
           }
         });
@@ -434,7 +427,7 @@
                 })
                 .catch(({error}) => {
                   this.$alert(error.message, '', 'error');
-                  if(error.response.data.error.statusCode === 401){
+                  if(error.error){
                     location.reload();
                   }
                 });
@@ -448,7 +441,7 @@
                     })
                     .catch(({error}) => {
                       this.$alert(error.message, '', 'error');
-                      if(error.response.data.error.statusCode === 401){
+                      if(error.error){
                         location.reload();
                       }
                     });
@@ -457,7 +450,7 @@
           })
           .catch(({error}) => {
             console.error(error);
-            if(error.response.data.error.statusCode === 401){
+            if(error.error){
               location.reload();
             }
           });
@@ -494,11 +487,11 @@
         this.musics = [];
         this.loadMusics(1);
         this.loadTotalMusics();
-      },
+      }, 
     },
-    mounted(){
+    mounted(){ //this.$session.start(30000);
       this.loadMusics(1);
-      this.loadTotalMusics();
+      this.loadTotalMusics(); //console.log(this.$session.getAll());
     }
   }
 </script>

@@ -73,12 +73,14 @@
           <!-- Sidebar Menu -->
           <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Main Menu</li>
-            <li>
+            @if(Auth::user()->user_type == 1 || Auth::user()->hak_akses == 1)
+              <li>
                 <a href="" data-toggle="modal" data-target="#UploadMusic">
                   <i class="fas fa-upload nav-icon fa-fw"></i>
                   <span>Upload</span>
                 </a>
               </li>
+            @endif
             <!--<li>
               <router-link to="/all-music">
                 <i class="fas fa-database nav-icon color-blue fa-fw"></i>

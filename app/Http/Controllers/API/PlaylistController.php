@@ -106,8 +106,6 @@ class PlaylistController extends Controller
 
             $result = [];
             foreach($outerPlaylist as $item){
-                
-
                 $temp_array = array(
                     'label' => $item['nama_playlist'],
                     'number' => collect(self::flatten(Playlist::where(['status' => 1, 'id' => $item['id']])
@@ -116,7 +114,19 @@ class PlaylistController extends Controller
                 
                 array_push($result, $temp_array);
             }
+        }else if($id == 'getOuterPlaylistFilesize'){
+            $outerPlaylist = Playlist::where(['status' => 1, 'parent_id' => 0])->orderBy('nama_playlist', 'asc')->get();
+
+            $result = [];
+            foreach($outerPlaylist as $item){
+                $temp_array = array(
+                    'label' => $item['nama_playlist'],
+                    'number' => round(collect(self::flatten(Playlist::where(['status' => 1, 'id' => $item['id']])
+                                ->with('music')->with('allChildrenContent')->get(), ''))->sum('filesize')/pow(1024, 3), 2),
+                );
                 
+                array_push($result, $temp_array);
+            }
         }
         return $result;
     }
