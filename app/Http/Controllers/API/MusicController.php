@@ -55,6 +55,9 @@ class MusicController extends Controller
                 'region' => 'us-west-2',
                 'version' => '2006-03-01',
             ]);
+            
+            /*$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/hivi-remaja-official-lyric-video-1578297132.mp3'), true);
+            return (array)$file;*/
 
             foreach($request->file_name as $item){
                 $originalFilename = $item->getClientOriginalName();
@@ -100,7 +103,6 @@ class MusicController extends Controller
                     $music_playlist->playlist_id = $id;
                     $music_playlist->save();
                 }
-                //return (array)$file;
             }
             return response()->json(array('success' => true), 200);
         }else if($request->act){ //return $request;

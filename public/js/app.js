@@ -3087,7 +3087,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       try {
         for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var item = _step.value;
-          console.log(item.music.judul);
+          //console.log(item.music.judul);
           categoryLabel.push(item.music.judul);
           seriesData.push(item.download);
         }

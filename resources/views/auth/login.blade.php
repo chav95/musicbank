@@ -20,7 +20,7 @@
             <form class="form-horizontal" method="POST" action="{{ route('login') }}">
                 {{ csrf_field() }}
                 <div class="form-group has-feedback{{ $errors->has('email') ? ' has-error' : '' }}">
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" class="form-control" placeholder="Email" required autofocus>
+                    <input id="email" type="text" name="email" value="{{ old('email') }}" class="form-control" placeholder="Email" required autofocus>
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                     @if ($errors->has('email'))
                         <span class="help-block">
@@ -34,6 +34,10 @@
                     @if ($errors->has('password'))
                         <span class="help-block">
                             <strong>{{ $errors->first('password') }}</strong>
+                        </span>
+                    @elseif (isset($_SESSION['message']))
+                        <span class="help-block">
+                            <strong>{{$_SESSION['message']}}</strong>
                         </span>
                     @endif
                 </div>

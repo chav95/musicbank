@@ -122,7 +122,7 @@
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
               </router-link>
-              <playlist-sidebar :playlist="{{$playlist}}"></playlist-sidebar>            
+              <playlist-sidebar :playlist="{{$playlist}}"></playlist-sidebar>
             </li>
             <li>
               <a href="{{ route('logout') }}">

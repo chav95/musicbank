@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resources([
+Route::resources([    
     'music' => 'API\MusicController',
     'playlist' => 'API\PlaylistController',
     'log' => 'API\LogController',

@@ -15,6 +15,10 @@
     return view('welcome');
 });*/
 
+//Route::get('/login', "homeController@index")->name('login');
+//Route::post('/login-submit', 'homeController@login')->name('login-submit');
+//Route::get('/logout', 'API\UserController@logout');
+
 Auth::routes();
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('{path}',"HomeController@index")->where('path', '([A-z\d\-\/_.]+)?');

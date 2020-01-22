@@ -1,4 +1,8 @@
 {
+  "name": "mnc-audiopost-library-integrated",
+  "description": "musicbank",
+  "version": "1.0.0",
+  "author": "chavinpradana@gmail.com",
   "private": true,
   "scripts": {
     "dev": "npm run development",
