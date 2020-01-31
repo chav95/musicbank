@@ -59,6 +59,11 @@ class MusicController extends Controller
             /*$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/hivi-remaja-official-lyric-video-1578297132.mp3'), true);
             return (array)$file;*/
 
+            $xml = new \SimpleXMLElement(Storage::disk('public')->path('Library.xml'), null, true); return $xml;
+            //$xml->load(Storage::disk('public')->path('Library.xml')); //return (array)$xml;
+            return response()->json($xml->getElementsByTagName('key'));
+            //return "<pre>".htmlspecialchars($xml, ENT_QUOTES, 'UTF-8')."</pre>";
+
             foreach($request->file_name as $item){
                 $originalFilename = $item->getClientOriginalName();
                 $extension = $item->getClientOriginalExtension();
