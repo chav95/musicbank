@@ -118,7 +118,6 @@ let store = new Vuex.Store({
     }
 });
 
-Vue.component('login', require('./components/Login.vue').default);
 Vue.component('upload-music', require('./components/Upload.vue').default);
 Vue.component('create-playlist', require('./components/CreatePlaylist.vue').default);
 Vue.component('add-playlist', require('./components/reusables/AddPlaylist.vue').default);

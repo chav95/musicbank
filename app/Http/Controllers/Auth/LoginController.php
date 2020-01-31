@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Illuminate\Http\Request;
+use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -44,7 +46,7 @@ class LoginController extends Controller
         return redirect('/login');
     }
 
-    public function login(Request $request){
+    public function login(Request $request){ 
         $this->validateLogin($request);
 
         if($this->hasTooManyLoginAttempts($request)){
@@ -59,12 +61,25 @@ class LoginController extends Controller
         $ldap = $this->check_ldap($username,$password);
         //$request->email .= '@mncgroup.com';
 
-        if($ldap === true){ //return $request->email;
+        if($ldap === true){
             if($this->attemptLogin($request)){
                 return $this->sendLoginResponse($request);
             }else{
-                $this->incrementLoginAttempts($request);
-                return $this->sendFailedLoginResponse($request);
+                $email_arr = explode('.', str_replace('@mncgroup.com', '', $request->email));
+                User::create([
+                    'name' => (count($email_arr) == 1 ? $email_arr[0] : $email_arr[0].' '.$email_arr[1]),
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'user_type' => 3,
+                    'hak_akses' => 2,
+                ]);
+                
+                if($this->attemptLogin($request)){
+                    return $this->sendLoginResponse($request);
+                }
+
+                //$this->incrementLoginAttempts($request);
+                //return $this->sendFailedLoginResponse($request);
             }
         }else{
             $this->incrementLoginAttempts($request);

@@ -66,6 +66,7 @@ class UserController extends Controller
                 $this->validate($request, [
                     'name' => 'required|string|max:191',
                     'email' => 'required|string|email|max:191|unique:users',
+                    'password' => 'required|string',
                     'user_type' => 'required|integer',
                     'hak_akses' => 'required|integer'
                 ]);
@@ -73,7 +74,7 @@ class UserController extends Controller
                 return User::create([
                     'name' => $request['name'],
                     'email' => $request['email'],
-                    'password' => Hash::make('123456'),
+                    'password' => Hash::make($request['password']),
                     'user_type' => $request['user_type'],
                     'hak_akses' => $request['hak_akses'],
                 ]);

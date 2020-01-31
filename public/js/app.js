@@ -3881,6 +3881,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3897,6 +3903,7 @@ __webpack_require__.r(__webpack_exports__);
         selectedUserId: Number,
         name: String,
         email: String,
+        password: String,
         user_type: Number,
         hak_akses: Number
       }),
@@ -3946,6 +3953,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.act = 'new_user';
       this.form.name = '';
       this.form.email = '';
+      this.form.password = '';
       this.form.user_type = '';
       this.form.hak_akses = '';
       $('#modifyModal').modal('show');
@@ -70002,6 +70010,52 @@ var render = function() {
                           _vm._v(" "),
                           _c("has-error", {
                             attrs: { form: _vm.form, field: "email" }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "form-group" },
+                        [
+                          _c("label", [_vm._v("Password")]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.password,
+                                expression: "form.password"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            class: {
+                              "is-invalid": _vm.form.errors.has("password")
+                            },
+                            attrs: {
+                              type: "password",
+                              name: "password",
+                              placeholder: "User Password"
+                            },
+                            domProps: { value: _vm.form.password },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "password",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("has-error", {
+                            attrs: { form: _vm.form, field: "password" }
                           })
                         ],
                         1
