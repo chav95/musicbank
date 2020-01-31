@@ -68,7 +68,8 @@ class MusicController extends Controller
                 $originalFilename = $item->getClientOriginalName();
                 $extension = $item->getClientOriginalExtension();
                 $filenameOnly = pathinfo($originalFilename, PATHINFO_FILENAME);
-                $filename = str_slug($filenameOnly).'-'.time().'.'.$extension;
+                //$filename = str_slug($filenameOnly).'-'.time().'.'.$extension;
+                $filename = str_slug($filenameOnly).'.'.$extension;
                 $item->storeAs('public/uploadedMusic', $filename);
                 
                 $music = new Music;
