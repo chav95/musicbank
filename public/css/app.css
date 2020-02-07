@@ -21535,3 +21535,7 @@ readers do not read off random characters that represent icons */
   display: block;
 }
 
+.treeview-menu > li > a {
+  font-size: 11.5px;
+}
+

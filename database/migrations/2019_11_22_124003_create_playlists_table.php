@@ -15,7 +15,7 @@ class CreatePlaylistsTable extends Migration
     {
         Schema::create('playlists', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nama_playlist');
+            $table->string('nama_playlist', 250);
             $table->integer('parent_id')->default(0);
             $table->integer('layer')->nullable();
             $table->string('status', 2)->default(1);

@@ -1,6 +1,6 @@
 <template>
     <ul class="treeview-menu">
-        <li v-for="item in playlist" :key="item.id" class="treeview">
+        <li v-for="item in playlist" :key="item.id" class="treeview" :title="item.nama_playlist">
             <router-link
                 :to="{
                     name: 'playlist',
@@ -11,10 +11,12 @@
                     }
                 }"
             >
-                <i title="Delete Playlist"
-                    class="far fa-file-audio nav-icon color-blue" 
-                ></i>
-                <span class="text-capitalize">{{item.nama_playlist}}</span>
+                <i class="far fa-file-audio nav-icon color-blue"></i>
+                <span class="text-capitalize">{{(
+                    item.nama_playlist.length > 20
+                        ? item.nama_playlist.substring(0,20)+".."
+                        : item.nama_playlist
+                )}}</span>
                 <span class="pull-right-container" v-if="item.children.length > 0">
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>

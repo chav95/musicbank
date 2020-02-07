@@ -2313,6 +2313,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
 
 
 
@@ -2331,7 +2332,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   },
   data: function data() {
     return {
-      userLogin: null,
+      userLogin: {
+        hak_akses: 0
+      },
       page: 1,
       last_page: 1,
       file: null,
@@ -2408,10 +2411,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     loadMusics: function loadMusics(page, sortingParam) {
       var _this3 = this;
 
-      axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref3) {
-        var data = _ref3.data;
-        _this3.userLogin = data;
-      });
       this.page = page;
 
       if (sortingParam == undefined) {
@@ -2421,8 +2420,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.sortParam = sortingParam;
 
       if (this.$route.params.playlist_id) {
-        axios.get(window.location.origin + '/api/music/playlist_' + sortingParam + '-' + this.$route.params.playlist_id + '?page=' + this.page).then(function (_ref4) {
-          var data = _ref4.data;
+        axios.get(window.location.origin + '/api/music/playlist_' + sortingParam + '-' + this.$route.params.playlist_id + '?page=' + this.page).then(function (_ref3) {
+          var data = _ref3.data;
 
           if (data.error) {
             location.reload();
@@ -2467,8 +2466,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         sortingParam = sortingParam.slice(0, index); //console.log(sortingParam);
 
         if (sortingParam == 'judul') {
-          axios.get(window.location.origin + '/api/music/getMusicListByTitle?page=' + this.page).then(function (_ref5) {
-            var data = _ref5.data;
+          axios.get(window.location.origin + '/api/music/getMusicListByTitle?page=' + this.page).then(function (_ref4) {
+            var data = _ref4.data;
 
             if (data.error) {
               location.reload();
@@ -2506,8 +2505,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             }
           });
         } else if (sortingParam == 'created_at') {
-          axios.get(window.location.origin + '/api/music/getMusicListByUploadDate?page=' + this.page).then(function (_ref6) {
-            var data = _ref6.data;
+          axios.get(window.location.origin + '/api/music/getMusicListByUploadDate?page=' + this.page).then(function (_ref5) {
+            var data = _ref5.data;
 
             if (data.error) {
               location.reload();
@@ -2583,10 +2582,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           'action': 'play',
           'filename': path.split('/')[path.split('/').length - 1]
         };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref7) {
-          var data = _ref7.data;
-        })["catch"](function (_ref8) {
-          var error = _ref8.error;
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref6) {
+          var data = _ref6.data;
+        })["catch"](function (_ref7) {
+          var error = _ref7.error;
           console.error(error);
 
           if (error.error) {
@@ -2611,8 +2610,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     download: function download(judul, path, id) {
       axios.get(path, {
         responseType: 'blob'
-      }).then(function (_ref9) {
-        var data = _ref9.data;
+      }).then(function (_ref8) {
+        var data = _ref8.data;
         var blob = new Blob([data], {
           type: 'audio/mp3'
         });
@@ -2627,18 +2626,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           'filename': path.split('/')[path.split('/').length - 1] //path.replace('/storage/uploadedMusic/', ''),
 
         };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref10) {
-          var data = _ref10.data;
-        })["catch"](function (_ref11) {
-          var error = _ref11.error;
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {
+          var data = _ref9.data;
+        })["catch"](function (_ref10) {
+          var error = _ref10.error;
           console.error(error);
 
           if (error.error) {
             location.reload();
           }
         });
-      })["catch"](function (_ref12) {
-        var error = _ref12.error;
+      })["catch"](function (_ref11) {
+        var error = _ref11.error;
         console.log(error);
 
         if (error.error) {
@@ -2653,20 +2652,20 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         var postToWishlist = {
           'music_id': music_id
         };
-        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref13) {
-          var response = _ref13.response;
+        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref12) {
+          var response = _ref12.response;
 
           _this4.$alert(music_judul + ' added to your wishlist', '', 'success');
-        })["catch"](function (_ref14) {
-          var error = _ref14.error;
+        })["catch"](function (_ref13) {
+          var error = _ref13.error;
           console.error(error);
 
           if (error.error) {
             location.reload();
           }
         });
-      })["catch"](function (_ref15) {
-        var error = _ref15.error;
+      })["catch"](function (_ref14) {
+        var error = _ref14.error;
         console.error(error);
 
         if (error.error) {
@@ -2696,14 +2695,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             'playlist_detail_id': music_id,
             'playlist_id': _this5.$route.params.playlist_id
           };
-          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref16) {
-            var response = _ref16.response;
+          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref15) {
+            var response = _ref15.response;
 
             _this5.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
 
             _this5.loadMusics(1);
-          })["catch"](function (_ref17) {
-            var error = _ref17.error;
+          })["catch"](function (_ref16) {
+            var error = _ref16.error;
 
             _this5.$alert(error.message, '', 'error');
 
@@ -2713,14 +2712,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           });
         } else {
           _this5.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
-            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref18) {
-              var response = _ref18.response;
+            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref17) {
+              var response = _ref17.response;
 
               _this5.$alert('Delete Successful', '', 'success');
 
               _this5.loadMusics(1);
-            })["catch"](function (_ref19) {
-              var error = _ref19.error;
+            })["catch"](function (_ref18) {
+              var error = _ref18.error;
 
               _this5.$alert(error.message, '', 'error');
 
@@ -2730,8 +2729,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             });
           });
         }
-      })["catch"](function (_ref20) {
-        var error = _ref20.error;
+      })["catch"](function (_ref19) {
+        var error = _ref19.error;
         console.error(error);
 
         if (error.error) {
@@ -2778,7 +2777,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     }
   },
   mounted: function mounted() {
+    var _this8 = this;
+
     //this.$session.start(30000);
+    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref20) {
+      var data = _ref20.data;
+      _this8.userLogin = data;
+    });
     this.loadMusics(1);
     this.loadTotalMusics(); //console.log(this.$session.getAll());
   }
@@ -3474,6 +3479,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CreatePlaylist_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreatePlaylist.vue */ "./resources/assets/js/components/CreatePlaylist.vue");
+//
+//
 //
 //
 //
@@ -68431,22 +68438,25 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "card-header" }, [
                 _c("div", { staticClass: "button-container" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: {
-                        "data-toggle": "modal",
-                        "data-target": "#CreatePlaylist",
-                        id: _vm.$route.params.playlist_id
-                          ? _vm.$route.params.playlist_id
-                          : 0
-                      }
-                    },
-                    [_vm._v("Create Child Playlist")]
-                  ),
+                  _vm.userLogin.hak_akses == 1 || _vm.userLogin.user_type == 1
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: {
+                            "data-toggle": "modal",
+                            "data-target": "#CreatePlaylist",
+                            id: _vm.$route.params.playlist_id
+                              ? _vm.$route.params.playlist_id
+                              : 0
+                          }
+                        },
+                        [_vm._v("Create Child Playlist")]
+                      )
+                    : _vm._e(),
                   _vm._v(" "),
-                  _vm.$route.params.playlist_id
+                  _vm.$route.params.playlist_id &&
+                  (_vm.userLogin.hak_akses == 1 || _vm.userLogin.user_type == 1)
                     ? _c(
                         "button",
                         {
@@ -68464,7 +68474,8 @@ var render = function() {
                       )
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.$route.params.playlist_id
+                  _vm.$route.params.playlist_id &&
+                  (_vm.userLogin.hak_akses == 1 || _vm.userLogin.user_type == 1)
                     ? _c(
                         "button",
                         {
@@ -69368,7 +69379,11 @@ var render = function() {
     _vm._l(_vm.playlist, function(item) {
       return _c(
         "li",
-        { key: item.id, staticClass: "treeview" },
+        {
+          key: item.id,
+          staticClass: "treeview",
+          attrs: { title: item.nama_playlist }
+        },
         [
           _c(
             "router-link",
@@ -69385,13 +69400,16 @@ var render = function() {
               }
             },
             [
-              _c("i", {
-                staticClass: "far fa-file-audio nav-icon color-blue",
-                attrs: { title: "Delete Playlist" }
-              }),
+              _c("i", { staticClass: "far fa-file-audio nav-icon color-blue" }),
               _vm._v(" "),
               _c("span", { staticClass: "text-capitalize" }, [
-                _vm._v(_vm._s(item.nama_playlist))
+                _vm._v(
+                  _vm._s(
+                    item.nama_playlist.length > 20
+                      ? item.nama_playlist.substring(0, 20) + ".."
+                      : item.nama_playlist
+                  )
+                )
               ]),
               _vm._v(" "),
               item.children.length > 0

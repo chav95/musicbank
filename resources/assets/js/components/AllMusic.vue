@@ -27,14 +27,15 @@
               <div class="card-header">
                 <div class="button-container">
                   <button class="btn btn-primary" data-toggle="modal" data-target="#CreatePlaylist"
+                    v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1"
                     :id="($route.params.playlist_id ? $route.params.playlist_id : 0)"
                   >Create Child Playlist</button>
                   <button class="btn btn-primary" 
-                    v-if="$route.params.playlist_id"
+                    v-if="$route.params.playlist_id && (userLogin.hak_akses == 1 || userLogin.user_type == 1)"
                     @click="renamePlaylist($route.params.playlist_id, $route.params.playlist_name)"
                   >Rename</button>
                   <button class="btn btn-danger" 
-                    v-if="$route.params.playlist_id" 
+                    v-if="$route.params.playlist_id && (userLogin.hak_akses == 1 || userLogin.user_type == 1)"
                     @click="deletePlaylist($route.params.playlist_id, $route.params.playlist_name)"
                   >Delete</button>
                 </div>
@@ -166,7 +167,9 @@
     },
     data(){
       return{
-        userLogin: null,
+        userLogin: {
+          hak_akses: 0,
+        },
 
         page: 1,
         last_page: 1,
@@ -238,10 +241,6 @@
         }
       },
       loadMusics(page, sortingParam){
-        axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => {
-          this.userLogin = data;
-        });
-
         this.page = page;
         if(sortingParam == undefined){
           sortingParam = 'created_at@DESC';
@@ -490,6 +489,9 @@
       }, 
     },
     mounted(){ //this.$session.start(30000);
+      axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => {
+        this.userLogin = data;
+      });
       this.loadMusics(1);
       this.loadTotalMusics(); //console.log(this.$session.getAll());
     }

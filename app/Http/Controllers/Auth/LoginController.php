@@ -65,21 +65,23 @@ class LoginController extends Controller
             if($this->attemptLogin($request)){
                 return $this->sendLoginResponse($request);
             }else{
-                $email_arr = explode('.', str_replace('@mncgroup.com', '', $request->email));
-                User::create([
-                    'name' => (count($email_arr) == 1 ? $email_arr[0] : $email_arr[0].' '.$email_arr[1]),
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'user_type' => 3,
-                    'hak_akses' => 2,
-                ]);
-                
+                $user = User::where('email', '=', $request->email)->first();
+                if($user && $user->password !== Hash::make($request->password)){
+                    User::where('id', '=', $user->id)->update(['password' => Hash::make($request->password)]);
+                }else{
+                    $email_arr = explode('.', str_replace('@mncgroup.com', '', $request->email));
+                    User::create([
+                        'name' => (count($email_arr) == 1 ? $email_arr[0] : $email_arr[0].' '.$email_arr[1]),
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'user_type' => 3,
+                        'hak_akses' => 2,
+                    ]);
+                }
+
                 if($this->attemptLogin($request)){
                     return $this->sendLoginResponse($request);
                 }
-
-                //$this->incrementLoginAttempts($request);
-                //return $this->sendFailedLoginResponse($request);
             }
         }else{
             $this->incrementLoginAttempts($request);

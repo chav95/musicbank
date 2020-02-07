@@ -50,7 +50,7 @@ class MusicController extends Controller
      */
     public function store(Request $request){
         $playlist = $request->playlist;
-        if($request->hasFile('file_name')){ //return json_encode($request);
+        if($request->hasFile('file_name')){
             $s3Client = new S3Client([
                 'region' => 'us-west-2',
                 'version' => '2006-03-01',
@@ -59,55 +59,71 @@ class MusicController extends Controller
             /*$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/hivi-remaja-official-lyric-video-1578297132.mp3'), true);
             return (array)$file;*/
 
-            $xml = new \SimpleXMLElement(Storage::disk('public')->path('Library.xml'), null, true); return $xml;
+            //$xml = new \SimpleXMLElement(Storage::disk('public')->path('Library.xml'), null, true); return $xml;
             //$xml->load(Storage::disk('public')->path('Library.xml')); //return (array)$xml;
-            return response()->json($xml->getElementsByTagName('key'));
+            //return response()->json($xml->getElementsByTagName('key'));
             //return "<pre>".htmlspecialchars($xml, ENT_QUOTES, 'UTF-8')."</pre>";
 
             foreach($request->file_name as $item){
-                $originalFilename = $item->getClientOriginalName();
+                $originalFilename = trim($item->getClientOriginalName());
                 $extension = $item->getClientOriginalExtension();
                 $filenameOnly = pathinfo($originalFilename, PATHINFO_FILENAME);
                 //$filename = str_slug($filenameOnly).'-'.time().'.'.$extension;
                 $filename = str_slug($filenameOnly).'.'.$extension;
-                $item->storeAs('public/uploadedMusic', $filename);
-                
-                $music = new Music;
-                $music->judul = $filenameOnly;
-                $music->filename = $filename;
-                $music->uploaded_by = auth('api')->user()->id;
-                $music->filetype = $extension;
-                
-                $file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true); 
-                if(isset($file->artist)){
-                    $music->artis = $file->artist;
-                }
-                if(isset($file->album)){
-                    $music->album = $file->album;
-                }
-                if(isset($file->genre)){
-                    $music->genre = $file->genre;
-                }
-                if(isset($file->composer)){
-                    $music->composer = $file->composer;
-                }
-                if(isset($file->tahun)){
-                    $music->tahun = $file->tahun;
-                }
-                $music->filesize = $file->audioSize;
-                $music->durasi = $file->duration;
-                $music->bit_rate = $file->bitRate;
-                $music->sample_rate = $file->sampleRate;
 
-                $music->save();
+                if(Storage::disk('ftp')->exists($originalFilename)){
+                    return response()->json(array('error' => 'File already exist'), 500);
+                }else{
+                    // UPLOAD TO PROJECT FOLDER
+                    //$item->storeAs('public/uploadedMusic', $filename);
 
-                $music_id = $music->id;
-                $playlist_arr = explode(',', $request->playlist);
-                foreach($playlist_arr as $id){
-                    $music_playlist = new MusicPlaylist;
-                    $music_playlist->music_id = $music_id;
-                    $music_playlist->playlist_id = $id;
-                    $music_playlist->save();
+                    // UPLOAD TO FTP SERVER
+                    //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))));
+                    //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, $item)));
+                    Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'));
+                    //return response()->json(array('upload' => Storage::disk('ftp')->exists($originalFilename)));
+
+                    //$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true);
+                    //$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('ftp')->get($originalFilename), true); return json_encode($file);
+                    //$file = new \wapmorgan\Mp3Info\Mp3Info(url('http://172.18.11.32:8082/aud_uploads/'.str_replace(" ", "%20", str_replace("#", "%23", $originalFilename))), true); return $file->duration;
+                    
+                    $music = new Music;
+                    $music->judul = $filenameOnly;
+                    $music->filename = $originalFilename; //$filename;
+                    $music->uploaded_by = auth('api')->user()->id;
+                    $music->filetype = $extension;
+                    $music->filesize = $item->getSize();
+
+                    // if(isset($file->artist)){
+                    //     $music->artis = $file->artist;
+                    // }
+                    // if(isset($file->album)){
+                    //     $music->album = $file->album;
+                    // }
+                    // if(isset($file->genre)){
+                    //     $music->genre = $file->genre;
+                    // }
+                    // if(isset($file->composer)){
+                    //     $music->composer = $file->composer;
+                    // }
+                    // if(isset($file->tahun)){
+                    //     $music->tahun = $file->tahun;
+                    // }
+                    // $music->filesize = $file->audioSize;
+                    // $music->durasi = $file->duration;
+                    // $music->bit_rate = $file->bitRate;
+                    // $music->sample_rate = $file->sampleRate;
+
+                    $music->save();
+
+                    $music_id = $music->id;
+                    $playlist_arr = explode(',', $request->playlist);
+                    foreach($playlist_arr as $id){
+                        $music_playlist = new MusicPlaylist;
+                        $music_playlist->music_id = $music_id;
+                        $music_playlist->playlist_id = $id;
+                        $music_playlist->save();
+                    }
                 }
             }
             return response()->json(array('success' => true), 200);

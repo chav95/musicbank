@@ -42,7 +42,6 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -63,6 +62,13 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        'ftp' => [
+            'driver' => 'ftp',
+            'host' => '172.27.255.202', //env('FTP_HOST'),
+            'username' => 'itdev', //env('FTP_USERNAME'),
+            'password' => 'itdev', //env('FTP_PASSWORD'),
+            'port' => 21,
+            'root' => 'Musicbank/aud_uploads'
+        ],
     ],
-
 ];

@@ -74,7 +74,7 @@ class PlaylistController extends Controller
             return response()->json(array('act' => $request->act, 'success' => true), 200);
         }else{
             $this->validate($request, [
-                'nama_playlist' => 'required|unique:playlists|max:20',
+                'nama_playlist' => 'required|unique:playlists|max:191',
                 'parent_id' =>'required',
             ]);
             

@@ -1,7 +1,8 @@
 @extends('layouts.auth')
 
 @section('head_title')
-    <title>{{ ucwords(str_replace('_', ' ', config('app.name', 'Laravel'))) }} | Log In</title>
+    <!--<title>{{ ucwords(str_replace('_', ' ', config('app.name', 'Laravel'))) }} | Log In</title>-->
+    <title>{{ucwords(str_replace('_', ' ', config('app.name')))}} | Log In</title>
 @endsection
 
 @section('auth_body')

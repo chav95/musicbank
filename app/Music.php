@@ -24,7 +24,10 @@ class Music extends Model
     }
     
     public function getFilenameAttribute(){ //accessor
-        return url('/storage/uploadedMusic/'.$this->attributes['filename']);
+        $filename = str_replace(" ", "%20", str_replace("#", "%23", $this->attributes['filename']));
+
+        return 'http://172.18.11.32:8082/aud_uploads/'.$filename;
+        //return url('/storage/uploadedMusic/'.$this->attributes['filename']);
         //return Storage::disk('public')->path('uploadedMusic/'.$this->attributes['filename']);
     }
 }
