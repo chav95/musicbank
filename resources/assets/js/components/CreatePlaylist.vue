@@ -56,7 +56,20 @@
           .then(res=>{
             this.resetModal();
             this.$alert('Playlist Created', '', 'success');
-            location.reload();
+                            
+            let postToLog = {
+              'item_id': 0,
+              'action': 'create playlist',
+              'item_name': this.form.playlistName
+            }
+            axios.post(window.location.origin+'/api/log', postToLog)
+            .then(({ data }) => location.reload())
+            .catch(({error}) => {
+              console.error(error);
+              if(error.error){
+              location.reload();
+              }
+            });
           }).catch(err=>{
             this.$alert('Failed: '+err.message, '', 'error');
           });;

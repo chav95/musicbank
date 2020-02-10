@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use Auth;
+use Gate;
 
 class UserController extends Controller
 {
@@ -19,6 +20,9 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
+        if(Gate::allows('isAdmin')){
+            abort(404, "Page Not Found");
+        }
     }
     
     /**

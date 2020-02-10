@@ -5,12 +5,14 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
+use Response;
 use Aws\S3\S3Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Playlist;
 use App\Music;
 use App\MusicPlaylist;
+use App\Log;
 use Carbon\Carbon;
 use Auth;
 
@@ -49,6 +51,8 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
+        // $getID3 = new \getID3;
+        // return json_encode($getID3->analyze('http://172.18.11.32:8082/aud_uploads/wii shop theme jazz cover.mp3'));
         $playlist = $request->playlist;
         if($request->hasFile('file_name')){
             $s3Client = new S3Client([
@@ -115,6 +119,13 @@ class MusicController extends Controller
                     // $music->sample_rate = $file->sampleRate;
 
                     $music->save();
+                    
+                    $log = new Log;
+                    $log->item_id = $music->id;
+                    $log->action = 'upload music';
+                    $log->item_name = $originalFilename;
+                    $log->user_id = auth('api')->user()->id;
+                    $log->save();
 
                     $music_id = $music->id;
                     $playlist_arr = explode(',', $request->playlist);
@@ -282,5 +293,13 @@ class MusicController extends Controller
     public function destroy($id){
         MusicPlaylist::where('music_id', $id)->delete();
         return Music::where('id', $id)->update(['status' => -1]);
+    }
+
+    public function download($filename){ //return $filename;
+        $getFile = Storage::disk('ftp')->get($filename);
+        return Response::make($getFile, '200', array(
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"'
+        ));
     }
 }

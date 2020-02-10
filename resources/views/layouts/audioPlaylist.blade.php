@@ -75,7 +75,7 @@
           <!-- Sidebar Menu -->
           <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Main Menu</li>
-            @if(Auth::user()->user_type == 1 || Auth::user()->hak_akses == 1)
+            @if(Auth::user()->user_type == 1 || Auth::user()->user_type == 2)
               <li>
                 <a href="" data-toggle="modal" data-target="#UploadMusic">
                   <i class="fas fa-upload nav-icon fa-fw"></i>
@@ -107,14 +107,16 @@
                 <span>Log</span>
               </router-link>
             </li>
-            @if(Auth::user()->user_type == 1)
+            <!--@if(Auth::user()->user_type == 1)-->
+            @can('isAdmin')
               <li>
                 <router-link to="/manage-users">
                   <i class="nav-icon fas fa-cog color-green fa-fw"></i>
                   <span>Manage Users</span>
                 </router-link>
               </li>
-            @endif
+            @endcan
+            <!--@endif-->
             <li class="treeview">
               <!--<a href="#" class="fa fa-link active">-->
               <router-link to="/playlist" class="playlist-container">

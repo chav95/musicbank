@@ -67,7 +67,20 @@
                     .then(res => {
                         axios.delete(window.location.origin+'/api/playlist/'+id).then(result => {
                             this.$alert('Delete Success', '', 'success');
-                            location.reload();
+                            
+                            let postToLog = {
+                                'item_id' : id,
+                                'action': 'delete playlist',
+                                'item_name' : nama_playlist,
+                            }
+                            axios.post(window.location.origin+'/api/log', postToLog)
+                            .then(({ data }) => location.reload())
+                            .catch(({error}) => {
+                                console.error(error);
+                                if(error.error){
+                                    location.reload();
+                                }
+                            });
                         });
                     }
                 );

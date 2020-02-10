@@ -27,15 +27,15 @@
               <div class="card-header">
                 <div class="button-container">
                   <button class="btn btn-primary" data-toggle="modal" data-target="#CreatePlaylist"
-                    v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1"
+                    v-if="music_crud_right == true"
                     :id="($route.params.playlist_id ? $route.params.playlist_id : 0)"
                   >Create Child Playlist</button>
                   <button class="btn btn-primary" 
-                    v-if="$route.params.playlist_id && (userLogin.hak_akses == 1 || userLogin.user_type == 1)"
+                    v-if="$route.params.playlist_id && (music_crud_right == true)"
                     @click="renamePlaylist($route.params.playlist_id, $route.params.playlist_name)"
                   >Rename</button>
                   <button class="btn btn-danger" 
-                    v-if="$route.params.playlist_id && (userLogin.hak_akses == 1 || userLogin.user_type == 1)"
+                    v-if="$route.params.playlist_id && (music_crud_right == true)"
                     @click="deletePlaylist($route.params.playlist_id, $route.params.playlist_name)"
                   >Delete</button>
                 </div>
@@ -80,7 +80,7 @@
                 <!--<draggable v-model="musics" :options="{group:{judul:musics.judul}, pull:'clone'}" @start="drag=true" :element="'tbody'">-->
                 <tbody>
                   <template v-if="searchMusic !== '' && searchMusic != 0">
-                    <tr v-for="(music,index) in searchMusic" :key="index" hover:bg-blue px-4 py2>
+                    <tr v-for="(music, index) in searchMusic" :key="music.id" hover:bg-blue px-4 py2>
                       <td>{{music.judul}}</td>
                       <td>
                         <button 
@@ -95,7 +95,7 @@
                       <td>{{formatDatetime(music.created_at)}}</td>
                       <td>
                         <div v-if="userLogin !== null" class="modify-btn-container">
-                          <a v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1" class="modify-btn" title="Add To Playlist"
+                          <a v-if="music_crud_right == true" class="modify-btn" title="Add To Playlist"
                             data-toggle="modal" data-target="#PlaylistModal"
                             v-on:click="openExtraModal(music.id, music.judul)"
                           >
@@ -107,12 +107,12 @@
                           >
                             <i class="fa fa-folder-plus color-purple fa-fw fa-lg"></i>
                           </a>
-                          <a v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1" class="modify-btn" title="Download" 
+                          <a v-if="music_crud_right == true" class="modify-btn" title="Download" 
                             v-on:click="download(music.judul, music.filename, music.id)"
                           >
                             <i class="fa fa-download color-green fa-fw fa-lg"></i>
                           </a>
-                          <a v-if="userLogin.hak_akses == 1 || userLogin.user_type == 1" class="modify-btn" title="Delete" 
+                          <a v-if="music_crud_right == true" class="modify-btn" title="Delete" 
                             v-on:click="deleteMusic(music.id, music.judul)"
                           >
                             <i class="fa fa-trash color-red fa-fw fa-lg"></i>
@@ -168,6 +168,7 @@
     data(){
       return{
         userLogin: {
+          user_type: 0,
           hak_akses: 0,
         },
 
@@ -210,6 +211,12 @@
           return [];
         }
       },
+      music_crud_right: function(){
+        if(this.userLogin.user_type === 1 || this.userLogin.user_type === 2 || this.userLogin.hak_akses === 1){
+          return true;
+        }
+        return false;
+      },
       isIdle(){
         return this.$store.state.idleVue.isIdle;
       }
@@ -240,11 +247,11 @@
             });
         }
       },
-      loadMusics(page, sortingParam){
+      loadMusics(page, sortingParam = 'created_at@DESC'){
         this.page = page;
-        if(sortingParam == undefined){
-          sortingParam = 'created_at@DESC';
-        }
+        // if(sortingParam == undefined){
+        //   sortingParam = 'created_at@DESC';
+        // }
         this.sortParam = sortingParam;
 
         if(this.$route.params.playlist_id){
@@ -301,14 +308,14 @@
       },
       async intersectEvent(){
         if(this.page < this.last_page){
-          console.log('intersect');
+          //console.log('intersect');
           this.loadMusics(++this.page);
         }
       },
       formatDatetime(datetime){
         return moment(String(datetime)).format('llll');
       },
-      playAudio(judul, path, id, index){ console.log('play');
+      playAudio(judul, path, id, index){ console.log('id: '+id);
         if(path){
           this.judul = judul;
           this.file = path;
@@ -317,18 +324,16 @@
           this.playingIndex = index;
 
           let postToLog = {
-            'judul' : judul,
-            'music_id' : id,
-            'action': 'play',
-            'filename' : path.split('/')[path.split('/').length - 1],
+            'item_id' : id,
+            'action': 'play music',
+            'item_name' : judul
           }
           axios.post(window.location.origin+'/api/log', postToLog)
-          .then(({ data }) => {})
+          .then(({ data }) => {
+            console.log(data);
+          })
           .catch(({error}) => {
             console.error(error);
-            if(error.error){
-              location.reload();
-            }
           });
         }else{
           this.$alert('No file to play', '', 'error')
@@ -344,35 +349,55 @@
         this.judul = this.judulArr[next];
       },
       download(judul, path, id){
-        axios.get(path, { responseType: 'blob' })
-          .then(({ data }) => {
-            const blob = new Blob([data], {type: 'audio/mp3'});
-            let link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = judul;
-            link.click();
-            
-            let postToLog = {
-              'judul' : judul,
-              'music_id' : id,
-              'action': 'download',
-              'filename' : path.split('/')[path.split('/').length - 1], //path.replace('/storage/uploadedMusic/', ''),
-            }
-            axios.post(window.location.origin+'/api/log', postToLog)
-            .then(({ data }) => {})
-            .catch(({error}) => {
-              console.error(error);
-              if(error.error){
-                location.reload();
-              }
-            });
-        })
-        .catch(({error}) => {
-          console.log(error);
-          if(error.error){
-            location.reload();
+        let filename = path.split('/')[path.split('/').length - 1];
+        axios.get(window.location.origin+'/api/download/'+filename).then(({data}) => { //console.log(data);
+          const blob = new Blob([data], {type: 'audio/mp3'});
+          let link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = judul;
+          link.click();
+          
+          let postToLog = {
+            'item_id' : id,
+            'action': 'download music',
+            'item_name' :judul
           }
+          axios.post(window.location.origin+'/api/log', postToLog)
+          .then(({ data }) => {
+            console.log(data);
+          })
+          .catch(({error}) => {
+            console.error(error);
+          });
         });
+
+        // axios.get(path, { responseType: 'blob' })
+        //   .then(({ data }) => {
+        //     const blob = new Blob([data], {type: 'audio/mp3'});
+        //     let link = document.createElement('a');
+        //     link.href = window.URL.createObjectURL(blob);
+        //     link.download = judul;
+        //     link.click();
+            
+        //     let postToLog = {
+        //       'item_id' : id,
+        //       'action': 'download music',
+        //       'item_name' :judul
+        //     }
+        //     axios.post(window.location.origin+'/api/log', postToLog)
+        //     .then(({ data }) => {
+        //       console.log(data);
+        //     })
+        //     .catch(({error}) => {
+        //       console.error(error);
+        //     });
+        // })
+        // .catch(({error}) => {
+        //   console.log(error);
+        //   if(error.error){
+        //     location.reload();
+        //   }
+        // });
       },
       addToWishlist(music_id, music_judul){
         this.$confirm('Add '+music_judul+' to your wishlist?', '', 'question')
@@ -436,7 +461,23 @@
                   axios.delete(window.location.origin+'/api/music/'+music_id)
                     .then(({response}) => {
                       this.$alert('Delete Successful', '', 'success');
-                      this.loadMusics(1);
+            
+                      let postToLog = {
+                        'item_id' : music_id,
+                        'action': 'delete music',
+                        'item_name' : music_judul
+                      }
+                      axios.post(window.location.origin+'/api/log', postToLog)
+                      .then(({ data }) => {
+                        console.log(data);
+                        this.loadMusics(1);
+                      })
+                      .catch(({error}) => {
+                        console.error(error);
+                        if(error.error){
+                          location.reload();
+                        }
+                      });
                     })
                     .catch(({error}) => {
                       this.$alert(error.message, '', 'error');

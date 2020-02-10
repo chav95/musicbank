@@ -21,7 +21,7 @@
 						</svg>
 					</a>
 				</div>
-				<!--<div>
+				<div>
 					<div v-on:click="seek" class="player-progress" title="Time played : Total time">
 						<div :style="{ width: this.percentComplete + '%' }" class="player-seeker"></div>
 					</div>
@@ -29,11 +29,11 @@
 						<div class="player-time-current">{{ currentTime }}</div>
 						<div class="player-time-total">{{ durationTime }}</div>
 					</div>
-				</div>-->
-                <av-waveform :audio-controls="true" played-line-color="#3490dc" noplayed-line-color="#6cb2eb" :canv-height="50"
+				</div>
+                <!-- <av-waveform :audio-controls="true" played-line-color="#3490dc" noplayed-line-color="#6cb2eb" :canv-height="50"
                   :playtime="true" :progress-width="5" audio-class="audio-player" canvas-class="waveform-player" :canv-width="300"
                   ref-link="audiofile" class="waveform-container" :key="file_id">
-                </av-waveform>
+                </av-waveform> -->
 				<!--<div class="align-self-center">
 					<a v-on:click.prevent="download" href="#" title="Download">
 						<svg width="18px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -110,9 +110,9 @@
             volume: 100,
 
             postToLog: {
-                judul: String,
-                music_id: Number,
-                filename: String,
+                item_id: Number,
+                action: String,
+                item_name: String,
             }
         }),
         computed: {
@@ -144,10 +144,9 @@
                 this.stop();
 
                 let filename = this.file;//.replace('/storage/uploadedMusic/', '');
-                this.postToLog.judul = this.judul;
-                this.postToLog.action = 'download';
-                this.postToLog.music_id = this.file_id;
-                this.postToLog.filename = filename;
+                this.postToLog.item_id = this.file_id;
+                this.postToLog.action = 'download music';
+                this.postToLog.item_name = this.judul;
 
                 //window.open(this.file, 'download');
 
@@ -167,7 +166,7 @@
                     })
                     .catch(error => console.error(error));
             },
-            load() {
+            load(){
                 if (this.audio.readyState >= 2) {
                     this.loaded = true;
                     this.durationSeconds = parseInt(this.audio.duration);

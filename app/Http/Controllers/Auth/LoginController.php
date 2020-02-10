@@ -62,7 +62,7 @@ class LoginController extends Controller
         //$request->email .= '@mncgroup.com';
 
         if($ldap === true){
-            if($this->attemptLogin($request)){
+            if($this->attemptLogin($request)){ //return Auth::user();
                 return $this->sendLoginResponse($request);
             }else{
                 $user = User::where('email', '=', $request->email)->first();
@@ -77,7 +77,7 @@ class LoginController extends Controller
                         'user_type' => 3,
                         'hak_akses' => 2,
                     ]);
-                }
+                } //return Auth::user();
 
                 if($this->attemptLogin($request)){
                     return $this->sendLoginResponse($request);

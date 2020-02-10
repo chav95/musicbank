@@ -2333,6 +2333,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   data: function data() {
     return {
       userLogin: {
+        user_type: 0,
         hak_akses: 0
       },
       page: 1,
@@ -2369,6 +2370,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       } else {
         return [];
       }
+    },
+    music_crud_right: function music_crud_right() {
+      if (this.userLogin.user_type === 1 || this.userLogin.user_type === 2 || this.userLogin.hak_akses === 1) {
+        return true;
+      }
+
+      return false;
     },
     isIdle: function isIdle() {
       return this.$store.state.idleVue.isIdle;
@@ -2408,14 +2416,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         });
       }
     },
-    loadMusics: function loadMusics(page, sortingParam) {
+    loadMusics: function loadMusics(page) {
       var _this3 = this;
 
-      this.page = page;
-
-      if (sortingParam == undefined) {
-        sortingParam = 'created_at@DESC';
-      }
+      var sortingParam = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'created_at@DESC';
+      this.page = page; // if(sortingParam == undefined){
+      //   sortingParam = 'created_at@DESC';
+      // }
 
       this.sortParam = sortingParam;
 
@@ -2553,7 +2560,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           switch (_context.prev = _context.next) {
             case 0:
               if (this.page < this.last_page) {
-                console.log('intersect');
+                //console.log('intersect');
                 this.loadMusics(++this.page);
               }
 
@@ -2568,7 +2575,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       return moment__WEBPACK_IMPORTED_MODULE_1___default()(String(datetime)).format('llll');
     },
     playAudio: function playAudio(judul, path, id, index) {
-      console.log('play');
+      console.log('id: ' + id);
 
       if (path) {
         this.judul = judul;
@@ -2577,20 +2584,16 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         this.autoPlay = true;
         this.playingIndex = index;
         var postToLog = {
-          'judul': judul,
-          'music_id': id,
-          'action': 'play',
-          'filename': path.split('/')[path.split('/').length - 1]
+          'item_id': id,
+          'action': 'play music',
+          'item_name': judul
         };
         axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref6) {
           var data = _ref6.data;
+          console.log(data);
         })["catch"](function (_ref7) {
           var error = _ref7.error;
           console.error(error);
-
-          if (error.error) {
-            location.reload();
-          }
         });
       } else {
         this.$alert('No file to play', '', 'error');
@@ -2608,10 +2611,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.judul = this.judulArr[next];
     },
     download: function download(judul, path, id) {
-      axios.get(path, {
-        responseType: 'blob'
-      }).then(function (_ref8) {
+      var filename = path.split('/')[path.split('/').length - 1];
+      axios.get(window.location.origin + '/api/download/' + filename).then(function (_ref8) {
         var data = _ref8.data;
+        //console.log(data);
         var blob = new Blob([data], {
           type: 'audio/mp3'
         });
@@ -2620,30 +2623,43 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         link.download = judul;
         link.click();
         var postToLog = {
-          'judul': judul,
-          'music_id': id,
-          'action': 'download',
-          'filename': path.split('/')[path.split('/').length - 1] //path.replace('/storage/uploadedMusic/', ''),
-
+          'item_id': id,
+          'action': 'download music',
+          'item_name': judul
         };
         axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {
           var data = _ref9.data;
+          console.log(data);
         })["catch"](function (_ref10) {
           var error = _ref10.error;
           console.error(error);
-
-          if (error.error) {
-            location.reload();
-          }
         });
-      })["catch"](function (_ref11) {
-        var error = _ref11.error;
-        console.log(error);
-
-        if (error.error) {
-          location.reload();
-        }
-      });
+      }); // axios.get(path, { responseType: 'blob' })
+      //   .then(({ data }) => {
+      //     const blob = new Blob([data], {type: 'audio/mp3'});
+      //     let link = document.createElement('a');
+      //     link.href = window.URL.createObjectURL(blob);
+      //     link.download = judul;
+      //     link.click();
+      //     let postToLog = {
+      //       'item_id' : id,
+      //       'action': 'download music',
+      //       'item_name' :judul
+      //     }
+      //     axios.post(window.location.origin+'/api/log', postToLog)
+      //     .then(({ data }) => {
+      //       console.log(data);
+      //     })
+      //     .catch(({error}) => {
+      //       console.error(error);
+      //     });
+      // })
+      // .catch(({error}) => {
+      //   console.log(error);
+      //   if(error.error){
+      //     location.reload();
+      //   }
+      // });
     },
     addToWishlist: function addToWishlist(music_id, music_judul) {
       var _this4 = this;
@@ -2652,20 +2668,20 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         var postToWishlist = {
           'music_id': music_id
         };
-        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref12) {
-          var response = _ref12.response;
+        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref11) {
+          var response = _ref11.response;
 
           _this4.$alert(music_judul + ' added to your wishlist', '', 'success');
-        })["catch"](function (_ref13) {
-          var error = _ref13.error;
+        })["catch"](function (_ref12) {
+          var error = _ref12.error;
           console.error(error);
 
           if (error.error) {
             location.reload();
           }
         });
-      })["catch"](function (_ref14) {
-        var error = _ref14.error;
+      })["catch"](function (_ref13) {
+        var error = _ref13.error;
         console.error(error);
 
         if (error.error) {
@@ -2695,14 +2711,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             'playlist_detail_id': music_id,
             'playlist_id': _this5.$route.params.playlist_id
           };
-          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref15) {
-            var response = _ref15.response;
+          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref14) {
+            var response = _ref14.response;
 
             _this5.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
 
             _this5.loadMusics(1);
-          })["catch"](function (_ref16) {
-            var error = _ref16.error;
+          })["catch"](function (_ref15) {
+            var error = _ref15.error;
 
             _this5.$alert(error.message, '', 'error');
 
@@ -2712,14 +2728,31 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           });
         } else {
           _this5.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
-            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref17) {
-              var response = _ref17.response;
+            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref16) {
+              var response = _ref16.response;
 
               _this5.$alert('Delete Successful', '', 'success');
 
-              _this5.loadMusics(1);
-            })["catch"](function (_ref18) {
-              var error = _ref18.error;
+              var postToLog = {
+                'item_id': music_id,
+                'action': 'delete music',
+                'item_name': music_judul
+              };
+              axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref17) {
+                var data = _ref17.data;
+                console.log(data);
+
+                _this5.loadMusics(1);
+              })["catch"](function (_ref18) {
+                var error = _ref18.error;
+                console.error(error);
+
+                if (error.error) {
+                  location.reload();
+                }
+              });
+            })["catch"](function (_ref19) {
+              var error = _ref19.error;
 
               _this5.$alert(error.message, '', 'error');
 
@@ -2729,8 +2762,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             });
           });
         }
-      })["catch"](function (_ref19) {
-        var error = _ref19.error;
+      })["catch"](function (_ref20) {
+        var error = _ref20.error;
         console.error(error);
 
         if (error.error) {
@@ -2780,8 +2813,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var _this8 = this;
 
     //this.$session.start(30000);
-    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref20) {
-      var data = _ref20.data;
+    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref21) {
+      var data = _ref21.data;
       _this8.userLogin = data;
     });
     this.loadMusics(1);
@@ -2862,7 +2895,22 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.$alert('Playlist Created', '', 'success');
 
-        location.reload();
+        var postToLog = {
+          'item_id': 0,
+          'action': 'create playlist',
+          'item_name': _this.form.playlistName
+        };
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref) {
+          var data = _ref.data;
+          return location.reload();
+        })["catch"](function (_ref2) {
+          var error = _ref2.error;
+          console.error(error);
+
+          if (error.error) {
+            location.reload();
+          }
+        });
       })["catch"](function (err) {
         _this.$alert('Failed: ' + err.message, '', 'error');
       });
@@ -3547,7 +3595,22 @@ __webpack_require__.r(__webpack_exports__);
         axios["delete"](window.location.origin + '/api/playlist/' + id).then(function (result) {
           _this.$alert('Delete Success', '', 'success');
 
-          location.reload();
+          var postToLog = {
+            'item_id': id,
+            'action': 'delete playlist',
+            'item_name': nama_playlist
+          };
+          axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref) {
+            var data = _ref.data;
+            return location.reload();
+          })["catch"](function (_ref2) {
+            var error = _ref2.error;
+            console.error(error);
+
+            if (error.error) {
+              location.reload();
+            }
+          });
         });
       });
     }
@@ -3559,8 +3622,8 @@ __webpack_require__.r(__webpack_exports__);
     this.selfLevel += this.level;
 
     if (this.selfLevel == 0) {
-      axios.get(window.location.origin + '/api/music').then(function (_ref) {
-        var data = _ref.data;
+      axios.get(window.location.origin + '/api/music').then(function (_ref3) {
+        var data = _ref3.data;
         return _this2.fullPlaylistt = data;
       });
     }
@@ -4832,9 +4895,9 @@ var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
       showVolume: true,
       volume: 100,
       postToLog: {
-        judul: String,
-        music_id: Number,
-        filename: String
+        item_id: Number,
+        action: String,
+        item_name: String
       }
     };
   },
@@ -4872,10 +4935,9 @@ var convertTimeHHMMSS = function convertTimeHHMMSS(val) {
       this.stop();
       var filename = this.file; //.replace('/storage/uploadedMusic/', '');
 
-      this.postToLog.judul = this.judul;
-      this.postToLog.action = 'download';
-      this.postToLog.music_id = this.file_id;
-      this.postToLog.filename = filename; //window.open(this.file, 'download');
+      this.postToLog.item_id = this.file_id;
+      this.postToLog.action = 'download music';
+      this.postToLog.item_name = this.judul; //window.open(this.file, 'download');
 
       axios.get(this.file, {
         responseType: 'blob'
@@ -68438,7 +68500,7 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "card-header" }, [
                 _c("div", { staticClass: "button-container" }, [
-                  _vm.userLogin.hak_akses == 1 || _vm.userLogin.user_type == 1
+                  _vm.music_crud_right == true
                     ? _c(
                         "button",
                         {
@@ -68455,8 +68517,7 @@ var render = function() {
                       )
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.$route.params.playlist_id &&
-                  (_vm.userLogin.hak_akses == 1 || _vm.userLogin.user_type == 1)
+                  _vm.$route.params.playlist_id && _vm.music_crud_right == true
                     ? _c(
                         "button",
                         {
@@ -68474,8 +68535,7 @@ var render = function() {
                       )
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.$route.params.playlist_id &&
-                  (_vm.userLogin.hak_akses == 1 || _vm.userLogin.user_type == 1)
+                  _vm.$route.params.playlist_id && _vm.music_crud_right == true
                     ? _c(
                         "button",
                         {
@@ -68630,7 +68690,7 @@ var render = function() {
                               return _c(
                                 "tr",
                                 {
-                                  key: index,
+                                  key: music.id,
                                   attrs: {
                                     "hover:bg-blue": "",
                                     "px-4": "",
@@ -68694,8 +68754,7 @@ var render = function() {
                                             staticClass: "modify-btn-container"
                                           },
                                           [
-                                            _vm.userLogin.hak_akses == 1 ||
-                                            _vm.userLogin.user_type == 1
+                                            _vm.music_crud_right == true
                                               ? _c(
                                                   "a",
                                                   {
@@ -68751,8 +68810,7 @@ var render = function() {
                                               ]
                                             ),
                                             _vm._v(" "),
-                                            _vm.userLogin.hak_akses == 1 ||
-                                            _vm.userLogin.user_type == 1
+                                            _vm.music_crud_right == true
                                               ? _c(
                                                   "a",
                                                   {
@@ -68779,8 +68837,7 @@ var render = function() {
                                                 )
                                               : _vm._e(),
                                             _vm._v(" "),
-                                            _vm.userLogin.hak_akses == 1 ||
-                                            _vm.userLogin.user_type == 1
+                                            _vm.music_crud_right == true
                                               ? _c(
                                                   "a",
                                                   {
@@ -71172,275 +71229,277 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "player" }, [
-    _c(
-      "div",
-      { staticClass: "player-controls d-flex h-100" },
-      [
-        _c("audio", {
-          ref: "audiofile",
-          staticStyle: { display: "none" },
-          attrs: { loop: _vm.innerLoop, src: _vm.file, preload: "auto" },
-          on: {
-            ended: function($event) {
-              return _vm.$emit("playNext")
+    _c("div", { staticClass: "player-controls d-flex h-100" }, [
+      _c("audio", {
+        ref: "audiofile",
+        staticStyle: { display: "none" },
+        attrs: { loop: _vm.innerLoop, src: _vm.file, preload: "auto" },
+        on: {
+          ended: function($event) {
+            return _vm.$emit("playNext")
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "align-self-center" }, [
+        _vm.judul !== null
+          ? _c("h6", { staticClass: "playing-title" }, [
+              _vm._v(_vm._s(_vm.judul))
+            ])
+          : _c("h6", { staticClass: "text-capitalize playing-title" }, [
+              _vm._v("- Select Music To Play -")
+            ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "align-self-center" }, [
+        _c(
+          "a",
+          {
+            attrs: { title: "Stop", href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.stop($event)
+              }
             }
-          }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "align-self-center" }, [
-          _vm.judul !== null
-            ? _c("h6", { staticClass: "playing-title" }, [
-                _vm._v(_vm._s(_vm.judul))
-              ])
-            : _c("h6", { staticClass: "text-capitalize playing-title" }, [
-                _vm._v("- Select Music To Play -")
-              ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "align-self-center" }, [
-          _c(
-            "a",
-            {
-              attrs: { title: "Stop", href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  return _vm.stop($event)
-                }
-              }
-            },
-            [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    width: "18px",
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
-                },
-                [
-                  _c("path", {
-                    attrs: {
-                      fill: "currentColor",
-                      d:
-                        "M16,4.995v9.808C16,15.464,15.464,16,14.804,16H4.997C4.446,16,4,15.554,4,15.003V5.196C4,4.536,4.536,4,5.196,4h9.808C15.554,4,16,4.446,16,4.995z"
-                    }
-                  })
-                ]
-              )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "align-self-center" }, [
-          _c(
-            "a",
-            {
-              attrs: { title: "Play/Pause", href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.playing = !_vm.playing
-                }
-              }
-            },
-            [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    width: "18px",
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
-                },
-                [
-                  !_vm.playing
-                    ? _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M15,10.001c0,0.299-0.305,0.514-0.305,0.514l-8.561,5.303C5.51,16.227,5,15.924,5,15.149V4.852c0-0.777,0.51-1.078,1.135-0.67l8.561,5.305C14.695,9.487,15,9.702,15,10.001z"
-                        }
-                      })
-                    : _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M15,3h-2c-0.553,0-1,0.048-1,0.6v12.8c0,0.552,0.447,0.6,1,0.6h2c0.553,0,1-0.048,1-0.6V3.6C16,3.048,15.553,3,15,3z M7,3H5C4.447,3,4,3.048,4,3.6v12.8C4,16.952,4.447,17,5,17h2c0.553,0,1-0.048,1-0.6V3.6C8,3.048,7.553,3,7,3z"
-                        }
-                      })
-                ]
-              )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("av-waveform", {
-          key: _vm.file_id,
-          staticClass: "waveform-container",
-          attrs: {
-            "audio-controls": true,
-            "played-line-color": "#3490dc",
-            "noplayed-line-color": "#6cb2eb",
-            "canv-height": 50,
-            playtime: true,
-            "progress-width": 5,
-            "audio-class": "audio-player",
-            "canvas-class": "waveform-player",
-            "canv-width": 300,
-            "ref-link": "audiofile"
-          }
-        }),
-        _vm._v(" "),
-        _c("div", { staticClass: "align-self-center" }, [
-          _c(
-            "a",
-            {
-              attrs: {
-                href: "#",
-                title: "Toggle Repeat File / Repeat Playlist"
-              },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.innerLoop = !_vm.innerLoop
-                }
-              }
-            },
-            [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    width: "18px",
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
-                },
-                [
-                  !_vm.innerLoop
-                    ? _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M1,12V5h3v6h10V8l5,4.5L14,17v-3H3C1.895,14,1,13.104,1,12z"
-                        }
-                      })
-                    : _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M20,7v7c0,1.103-0.896,2-2,2H2c-1.104,0-2-0.897-2-2V7c0-1.104,0.896-2,2-2h7V3l4,3.5L9,10V8H3v5h14V8h-3V5h4C19.104,5,20,5.896,20,7z"
-                        }
-                      })
-                ]
-              )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "align-self-center" }, [
-          _c(
-            "a",
-            {
-              attrs: { title: "Mute", href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  return _vm.mute($event)
-                }
-              }
-            },
-            [
-              _c(
-                "svg",
-                {
-                  attrs: {
-                    width: "18px",
-                    xmlns: "http://www.w3.org/2000/svg",
-                    viewBox: "0 0 20 20"
-                  }
-                },
-                [
-                  !_vm.muted
-                    ? _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M5.312,4.566C4.19,5.685-0.715,12.681,3.523,16.918c4.236,4.238,11.23-0.668,12.354-1.789c1.121-1.119-0.335-4.395-3.252-7.312C9.706,4.898,6.434,3.441,5.312,4.566z M14.576,14.156c-0.332,0.328-2.895-0.457-5.364-2.928C6.745,8.759,5.956,6.195,6.288,5.865c0.328-0.332,2.894,0.457,5.36,2.926C14.119,11.258,14.906,13.824,14.576,14.156zM15.434,5.982l1.904-1.906c0.391-0.391,0.391-1.023,0-1.414c-0.39-0.391-1.023-0.391-1.414,0L14.02,4.568c-0.391,0.391-0.391,1.024,0,1.414C14.41,6.372,15.043,6.372,15.434,5.982z M11.124,3.8c0.483,0.268,1.091,0.095,1.36-0.388l1.087-1.926c0.268-0.483,0.095-1.091-0.388-1.36c-0.482-0.269-1.091-0.095-1.36,0.388L10.736,2.44C10.468,2.924,10.642,3.533,11.124,3.8z M19.872,6.816c-0.267-0.483-0.877-0.657-1.36-0.388l-1.94,1.061c-0.483,0.268-0.657,0.878-0.388,1.36c0.268,0.483,0.877,0.657,1.36,0.388l1.94-1.061C19.967,7.907,20.141,7.299,19.872,6.816z"
-                        }
-                      })
-                    : _c("path", {
-                        attrs: {
-                          fill: "currentColor",
-                          d:
-                            "M14.201,9.194c1.389,1.883,1.818,3.517,1.559,3.777c-0.26,0.258-1.893-0.17-3.778-1.559l-5.526,5.527c4.186,1.838,9.627-2.018,10.605-2.996c0.925-0.922,0.097-3.309-1.856-5.754L14.201,9.194z M8.667,7.941c-1.099-1.658-1.431-3.023-1.194-3.26c0.233-0.234,1.6,0.096,3.257,1.197l1.023-1.025C9.489,3.179,7.358,2.519,6.496,3.384C5.568,4.31,2.048,9.261,3.265,13.341L8.667,7.941z M18.521,1.478c-0.39-0.391-1.023-0.391-1.414,0L1.478,17.108c-0.391,0.391-0.391,1.024,0,1.414c0.391,0.391,1.023,0.391,1.414,0l15.629-15.63C18.912,2.501,18.912,1.868,18.521,1.478z"
-                        }
-                      })
-                ]
-              )
-            ]
-          )
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "align-self-center" }, [
-          _c(
-            "a",
-            {
-              attrs: { title: "Volume", href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                },
-                mouseenter: function($event) {
-                  _vm.showVolume = true
-                }
-              }
-            },
-            [
-              _c("path", {
+          },
+          [
+            _c(
+              "svg",
+              {
                 attrs: {
-                  fill: "currentColor",
-                  d:
-                    "M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"
+                  width: "18px",
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20"
                 }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model.lazy.number",
-                    value: _vm.volume,
-                    expression: "volume",
-                    modifiers: { lazy: true, number: true }
-                  },
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.showVolume,
-                    expression: "showVolume"
+              },
+              [
+                _c("path", {
+                  attrs: {
+                    fill: "currentColor",
+                    d:
+                      "M16,4.995v9.808C16,15.464,15.464,16,14.804,16H4.997C4.446,16,4,15.554,4,15.003V5.196C4,4.536,4.536,4,5.196,4h9.808C15.554,4,16,4.446,16,4.995z"
                   }
-                ],
-                attrs: { type: "range", min: "0", max: "100" },
-                domProps: { value: _vm.volume },
-                on: {
-                  change: function($event) {
-                    _vm.volume = _vm._n($event.target.value)
-                  },
-                  blur: function($event) {
-                    return _vm.$forceUpdate()
-                  }
+                })
+              ]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "align-self-center" }, [
+        _c(
+          "a",
+          {
+            attrs: { title: "Play/Pause", href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.playing = !_vm.playing
+              }
+            }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  width: "18px",
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20"
                 }
-              })
-            ]
-          )
+              },
+              [
+                !_vm.playing
+                  ? _c("path", {
+                      attrs: {
+                        fill: "currentColor",
+                        d:
+                          "M15,10.001c0,0.299-0.305,0.514-0.305,0.514l-8.561,5.303C5.51,16.227,5,15.924,5,15.149V4.852c0-0.777,0.51-1.078,1.135-0.67l8.561,5.305C14.695,9.487,15,9.702,15,10.001z"
+                      }
+                    })
+                  : _c("path", {
+                      attrs: {
+                        fill: "currentColor",
+                        d:
+                          "M15,3h-2c-0.553,0-1,0.048-1,0.6v12.8c0,0.552,0.447,0.6,1,0.6h2c0.553,0,1-0.048,1-0.6V3.6C16,3.048,15.553,3,15,3z M7,3H5C4.447,3,4,3.048,4,3.6v12.8C4,16.952,4.447,17,5,17h2c0.553,0,1-0.048,1-0.6V3.6C8,3.048,7.553,3,7,3z"
+                      }
+                    })
+              ]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", [
+        _c(
+          "div",
+          {
+            staticClass: "player-progress",
+            attrs: { title: "Time played : Total time" },
+            on: { click: _vm.seek }
+          },
+          [
+            _c("div", {
+              staticClass: "player-seeker",
+              style: { width: this.percentComplete + "%" }
+            })
+          ]
+        ),
+        _vm._v(" "),
+        _c("div", { staticClass: "player-time" }, [
+          _c("div", { staticClass: "player-time-current" }, [
+            _vm._v(_vm._s(_vm.currentTime))
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "player-time-total" }, [
+            _vm._v(_vm._s(_vm.durationTime))
+          ])
         ])
-      ],
-      1
-    )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "align-self-center" }, [
+        _c(
+          "a",
+          {
+            attrs: { href: "#", title: "Toggle Repeat File / Repeat Playlist" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.innerLoop = !_vm.innerLoop
+              }
+            }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  width: "18px",
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20"
+                }
+              },
+              [
+                !_vm.innerLoop
+                  ? _c("path", {
+                      attrs: {
+                        fill: "currentColor",
+                        d:
+                          "M1,12V5h3v6h10V8l5,4.5L14,17v-3H3C1.895,14,1,13.104,1,12z"
+                      }
+                    })
+                  : _c("path", {
+                      attrs: {
+                        fill: "currentColor",
+                        d:
+                          "M20,7v7c0,1.103-0.896,2-2,2H2c-1.104,0-2-0.897-2-2V7c0-1.104,0.896-2,2-2h7V3l4,3.5L9,10V8H3v5h14V8h-3V5h4C19.104,5,20,5.896,20,7z"
+                      }
+                    })
+              ]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "align-self-center" }, [
+        _c(
+          "a",
+          {
+            attrs: { title: "Mute", href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.mute($event)
+              }
+            }
+          },
+          [
+            _c(
+              "svg",
+              {
+                attrs: {
+                  width: "18px",
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20"
+                }
+              },
+              [
+                !_vm.muted
+                  ? _c("path", {
+                      attrs: {
+                        fill: "currentColor",
+                        d:
+                          "M5.312,4.566C4.19,5.685-0.715,12.681,3.523,16.918c4.236,4.238,11.23-0.668,12.354-1.789c1.121-1.119-0.335-4.395-3.252-7.312C9.706,4.898,6.434,3.441,5.312,4.566z M14.576,14.156c-0.332,0.328-2.895-0.457-5.364-2.928C6.745,8.759,5.956,6.195,6.288,5.865c0.328-0.332,2.894,0.457,5.36,2.926C14.119,11.258,14.906,13.824,14.576,14.156zM15.434,5.982l1.904-1.906c0.391-0.391,0.391-1.023,0-1.414c-0.39-0.391-1.023-0.391-1.414,0L14.02,4.568c-0.391,0.391-0.391,1.024,0,1.414C14.41,6.372,15.043,6.372,15.434,5.982z M11.124,3.8c0.483,0.268,1.091,0.095,1.36-0.388l1.087-1.926c0.268-0.483,0.095-1.091-0.388-1.36c-0.482-0.269-1.091-0.095-1.36,0.388L10.736,2.44C10.468,2.924,10.642,3.533,11.124,3.8z M19.872,6.816c-0.267-0.483-0.877-0.657-1.36-0.388l-1.94,1.061c-0.483,0.268-0.657,0.878-0.388,1.36c0.268,0.483,0.877,0.657,1.36,0.388l1.94-1.061C19.967,7.907,20.141,7.299,19.872,6.816z"
+                      }
+                    })
+                  : _c("path", {
+                      attrs: {
+                        fill: "currentColor",
+                        d:
+                          "M14.201,9.194c1.389,1.883,1.818,3.517,1.559,3.777c-0.26,0.258-1.893-0.17-3.778-1.559l-5.526,5.527c4.186,1.838,9.627-2.018,10.605-2.996c0.925-0.922,0.097-3.309-1.856-5.754L14.201,9.194z M8.667,7.941c-1.099-1.658-1.431-3.023-1.194-3.26c0.233-0.234,1.6,0.096,3.257,1.197l1.023-1.025C9.489,3.179,7.358,2.519,6.496,3.384C5.568,4.31,2.048,9.261,3.265,13.341L8.667,7.941z M18.521,1.478c-0.39-0.391-1.023-0.391-1.414,0L1.478,17.108c-0.391,0.391-0.391,1.024,0,1.414c0.391,0.391,1.023,0.391,1.414,0l15.629-15.63C18.912,2.501,18.912,1.868,18.521,1.478z"
+                      }
+                    })
+              ]
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "align-self-center" }, [
+        _c(
+          "a",
+          {
+            attrs: { title: "Volume", href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+              },
+              mouseenter: function($event) {
+                _vm.showVolume = true
+              }
+            }
+          },
+          [
+            _c("path", {
+              attrs: {
+                fill: "currentColor",
+                d:
+                  "M19,13.805C19,14.462,18.462,15,17.805,15H1.533c-0.88,0-0.982-0.371-0.229-0.822l16.323-9.055C18.382,4.67,19,5.019,19,5.9V13.805z"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model.lazy.number",
+                  value: _vm.volume,
+                  expression: "volume",
+                  modifiers: { lazy: true, number: true }
+                },
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.showVolume,
+                  expression: "showVolume"
+                }
+              ],
+              attrs: { type: "range", min: "0", max: "100" },
+              domProps: { value: _vm.volume },
+              on: {
+                change: function($event) {
+                  _vm.volume = _vm._n($event.target.value)
+                },
+                blur: function($event) {
+                  return _vm.$forceUpdate()
+                }
+              }
+            })
+          ]
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = []

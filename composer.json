@@ -8,6 +8,7 @@
         "php": ">=5.6.4",
         "acekyd/laravelmp3": "^1.0",
         "guzzlehttp/guzzle": "^6.4",
+        "james-heinrich/getid3": "^1.9",
         "laravel/framework": "5.4.*",
         "laravel/passport": "^4.0",
         "laravel/tinker": "~1.0",
@@ -30,7 +31,10 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "classmap": [
+            "tests/TestCase.php", "vendor/james-heinrich/getid3/getid3/write.php"
+        ]
     },
     "scripts": {
         "post-root-package-install": [
