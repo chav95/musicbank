@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Storage;
 use Response;
+use File;
 use Aws\S3\S3Client;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -78,8 +79,10 @@ class MusicController extends Controller
                 if(Storage::disk('ftp')->exists($originalFilename)){
                     return response()->json(array('error' => 'File already exist'), 500);
                 }else{
-                    // UPLOAD TO PROJECT FOLDER
-                    //$item->storeAs('public/uploadedMusic', $filename);
+                    // UPLOAD TO PROJECT FOLDER TO READ METADATA
+                    // $item->storeAs('public/uploadedMusic', $originalFilename);
+                    // $getID3 = new \getID3;
+                    // return json_encode($getID3->analyze('http://172.18.11.32:8082/aud_uploads/wii shop theme jazz cover.mp3'));
 
                     // UPLOAD TO FTP SERVER
                     //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))));
@@ -149,8 +152,8 @@ class MusicController extends Controller
                 return DB::table('musics')
                     ->where('id', $request->music_id)
                     ->update(['di_playlist' => $di_playlist]);*/
-
-                return MusicPlaylist::where('id', $request->music_playlist_id)->update(['status' => -1]);
+                
+                return MusicPlaylist::where(['music_id' => $request->music_id, 'playlist_id' => $request->playlist_id])->delete();
             }
             return $request->act;
         }
@@ -291,15 +294,34 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id){
-        MusicPlaylist::where('music_id', $id)->delete();
-        return Music::where('id', $id)->update(['status' => -1]);
+        if(is_numeric($id)){ // delete music from database & ftp storage
+            return response()->json(array(
+                'Storage' => Storage::disk('ftp')->delete(
+                    str_replace('http://172.18.11.32:8082/aud_uploads/', '',
+                        str_replace("%20", " ", 
+                            str_replace("%23", "#", 
+                                Music::where('id', $id)->first()->filename
+                            )
+                        )
+                    )
+                ),
+                'MusicPlaylist' => MusicPlaylist::where('music_id', $id)->delete(),
+                'Music' => Music::where('id', $id)->delete(),
+            ), 200);
+        }else{ // delete music from public folder after being downloaded
+            return response()->json(array('delete temp' => Storage::disk('public')->delete($id)), 200);
+        }
+        
     }
 
-    public function download($filename){ //return $filename;
+    public function download($filename){
         $getFile = Storage::disk('ftp')->get($filename);
-        return Response::make($getFile, '200', array(
-            'Content-Type' => 'application/octet-stream',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"'
-        ));
+        Storage::disk('public')->put($filename, $getFile);
+        return url('/storage/'.$filename);
+
+        // return Response::make($getFile, '200', array(
+        //     'Content-Type' => 'application/octet-stream',
+        //     'Content-Disposition' => 'attachment; filename="'.$filename.'"'
+        // ));
     }
 }

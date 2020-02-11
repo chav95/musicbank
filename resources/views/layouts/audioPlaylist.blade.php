@@ -27,8 +27,9 @@
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>A</b>LT</span>
           <!-- logo for regular state and mobile devices -->
-          <!--<span class="logo-lg">{{preg_replace('/\b(\w)|./', '$1', ucwords(str_replace('_', ' ', config('app.name'))))}}</span>-->
-          <span class="logo-lg">{{ucwords(str_replace('_', ' ', config('app.name')))}}</span>
+          {{-- <span class="logo-lg">{{preg_replace('/\b(\w)|./', '$1', ucwords(str_replace('_', ' ', config('app.name'))))}}</span> --}}
+          {{-- <span class="logo-lg">{{ucwords(str_replace('_', ' ', config('app.name')))}}</span> --}}
+          <img src="{{asset('storage/app_image/mnclogo.png')}}" class="img" alt="MNC Logo">
         </a>
     
         <!-- Header Navbar -->
@@ -153,7 +154,7 @@
           Anything you want
         </div>
         <!-- Default to the left -->
-        <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+        <strong>Copyright &copy; 2019 <a href="#">MNC Group</a>.</strong> All rights reserved.
       </footer>
     
       <!-- Control Sidebar -->

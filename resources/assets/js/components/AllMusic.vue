@@ -80,7 +80,7 @@
                 <!--<draggable v-model="musics" :options="{group:{judul:musics.judul}, pull:'clone'}" @start="drag=true" :element="'tbody'">-->
                 <tbody>
                   <template v-if="searchMusic !== '' && searchMusic != 0">
-                    <tr v-for="(music, index) in searchMusic" :key="music.id" hover:bg-blue px-4 py2>
+                    <tr v-for="(music, index) in searchMusic" :key="index" hover:bg-blue px-4 py2>
                       <td>{{music.judul}}</td>
                       <td>
                         <button 
@@ -260,7 +260,11 @@
               if(data.error){
                 location.reload();
               }else{
-                this.musics = [...this.musics, ...data.data];
+                if(page > this.page){
+                  this.musics = [...this.musics, ...data.data];
+                }else{
+                  this.musics = data.data;
+                }
                 this.last_page = data.last_page;
                 //this.file = data.data[0].filename;
                 for(let item of data.data){ //console.log(item.filepath);
@@ -279,7 +283,11 @@
               if(data.error){
                 location.reload();
               }else{ 
-                this.musics = [...this.musics, ...data.data];
+                if(page > this.page){
+                  this.musics = [...this.musics, ...data.data];
+                }else{
+                  this.musics = data.data;
+                }
                 this.last_page = data.last_page;
                 for(let item of data.data){
                   this.fileArr.push(item.filename);
@@ -293,7 +301,11 @@
               if(data.error){
                 location.reload();
               }else{
-                this.musics = [...this.musics, ...data.data];
+                if(page > this.page){
+                  this.musics = [...this.musics, ...data.data];
+                }else{
+                  this.musics = data.data;
+                }
                 this.last_page = data.last_page;
                 //this.musics = [].concat(this.musics, data.data);
                 for(let item of data.data){
@@ -350,54 +362,39 @@
       },
       download(judul, path, id){
         let filename = path.split('/')[path.split('/').length - 1];
-        axios.get(window.location.origin+'/api/download/'+filename).then(({data}) => { //console.log(data);
-          const blob = new Blob([data], {type: 'audio/mp3'});
-          let link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = judul;
-          link.click();
-          
-          let postToLog = {
-            'item_id' : id,
-            'action': 'download music',
-            'item_name' :judul
-          }
-          axios.post(window.location.origin+'/api/log', postToLog)
-          .then(({ data }) => {
-            console.log(data);
+        // download from ftp server to project folder
+        axios.get(window.location.origin+'/api/download/'+filename).then(res => {
+          // downlload from project folder to client
+          axios.get(res.data, { responseType: 'blob' }).then(({ data }) => {
+            const blob = new Blob([data], {type: 'audio/mp3'});
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = judul;
+            link.click();
+            
+            let postToLog = {
+              'item_id' : id,
+              'action': 'download music',
+              'item_name' :judul
+            }
+            axios.post(window.location.origin+'/api/log', postToLog)
+            .then(({ data }) => {
+              console.log(data);
+            })
+            .catch(({error}) => {
+              console.error(error);
+            });
+          }).then( ()=> {
+            // delete music from private folder
+            axios.delete(window.location.origin+'/api/music/'+filename);
           })
           .catch(({error}) => {
-            console.error(error);
+            console.log(error, 'error');
+            // if(error.error){
+            //   location.reload();
+            // }
           });
         });
-
-        // axios.get(path, { responseType: 'blob' })
-        //   .then(({ data }) => {
-        //     const blob = new Blob([data], {type: 'audio/mp3'});
-        //     let link = document.createElement('a');
-        //     link.href = window.URL.createObjectURL(blob);
-        //     link.download = judul;
-        //     link.click();
-            
-        //     let postToLog = {
-        //       'item_id' : id,
-        //       'action': 'download music',
-        //       'item_name' :judul
-        //     }
-        //     axios.post(window.location.origin+'/api/log', postToLog)
-        //     .then(({ data }) => {
-        //       console.log(data);
-        //     })
-        //     .catch(({error}) => {
-        //       console.error(error);
-        //     });
-        // })
-        // .catch(({error}) => {
-        //   console.log(error);
-        //   if(error.error){
-        //     location.reload();
-        //   }
-        // });
       },
       addToWishlist(music_id, music_judul){
         this.$confirm('Add '+music_judul+' to your wishlist?', '', 'question')
@@ -437,11 +434,11 @@
         }
 
         this.$confirm('Delete '+music_judul+' from '+playlist+'?', '', confirm_type)
-          .then( () => {
+          .then( ()=> { console.log('click');
             if(this.$route.params.playlist_id){
               let patchMusic = {
                 'act': 'remove_from_playlist',
-                'playlist_detail_id': music_id,
+                'music_id': music_id,
                 'playlist_id': this.$route.params.playlist_id
               }
               axios.post(window.location.origin+'/api/music', patchMusic)
@@ -451,15 +448,12 @@
                 })
                 .catch(({error}) => {
                   this.$alert(error.message, '', 'error');
-                  if(error.error){
-                    location.reload();
-                  }
                 });
             }else{
               this.$confirm('This delete action cannot be undone!', '', 'warning')
                 .then( () => {
                   axios.delete(window.location.origin+'/api/music/'+music_id)
-                    .then(({response}) => {
+                    .then(({response}) => { console.log(response);
                       this.$alert('Delete Successful', '', 'success');
             
                       let postToLog = {

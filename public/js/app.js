@@ -2433,7 +2433,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           if (data.error) {
             location.reload();
           } else {
-            _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+            if (page > _this3.page) {
+              _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+            } else {
+              _this3.musics = data.data;
+            }
+
             _this3.last_page = data.last_page; //this.file = data.data[0].filename;
 
             var _iteratorNormalCompletion = true;
@@ -2479,7 +2484,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             if (data.error) {
               location.reload();
             } else {
-              _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+              if (page > _this3.page) {
+                _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+              } else {
+                _this3.musics = data.data;
+              }
+
               _this3.last_page = data.last_page;
               var _iteratorNormalCompletion2 = true;
               var _didIteratorError2 = false;
@@ -2518,7 +2528,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             if (data.error) {
               location.reload();
             } else {
-              _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+              if (page > _this3.page) {
+                _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+              } else {
+                _this3.musics = data.data;
+              }
+
               _this3.last_page = data.last_page; //this.musics = [].concat(this.musics, data.data);
 
               var _iteratorNormalCompletion3 = true;
@@ -2611,55 +2626,43 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.judul = this.judulArr[next];
     },
     download: function download(judul, path, id) {
-      var filename = path.split('/')[path.split('/').length - 1];
-      axios.get(window.location.origin + '/api/download/' + filename).then(function (_ref8) {
-        var data = _ref8.data;
-        //console.log(data);
-        var blob = new Blob([data], {
-          type: 'audio/mp3'
+      var filename = path.split('/')[path.split('/').length - 1]; // download from ftp server to project folder
+
+      axios.get(window.location.origin + '/api/download/' + filename).then(function (res) {
+        // downlload from project folder to client
+        axios.get(res.data, {
+          responseType: 'blob'
+        }).then(function (_ref8) {
+          var data = _ref8.data;
+          var blob = new Blob([data], {
+            type: 'audio/mp3'
+          });
+          var link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = judul;
+          link.click();
+          var postToLog = {
+            'item_id': id,
+            'action': 'download music',
+            'item_name': judul
+          };
+          axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {
+            var data = _ref9.data;
+            console.log(data);
+          })["catch"](function (_ref10) {
+            var error = _ref10.error;
+            console.error(error);
+          });
+        }).then(function () {
+          // delete music from private folder
+          axios["delete"](window.location.origin + '/api/music/' + filename);
+        })["catch"](function (_ref11) {
+          var error = _ref11.error;
+          console.log(error, 'error'); // if(error.error){
+          //   location.reload();
+          // }
         });
-        var link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = judul;
-        link.click();
-        var postToLog = {
-          'item_id': id,
-          'action': 'download music',
-          'item_name': judul
-        };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {
-          var data = _ref9.data;
-          console.log(data);
-        })["catch"](function (_ref10) {
-          var error = _ref10.error;
-          console.error(error);
-        });
-      }); // axios.get(path, { responseType: 'blob' })
-      //   .then(({ data }) => {
-      //     const blob = new Blob([data], {type: 'audio/mp3'});
-      //     let link = document.createElement('a');
-      //     link.href = window.URL.createObjectURL(blob);
-      //     link.download = judul;
-      //     link.click();
-      //     let postToLog = {
-      //       'item_id' : id,
-      //       'action': 'download music',
-      //       'item_name' :judul
-      //     }
-      //     axios.post(window.location.origin+'/api/log', postToLog)
-      //     .then(({ data }) => {
-      //       console.log(data);
-      //     })
-      //     .catch(({error}) => {
-      //       console.error(error);
-      //     });
-      // })
-      // .catch(({error}) => {
-      //   console.log(error);
-      //   if(error.error){
-      //     location.reload();
-      //   }
-      // });
+      });
     },
     addToWishlist: function addToWishlist(music_id, music_judul) {
       var _this4 = this;
@@ -2668,20 +2671,20 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         var postToWishlist = {
           'music_id': music_id
         };
-        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref11) {
-          var response = _ref11.response;
+        axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref12) {
+          var response = _ref12.response;
 
           _this4.$alert(music_judul + ' added to your wishlist', '', 'success');
-        })["catch"](function (_ref12) {
-          var error = _ref12.error;
+        })["catch"](function (_ref13) {
+          var error = _ref13.error;
           console.error(error);
 
           if (error.error) {
             location.reload();
           }
         });
-      })["catch"](function (_ref13) {
-        var error = _ref13.error;
+      })["catch"](function (_ref14) {
+        var error = _ref14.error;
         console.error(error);
 
         if (error.error) {
@@ -2705,31 +2708,30 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
 
       this.$confirm('Delete ' + music_judul + ' from ' + playlist + '?', '', confirm_type).then(function () {
+        console.log('click');
+
         if (_this5.$route.params.playlist_id) {
           var patchMusic = {
             'act': 'remove_from_playlist',
-            'playlist_detail_id': music_id,
+            'music_id': music_id,
             'playlist_id': _this5.$route.params.playlist_id
           };
-          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref14) {
-            var response = _ref14.response;
+          axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref15) {
+            var response = _ref15.response;
 
             _this5.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
 
             _this5.loadMusics(1);
-          })["catch"](function (_ref15) {
-            var error = _ref15.error;
+          })["catch"](function (_ref16) {
+            var error = _ref16.error;
 
             _this5.$alert(error.message, '', 'error');
-
-            if (error.error) {
-              location.reload();
-            }
           });
         } else {
           _this5.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
-            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref16) {
-              var response = _ref16.response;
+            axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref17) {
+              var response = _ref17.response;
+              console.log(response);
 
               _this5.$alert('Delete Successful', '', 'success');
 
@@ -2738,21 +2740,21 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 'action': 'delete music',
                 'item_name': music_judul
               };
-              axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref17) {
-                var data = _ref17.data;
+              axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref18) {
+                var data = _ref18.data;
                 console.log(data);
 
                 _this5.loadMusics(1);
-              })["catch"](function (_ref18) {
-                var error = _ref18.error;
+              })["catch"](function (_ref19) {
+                var error = _ref19.error;
                 console.error(error);
 
                 if (error.error) {
                   location.reload();
                 }
               });
-            })["catch"](function (_ref19) {
-              var error = _ref19.error;
+            })["catch"](function (_ref20) {
+              var error = _ref20.error;
 
               _this5.$alert(error.message, '', 'error');
 
@@ -2762,8 +2764,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             });
           });
         }
-      })["catch"](function (_ref20) {
-        var error = _ref20.error;
+      })["catch"](function (_ref21) {
+        var error = _ref21.error;
         console.error(error);
 
         if (error.error) {
@@ -2813,8 +2815,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var _this8 = this;
 
     //this.$session.start(30000);
-    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref21) {
-      var data = _ref21.data;
+    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref22) {
+      var data = _ref22.data;
       _this8.userLogin = data;
     });
     this.loadMusics(1);
@@ -68690,7 +68692,7 @@ var render = function() {
                               return _c(
                                 "tr",
                                 {
-                                  key: music.id,
+                                  key: index,
                                   attrs: {
                                     "hover:bg-blue": "",
                                     "px-4": "",
