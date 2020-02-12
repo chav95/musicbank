@@ -85,12 +85,12 @@
                       class="form-control" :class="{ 'is-invalid': form.errors.has('email') }">
                     <has-error :form="form" field="email"></has-error>
                   </div>
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                     <label>Password</label>
                     <input v-model="form.password" type="password" name="password" placeholder="User Password"
                       class="form-control" :class="{ 'is-invalid': form.errors.has('password') }">
                     <has-error :form="form" field="password"></has-error>
-                  </div>
+                  </div> -->
                   <div class="form-group">
                     <label>User Type</label>
                     <select v-model="form.user_type" name="user_type" class="form-control" :class="{'is-invalid': form.errors.has('user_type')}">

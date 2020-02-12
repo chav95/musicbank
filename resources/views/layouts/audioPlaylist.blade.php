@@ -24,18 +24,19 @@
     
         <!-- Logo -->
         <a href="/dashboard" class="logo">
+          <img src="{{asset('storage/app_image/mnclogo.png')}}" class="img" alt="MNC Logo" style="height: 50px"/>
           <!-- mini logo for sidebar mini 50x50 pixels -->
-          <span class="logo-mini"><b>A</b>LT</span>
+          {{-- <span class="logo-mini"><b>A</b>LT</span> --}}
           <!-- logo for regular state and mobile devices -->
           {{-- <span class="logo-lg">{{preg_replace('/\b(\w)|./', '$1', ucwords(str_replace('_', ' ', config('app.name'))))}}</span> --}}
           {{-- <span class="logo-lg">{{ucwords(str_replace('_', ' ', config('app.name')))}}</span> --}}
-          <img src="{{asset('storage/app_image/mnclogo.png')}}" class="img" alt="MNC Logo">
         </a>
     
         <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" role="navigation">
           <!-- Sidebar toggle button-->
           <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <i class="fas fa-bars"></i>
             <span class="sr-only">Toggle navigation</span>
           </a>
           <!--<button class="btn">
@@ -52,7 +53,7 @@
           <!-- Sidebar user panel (optional) -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="{{asset('storage/app_image/profile_default.png')}}" class="img-circle" alt="User Image">
+              <img src="{{asset('storage/app_image/user-icon.svg')}}" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
               <p>{{ucwords(Auth::user()->name)}}</p>
@@ -151,7 +152,7 @@
       <footer class="main-footer">
         <!-- To the right -->
         <div class="pull-right hidden-xs">
-          Anything you want
+          Audiopost Library Integrated
         </div>
         <!-- Default to the left -->
         <strong>Copyright &copy; 2019 <a href="#">MNC Group</a>.</strong> All rights reserved.

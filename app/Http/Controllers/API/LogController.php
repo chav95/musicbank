@@ -27,13 +27,13 @@ class LogController extends Controller
      */
     public function index()
     {
-        return DB::table('musics')
-            ->select('users.name', 'logs.created_at', 'musics.judul')
-            ->rightJoin('logs', 'logs.item_id', '=', 'musics.id')
-            ->leftJoin('users', 'logs.user_id', '=', 'users.id')
-            ->where('logs.action', 'download')
-            ->paginate(10);
-        //return Log::latest()->paginate(10);
+        // return DB::table('musics')
+        //     ->select('users.name', 'logs.created_at', 'musics.judul')
+        //     ->rightJoin('logs', 'logs.item_id', '=', 'musics.id')
+        //     ->leftJoin('users', 'logs.user_id', '=', 'users.id')
+        //     ->where('logs.action', 'download')
+        //     ->paginate(10);
+        return Log::latest()->with('user')->paginate(10);
     }
 
     /**
@@ -78,9 +78,10 @@ class LogController extends Controller
             $m = $date->format('m');
             $y = $date->format('Y');
             $year_month = $y.'-'.$m;
-            $data = Log::select('item_id', DB::raw('COUNT(item_id) as download'))->with('music')
-                ->where(['created_at', 'LIKE', "{$year_month}%", 'action', '=', 'download music'])
-                ->groupBy('item_id')->orderByRaw('COUNT(*) DESC')->limit(5)->get();
+            $data = Log::select('item_id as music_id', 'item_name as music_judul', DB::raw('COUNT(item_id) as download'))
+                ->where('created_at', 'LIKE', "{$year_month}%")
+                ->where('action', '=', 'download music')
+                ->groupBy('item_id', 'item_name')->orderByRaw('COUNT(*) DESC')->limit(5)->get();
             $result = $data;
         }
         return $result;

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Log extends Model
 {
-    public function music(){
-        return $this->belongsTo('App\Music');
+    public function user(){
+        return $this->belongsTo('App\User');
     }
 }

@@ -2887,12 +2887,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     resetModal: function resetModal() {
-      this.form.playlistName = '';
+      this.form.nama_playlist = '';
     },
     createPlaylist: function createPlaylist() {
       var _this = this;
 
+      console.log(this.form.nama_playlist);
       this.form.post(window.location.origin + '/api/playlist').then(function (res) {
+        console.log(_this.form.nama_playlist);
+
         _this.resetModal();
 
         _this.$alert('Playlist Created', '', 'success');
@@ -2900,18 +2903,14 @@ __webpack_require__.r(__webpack_exports__);
         var postToLog = {
           'item_id': 0,
           'action': 'create playlist',
-          'item_name': _this.form.playlistName
+          'item_name': _this.form.nama_playlist
         };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref) {
-          var data = _ref.data;
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (res) {
           return location.reload();
-        })["catch"](function (_ref2) {
-          var error = _ref2.error;
+        })["catch"](function (_ref) {
+          var error = _ref.error;
           console.error(error);
-
-          if (error.error) {
-            location.reload();
-          }
+          location.reload();
         });
       })["catch"](function (err) {
         _this.$alert('Failed: ' + err.message, '', 'error');
@@ -3142,8 +3141,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       try {
         for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var item = _step.value;
-          //console.log(item.music.judul);
-          categoryLabel.push(item.music.judul);
+          categoryLabel.push(item.music_judul);
           seriesData.push(item.download);
         }
       } catch (err) {
@@ -8048,7 +8046,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.playlist_container{\n  max-height: 500px;\n  overflow: auto;\n}\n#filename_container{\n  max-height: 150px;\n}\n.dropzone{\n  min-height: 200px;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n  outline: 2px dashed grey;\n  outline-offset: -10px;\n  background: lightcyan;\n}\n.dropzone:hover{\n  background: lightblue;\n  color: grey;\n}\n.input-field{\n  opacity: 0;\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  cursor: pointer;\n}\n.dropzone .call-to-action{\n  font-size: 1.2 rem;\n  text-align: center;\n  padding-top: 70px;\n  color: black;\n}\n", ""]);
+exports.push([module.i, "\n.playlist_container{\n  max-height: 400px;\n  overflow: auto;\n}\n#filename_container{\n  max-height: 150px;\n}\n.dropzone{\n  min-height: 200px;\n  padding: 10px 10px;\n  position: relative;\n  cursor: pointer;\n  outline: 2px dashed grey;\n  outline-offset: -10px;\n  background: lightcyan;\n}\n.dropzone:hover{\n  background: lightblue;\n  color: grey;\n}\n.input-field{\n  opacity: 0;\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  cursor: pointer;\n}\n.dropzone .call-to-action{\n  font-size: 1.2 rem;\n  text-align: center;\n  padding-top: 70px;\n  color: black;\n}\n", ""]);
 
 // exports
 
@@ -69336,9 +69334,13 @@ var render = function() {
                               }
                             },
                             [
-                              _c("td", [_vm._v(_vm._s(log.judul))]),
+                              _c("td", [
+                                _vm._v(
+                                  _vm._s(log.action + " - " + log.item_name)
+                                )
+                              ]),
                               _vm._v(" "),
-                              _c("td", [_vm._v(_vm._s(log.name))]),
+                              _c("td", [_vm._v(_vm._s(log.user.name))]),
                               _vm._v(" "),
                               _c("td", [
                                 _vm._v(
@@ -69381,7 +69383,7 @@ var staticRenderFns = [
       _vm._v("\n            Log "),
       _c("br"),
       _vm._v(" "),
-      _c("small", [_vm._v("List Of Downloads")])
+      _c("small", [_vm._v("List Of Activities")])
     ])
   },
   function() {
@@ -69390,11 +69392,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("Downloaded Music")]),
+        _c("th", [_vm._v("Actions")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Downloaded By")]),
+        _c("th", [_vm._v("User")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Downloaded At")])
+        _c("th", [_vm._v("Date")])
       ])
     ])
   },
@@ -70087,52 +70089,6 @@ var render = function() {
                           _vm._v(" "),
                           _c("has-error", {
                             attrs: { form: _vm.form, field: "email" }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "form-group" },
-                        [
-                          _c("label", [_vm._v("Password")]),
-                          _vm._v(" "),
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.password,
-                                expression: "form.password"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            class: {
-                              "is-invalid": _vm.form.errors.has("password")
-                            },
-                            attrs: {
-                              type: "password",
-                              name: "password",
-                              placeholder: "User Password"
-                            },
-                            domProps: { value: _vm.form.password },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "password",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("has-error", {
-                            attrs: { form: _vm.form, field: "password" }
                           })
                         ],
                         1

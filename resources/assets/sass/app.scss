@@ -19,6 +19,10 @@ $fa-font-path:        "../webfonts";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 @import url("https://use.fontawesome.com/releases/v5.11.2/css/all.css");
 
+.main-header .sidebar-toggle:before {
+  content: none;
+}
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);

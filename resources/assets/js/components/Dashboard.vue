@@ -190,8 +190,8 @@
                 let categoryLabel = [];
                 let seriesData = [];
 
-                for(let item of data){ //console.log(item.music.judul);
-                    categoryLabel.push(item.music.judul);
+                for(let item of data){
+                    categoryLabel.push(item.music_judul);
                     seriesData.push(item.download);
                 }
 

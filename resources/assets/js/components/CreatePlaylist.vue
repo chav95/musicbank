@@ -49,26 +49,24 @@
     },
     methods:{
       resetModal(){
-        this.form.playlistName = '';
+        this.form.nama_playlist = '';
       },
-      createPlaylist(){
+      createPlaylist(){ console.log(this.form.nama_playlist);
         this.form.post(window.location.origin+'/api/playlist')
-          .then(res=>{
+          .then(res=>{ console.log(this.form.nama_playlist);
             this.resetModal();
             this.$alert('Playlist Created', '', 'success');
                             
             let postToLog = {
               'item_id': 0,
               'action': 'create playlist',
-              'item_name': this.form.playlistName
+              'item_name': this.form.nama_playlist
             }
             axios.post(window.location.origin+'/api/log', postToLog)
-            .then(({ data }) => location.reload())
+            .then(res => location.reload())
             .catch(({error}) => {
               console.error(error);
-              if(error.error){
               location.reload();
-              }
             });
           }).catch(err=>{
             this.$alert('Failed: '+err.message, '', 'error');

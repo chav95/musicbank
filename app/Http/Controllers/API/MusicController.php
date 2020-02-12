@@ -79,27 +79,73 @@ class MusicController extends Controller
                 if(Storage::disk('ftp')->exists($originalFilename)){
                     return response()->json(array('error' => 'File already exist'), 500);
                 }else{
-                    // UPLOAD TO PROJECT FOLDER TO READ METADATA
-                    // $item->storeAs('public/uploadedMusic', $originalFilename);
-                    // $getID3 = new \getID3;
-                    // return json_encode($getID3->analyze('http://172.18.11.32:8082/aud_uploads/wii shop theme jazz cover.mp3'));
+                    $getID3 = new \getID3;
+                    $metadata = $getID3->analyze($item);
+                    //return json_encode($metadata);
 
                     // UPLOAD TO FTP SERVER
                     //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))));
                     //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, $item)));
-                    Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'));
+                    if(Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))){
+                        $music = new Music;
+                        $music->judul = $filenameOnly;
+                        $music->filename = $originalFilename; //$filename;
+                        $music->uploaded_by = auth('api')->user()->id;
+                        $music->filetype = $extension;
+                        //$music->filesize = $item->getSize();
+
+                        if(isset($metadata['tags']['id3v2']['artist'])){
+                            $music->artis = json_encode($metadata['tags']['id3v2']['artist']);
+                        }
+                        if(isset($metadata['tags']['id3v2']['album'])){
+                            $music->album = json_encode($metadata['tags']['id3v2']['album']);
+                        }
+                        if(isset($metadata['tags']['id3v2']['genre'])){
+                            $music->genre = json_encode($metadata['tags']['id3v2']['genre']);
+                        }
+                        if(isset($metadata['tags']['id3v2']['composer'])){
+                            $music->composer = json_encode($metadata['tags']['id3v2']['composer']);
+                        }
+                        if(isset($metadata['tags']['id3v2']['year'])){
+                            $music->tahun = $metadata['tags']['id3v2']['year'][0];
+                        }
+                        $music->filesize = $metadata['filesize'];
+                        $music->durasi = $metadata['playtime_seconds'];
+                        $music->bit_rate = $metadata['audio']['bitrate'];
+                        $music->sample_rate = $metadata['audio']['sample_rate']; //return json_encode($music);
+
+                        $music->save();
+
+                        $music_id = $music->id;
+                        $playlist_arr = explode(',', $request->playlist);
+                        foreach($playlist_arr as $id){
+                            $music_playlist = new MusicPlaylist;
+                            $music_playlist->music_id = $music_id;
+                            $music_playlist->playlist_id = $id;
+                            $music_playlist->save();
+                        }
+                        
+                        $log = new Log;
+                        $log->item_id = $music->id;
+                        $log->action = 'upload music';
+                        $log->item_name = $originalFilename;
+                        $log->user_id = auth('api')->user()->id;
+                        $log->save();
+                    }else{
+                        return response()->json(array('error' => 'Failed to Upload'), 500);
+                    }
                     //return response()->json(array('upload' => Storage::disk('ftp')->exists($originalFilename)));
 
                     //$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true);
                     //$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('ftp')->get($originalFilename), true); return json_encode($file);
                     //$file = new \wapmorgan\Mp3Info\Mp3Info(url('http://172.18.11.32:8082/aud_uploads/'.str_replace(" ", "%20", str_replace("#", "%23", $originalFilename))), true); return $file->duration;
                     
-                    $music = new Music;
-                    $music->judul = $filenameOnly;
-                    $music->filename = $originalFilename; //$filename;
-                    $music->uploaded_by = auth('api')->user()->id;
-                    $music->filetype = $extension;
-                    $music->filesize = $item->getSize();
+                    // $music = new Music;
+                    // $music->judul = $filenameOnly;
+                    // $music->filename = $originalFilename; //$filename;
+                    // $music->uploaded_by = auth('api')->user()->id;
+                    // $music->filetype = $extension;
+                    // // $music->filesize = $item->getSize();
 
                     // if(isset($file->artist)){
                     //     $music->artis = $file->artist;
@@ -121,23 +167,23 @@ class MusicController extends Controller
                     // $music->bit_rate = $file->bitRate;
                     // $music->sample_rate = $file->sampleRate;
 
-                    $music->save();
+                    // $music->save();
                     
-                    $log = new Log;
-                    $log->item_id = $music->id;
-                    $log->action = 'upload music';
-                    $log->item_name = $originalFilename;
-                    $log->user_id = auth('api')->user()->id;
-                    $log->save();
+                    // $log = new Log;
+                    // $log->item_id = $music->id;
+                    // $log->action = 'upload music';
+                    // $log->item_name = $originalFilename;
+                    // $log->user_id = auth('api')->user()->id;
+                    // $log->save();
 
-                    $music_id = $music->id;
-                    $playlist_arr = explode(',', $request->playlist);
-                    foreach($playlist_arr as $id){
-                        $music_playlist = new MusicPlaylist;
-                        $music_playlist->music_id = $music_id;
-                        $music_playlist->playlist_id = $id;
-                        $music_playlist->save();
-                    }
+                    // $music_id = $music->id;
+                    // $playlist_arr = explode(',', $request->playlist);
+                    // foreach($playlist_arr as $id){
+                    //     $music_playlist = new MusicPlaylist;
+                    //     $music_playlist->music_id = $music_id;
+                    //     $music_playlist->playlist_id = $id;
+                    //     $music_playlist->save();
+                    // }
                 }
             }
             return response()->json(array('success' => true), 200);

@@ -14,7 +14,10 @@
 //Route::get('/login', "homeController@index")->name('login');
 //Route::post('/login-submit', 'homeController@login')->name('login-submit');
 
-Auth::routes();
+//Auth::routes();
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::get('/manage-users', 'HomeController@index')->middleware('can:isAdmin');
 Route::get('{path}',"HomeController@index")->where('path', '([A-z\d\-\/_.]+)?');

@@ -5,23 +5,23 @@
           <div class="card">
             <h2>
               Log <br>
-              <small>List Of Downloads</small>
+              <small>List Of Activities</small>
             </h2>
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0" style="height: 100%;">
               <table class="table table-head-fixed">
                 <thead>
                   <tr>
-                    <th>Downloaded Music</th>
-                    <th>Downloaded By</th>
-                    <th>Downloaded At</th>
+                    <th>Actions</th>
+                    <th>User</th>
+                    <th>Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   <template v-if="logEntry.data.length > 0">
                     <tr  v-for="(log) in logEntry.data" :key="log.id" hover:bg-blue px-4 py2>
-                      <td>{{log.judul}}</td>
-                      <td>{{log.name}}</td>
+                      <td>{{log.action+' - '+log.item_name}}</td>
+                      <td>{{log.user.name}}</td>
                       <td>{{formatDatetime(log.created_at)}}</td>
                     </tr>
                   </template>
