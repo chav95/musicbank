@@ -14,7 +14,7 @@
     <!--<title>{{preg_replace('/\b(\w)|./', '$1', ucwords(str_replace('_', ' ', config('app.name'))))}}</title>-->
     <title>{{ucwords(str_replace('_', ' ', config('app.name')))}}</title>
   </head>
-  <body class="hold-transition skin-blue sidebar-mini fixed">
+  <body class="hold-transition skin-blue fixed sidebar-mini">
     <div class="wrapper" id="app">
       <upload-music></upload-music>
       <create-playlist></create-playlist>

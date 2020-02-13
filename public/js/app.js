@@ -91446,6 +91446,17 @@ var routes = [{
   path: '/manage-users',
   component: __webpack_require__(/*! ./components/Users.vue */ "./resources/assets/js/components/Users.vue")["default"]
 }];
+axios.interceptors.response.use(function (response) {
+  // console.log(response.status);
+  // Check if the user is no longer signed in,
+  // if so then we need them to sign back in.
+  if (response.status === 401) {
+    window.location.href = '/login';
+    return;
+  }
+
+  return response;
+});
 Vue.filter('upText', function (text) {
   if (typeof text !== 'undefined' || text !== null) {
     return text.charAt(0).toUpperCase() + value.slice(1);

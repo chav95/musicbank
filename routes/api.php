@@ -17,11 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request){
     return $request->user();
 });
 
-// Route::middleware(['auth:api'])->group(function (){
-    Route::get('/download/{filename}', 'API\MusicController@download')->name('download');
-// });
+Route::middleware('auth:api')->get('/download/{filename}', 'API\MusicController@download')->name('download');
 
-Route::resources([    
+Route::resources([
     'music' => 'API\MusicController',
     'playlist' => 'API\PlaylistController',
     'log' => 'API\LogController',
@@ -30,12 +28,6 @@ Route::resources([
     'user_type' => 'API\UserTypeController',
     'hak_akses' => 'API\HakAksesController',
     'sendmail' => 'API\SendMailController',
-    /*'sendmail' => function(\Illuminate\Http\Request $request, \Illuminate\Mail\Mailer $mailer){
-        $mailer->to('chavinpradana@gmail.com')->send(new \App\Mail\SendMail($request));
-    }*/
 ]);
 
-/*Route::post('/api/sendmail', function(\Illuminate\Http\Request $request, \Illuminate\Mail\Mailer $mailer){
-    $mailer->to('chavinpradana@gmail.com')->send(new \App\Mail\SendMail($request));
-});*/
 Route::get('/api/sendmail', 'API\SendMailController@mail')->name('sendMail');
