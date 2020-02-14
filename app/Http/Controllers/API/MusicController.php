@@ -363,11 +363,13 @@ class MusicController extends Controller
     public function download($filename){
         $getFile = Storage::disk('ftp')->get($filename);
         Storage::disk('public')->put($filename, $getFile);
-        return url('/storage/'.$filename);
+        //return url('/storage/'.$filename);
+        return url('/uploads/'.$filename);
 
         // return Response::make($getFile, '200', array(
         //     'Content-Type' => 'application/octet-stream',
         //     'Content-Disposition' => 'attachment; filename="'.$filename.'"'
         // ));
+        
     }
 }
