@@ -93,21 +93,6 @@ class WishlistController extends Controller
                 ->get();
         }else if($id == 'get_wishlist'){ //return auth('api')->user()->hak_akses;
             if(auth('api')->user()->hak_akses == 'editor'){
-                /*$self_created = Wishlist::where('user_id', '=', auth('api')->user()->id)
-                    ->orderByRaw("FIELD(status , '0', '1', '-1') ASC")
-                    ->orderBy('created_at', 'DESC')
-                    ->withCount('detail')
-                    ->with('user')
-                    ->paginate(10);
-                $assigned = Wishlist::where('user_id', '=', auth('api')->user()->id)
-                    ->orderByRaw("FIELD(status , '0', '1', '-1') ASC")
-                    ->orderBy('created_at', 'DESC')
-                    ->withCount('detail')
-                    ->with('user')
-                    ->paginate(10);
-                $merged = $self_created->merge($assigned);
-                return $merged->all();*/
-
                 return Wishlist::orderByRaw("FIELD(status , '0', '1', '-1') ASC")
                     ->orderBy('created_at', 'DESC')
                     ->withCount('detail')

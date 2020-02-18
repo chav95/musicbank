@@ -52,22 +52,12 @@ class MusicController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        // $getID3 = new \getID3;
-        // return json_encode($getID3->analyze('http://172.18.11.32:8082/aud_uploads/wii shop theme jazz cover.mp3'));
         $playlist = $request->playlist;
         if($request->hasFile('file_name')){
             $s3Client = new S3Client([
                 'region' => 'us-west-2',
                 'version' => '2006-03-01',
             ]);
-            
-            /*$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/hivi-remaja-official-lyric-video-1578297132.mp3'), true);
-            return (array)$file;*/
-
-            //$xml = new \SimpleXMLElement(Storage::disk('public')->path('Library.xml'), null, true); return $xml;
-            //$xml->load(Storage::disk('public')->path('Library.xml')); //return (array)$xml;
-            //return response()->json($xml->getElementsByTagName('key'));
-            //return "<pre>".htmlspecialchars($xml, ENT_QUOTES, 'UTF-8')."</pre>";
 
             foreach($request->file_name as $item){
                 $originalFilename = trim($item->getClientOriginalName());
@@ -81,11 +71,7 @@ class MusicController extends Controller
                 }else{
                     $getID3 = new \getID3;
                     $metadata = $getID3->analyze($item);
-                    //return json_encode($metadata);
 
-                    // UPLOAD TO FTP SERVER
-                    //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))));
-                    //return response()->json(array('upload' => Storage::disk('ftp')->put($originalFilename, $item)));
                     if(Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))){
                         $music = new Music;
                         $music->judul = $filenameOnly;
@@ -134,71 +120,11 @@ class MusicController extends Controller
                     }else{
                         return response()->json(array('error' => 'Failed to Upload'), 500);
                     }
-                    //return response()->json(array('upload' => Storage::disk('ftp')->exists($originalFilename)));
-
-                    //$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('public')->path('uploadedMusic/'.$filename), true);
-                    //$file = new \wapmorgan\Mp3Info\Mp3Info(Storage::disk('ftp')->get($originalFilename), true); return json_encode($file);
-                    //$file = new \wapmorgan\Mp3Info\Mp3Info(url('http://172.18.11.32:8082/aud_uploads/'.str_replace(" ", "%20", str_replace("#", "%23", $originalFilename))), true); return $file->duration;
-                    
-                    // $music = new Music;
-                    // $music->judul = $filenameOnly;
-                    // $music->filename = $originalFilename; //$filename;
-                    // $music->uploaded_by = auth('api')->user()->id;
-                    // $music->filetype = $extension;
-                    // // $music->filesize = $item->getSize();
-
-                    // if(isset($file->artist)){
-                    //     $music->artis = $file->artist;
-                    // }
-                    // if(isset($file->album)){
-                    //     $music->album = $file->album;
-                    // }
-                    // if(isset($file->genre)){
-                    //     $music->genre = $file->genre;
-                    // }
-                    // if(isset($file->composer)){
-                    //     $music->composer = $file->composer;
-                    // }
-                    // if(isset($file->tahun)){
-                    //     $music->tahun = $file->tahun;
-                    // }
-                    // $music->filesize = $file->audioSize;
-                    // $music->durasi = $file->duration;
-                    // $music->bit_rate = $file->bitRate;
-                    // $music->sample_rate = $file->sampleRate;
-
-                    // $music->save();
-                    
-                    // $log = new Log;
-                    // $log->item_id = $music->id;
-                    // $log->action = 'upload music';
-                    // $log->item_name = $originalFilename;
-                    // $log->user_id = auth('api')->user()->id;
-                    // $log->save();
-
-                    // $music_id = $music->id;
-                    // $playlist_arr = explode(',', $request->playlist);
-                    // foreach($playlist_arr as $id){
-                    //     $music_playlist = new MusicPlaylist;
-                    //     $music_playlist->music_id = $music_id;
-                    //     $music_playlist->playlist_id = $id;
-                    //     $music_playlist->save();
-                    // }
                 }
             }
             return response()->json(array('success' => true), 200);
         }else if($request->act){ //return $request;
-            if($request->act == 'remove_from_playlist'){
-                /*$get_playlist = DB::table('musics')
-                    ->select('di_playlist')
-                    ->where ('id', $request->music_id)
-                    ->get();
-                $di_playlist = str_replace(','.$request->playlist_id, '', $get_playlist[0]->di_playlist);
-                //return $di_playlist;
-                return DB::table('musics')
-                    ->where('id', $request->music_id)
-                    ->update(['di_playlist' => $di_playlist]);*/
-                
+            if($request->act == 'remove_from_playlist'){                
                 return MusicPlaylist::where(['music_id' => $request->music_id, 'playlist_id' => $request->playlist_id])->delete();
             }
             return $request->act;
@@ -237,30 +163,9 @@ class MusicController extends Controller
             //get sorting param
             preg_match('~_(.*?)@~', $id, $param); //get result in $param[1]
             preg_match('~@(.*?)-~', $id, $ascdesc); //return $ascdesc;
-
-            //return $playlist;
-            //return Music::where('di_playlist', 'LIKE', "%$playlist%")->latest()->where('status', '=', '1')->paginate(10);
-            
-            /*return DB::table('playlists')
-                ->select('playlists.nama_playlist', 'music_playlists.id', 'musics.judul', 'musics.path', 'music_playlists.created_at')
-                ->leftJoin('music_playlists', 'music_playlists.playlist_id', '=', 'playlists.id')
-                ->leftJoin('musics', 'music_playlists.music_id', '=', 'musics.id')
-                ->where([
-                    ['playlists.id', '=', $playlist],
-                    ['music_playlists.status', '=', 1],
-                ])
-                ->orderBy($param[1], $ascdesc[1])->orderBy('music_playlists.created_at', 'DESC')->paginate(10);*/
             
             $result = self::flatten(Playlist::where('id', $playlist)->with('music')->with('allChildrenContent')->get(), '');
-            $result = collect($result)->paginate(10); //$result['data'] = json_decode(json_encode($result->items())); //return $result;
-            //is_object($result['data']) ? $result['data'] = $result['data']->toArray() : $result['data'];
-
-            //$result = Music::latest()->where('status', '=', '1')->paginate(3);
-            //return $result;//collect($result)->paginate(10);
-            /*return Playlist::where('id', $playlist)
-                ->with('music')
-                ->with('allChildrenContent')
-                ->paginate(10);*/
+            $result = collect($result)->paginate(10);
         }else if($id == 'getUploadedMusicPerMonth'){
             $result = [];
             
@@ -305,15 +210,9 @@ class MusicController extends Controller
     protected function flatten($object, $path){
         $result = [];
         foreach ($object as $array){
-            //return $array;
             $curr_path = $path.'/'.$array['nama_playlist'];
             foreach($array['music'] as $item){
-                /*$result[] = array_filter($array, function($object){
-                    return ! is_array($object);
-                });*/
                 $item['folder_path'] = $curr_path;
-                //return $item;
-                //result[] = $item;
                 array_push($result, $item);
             }
             $result = array_merge($result, self::flatten($array['allChildrenContent'], $curr_path));         
@@ -365,11 +264,6 @@ class MusicController extends Controller
         Storage::disk('public')->put($filename, $getFile);
         //return url('/storage/'.$filename);
         return url('/uploads/'.$filename);
-
-        // return Response::make($getFile, '200', array(
-        //     'Content-Type' => 'application/octet-stream',
-        //     'Content-Disposition' => 'attachment; filename="'.$filename.'"'
-        // ));
         
     }
 }

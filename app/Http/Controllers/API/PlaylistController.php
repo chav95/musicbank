@@ -27,10 +27,6 @@ class PlaylistController extends Controller
      */
     public function index()
     {
-        /*$playlist = Playlist::all();
-        //$levels = Playlist::distinct()->pluck('level')->orderBy('level', 'asc');
-        return view('layouts.playlist')->with('playlist', $levels);*/
-
         $playlist = new Playlist;
         try{
             $allPlaylist = $playlist->tree();
@@ -160,15 +156,9 @@ class PlaylistController extends Controller
     protected function flatten($object, $path){
         $result = [];
         foreach ($object as $array){
-            //return $array;
             $curr_path = $path.'/'.$array['nama_playlist'];
             foreach($array['music'] as $item){
-                /*$result[] = array_filter($array, function($object){
-                    return ! is_array($object);
-                });*/
                 $item['folder_path'] = $curr_path;
-                //return $item;
-                //result[] = $item;
                 array_push($result, $item);
             }
             $result = array_merge($result, self::flatten($array['allChildrenContent'], $curr_path));         
@@ -209,8 +199,6 @@ class PlaylistController extends Controller
     public function destroy($id)
     {
         self::delete_child_playlist($id);
-        
-        //return Playlist::where('id', $id)->update(['status' => -1]);
     }
 
     protected function delete_child_playlist($id){
