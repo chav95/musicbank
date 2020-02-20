@@ -70,7 +70,7 @@ class MusicController extends Controller
                     return response()->json(array('error' => 'File already exist'), 500);
                 }else{
                     $getID3 = new \getID3;
-                    return $metadata = self::convert_latin1_to_utf8($getID3->analyze($item));
+                    $metadata = self::convert_latin1_to_utf8($getID3->analyze($item));
 
                     if(Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))){
                         $music = new Music;
