@@ -41,7 +41,7 @@
                 </div>
                 <div class="search-container form-group has-feedback has-search">
                   <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                  <input type="text" class="form-control" placeholder="Search" v-model="searchContent">
+                  <input type="text" class="form-control" placeholder="Search" v-model="searchKeyword">
                   <!--<vue-fuse :keys="keys" :list="bikes" :defaultAll="false" :eventName="bikesChanged"></vue-fuse>-->
                 </div>
               </div>
@@ -56,6 +56,7 @@
               </div>
               <table class="table table-head-fixed" id="header-table">
                 <colgroup>
+                  <col width="15px">
                   <col width="652px">
                   <col width="113px">
                   <col width="253px">
@@ -63,12 +64,13 @@
                 </colgroup>
                 <thead>
                   <tr>
-                    <th @click="loadMusics(1, 'judul@ASC')" title="Sort By Title" colspan="2" class="headerButton">Title</th>
-                    <th v-if="$route.params.playlist_id">Playlist</th>
-                    <th @click="loadMusics(1, 'created_at@DESC')" title="Sort By Time Of Upload" class="headerButton">
+                    <th class="table-no">No</th>
+                    <th class="table-title-play text-capitalize" @click="loadMusics(1, 'judul@ASC')" title="Sort By Title" colspan="2">Title</th>
+                    <th class="table-playlist" v-if="$route.params.playlist_id">Playlist</th>
+                    <th class="table-datetime text-capitalize" @click="loadMusics(1, 'created_at@DESC')" title="Sort By Time Of Upload">
                       {{$route.params.playlist_id ? 'Added At' : 'Uploaded At'}}
                     </th>
-                    <th>Modify</th>
+                    <th class="table-modify">Modify</th>
                   </tr>
                 </thead>
               </table>
@@ -76,13 +78,14 @@
             <!-- /.card-header -->
             <div class="card-body table-responsive p-0" style="height: 100%;">
               <!--<pagination :data="musics" @pagination-change-page="getResults"></pagination>-->
-              <table class="table table-head-fixed" id="content-table" :num="searchMusic.length">
+              <table class="table table-head-fixed" id="content-table">
                 <!--<draggable v-model="musics" :options="{group:{judul:musics.judul}, pull:'clone'}" @start="drag=true" :element="'tbody'">-->
                 <tbody>
-                  <template v-if="searchMusic !== '' && searchMusic != 0">
-                    <tr v-for="(music, index) in searchMusic" :key="index" hover:bg-blue px-4 py2>
-                      <td>{{music.judul}}</td>
-                      <td>
+                  <template v-if="displayed_list !== '' && displayed_list != 0">
+                    <tr v-for="(music, index) in displayed_list" :key="index" hover:bg-blue px-4 py2>
+                      <td class="table-no">{{index+1}}</td>
+                      <td class="table-title">{{music.judul}}</td>
+                      <td class="table-play">
                         <button 
                           type="button" class="btn btn-primary playlist-play-btn"
                           @click="playAudio(music.judul, music.filename, music.id, index)"
@@ -91,9 +94,9 @@
                           <i class="fas fa-play-circle nav-icon"></i>
                         </button>
                       </td>
-                      <td v-if="$route.params.playlist_id" class="text-capitalize">{{music.folder_path}}</td>
-                      <td>{{formatDatetime(music.created_at)}}</td>
-                      <td>
+                      <td class="table-playlist text-capitalize" v-if="$route.params.playlist_id">{{music.folder_path}}</td>
+                      <td class="table-datetime">{{formatDatetime(music.created_at)}}</td>
+                      <td class="table-modify">
                         <div v-if="userLogin !== null" class="modify-btn-container">
                           <a v-if="music_crud_right == true" class="modify-btn" title="Add To Playlist"
                             data-toggle="modal" data-target="#PlaylistModal"
@@ -124,8 +127,8 @@
                   <template v-else>
                     <tr>
                       <td colspan="100%">
-                        <h3 class="text-center" v-if="$route.params.playlist_id && musics.length == 0">Playlist Is Empty</h3>
-                        <h3 class="text-center" v-else-if="!$route.params.playlist_id && musics.length == 0">Music Bank Is Empty</h3>
+                        <h3 class="text-center" v-if="$route.params.playlist_id">Playlist Is Empty</h3>
+                        <h3 class="text-center" v-else-if="!$route.params.playlist_id">Music Bank Is Empty</h3>
                         <h3 class="text-center" v-else>No Match Found</h3>
                       </td>
                     </tr>
@@ -181,7 +184,9 @@
 
         autoPlay: false,
         totalMusics: 0,
-        musics:[],
+        musics: [],
+        searchMusic: null,
+        //displayed_list: [],
         fileArr: [],
         judulArr: [],
         dataLoaded: 0,
@@ -191,26 +196,45 @@
 
         sortParam: 'created_at@DESC',
 
-        searchContent: '',
+        searchKeyword: '',
 
         dragMusic: [],
       }
     },
     computed:{
-      searchMusic: function(){
-        if(this.dataLoaded == 1){
-          /*if(typeof(this.musics) === 'object' && this.musics !== null){
-            this.musics = Object.keys(this.musics).map(function(key){
-              return [Number(key), this.musics[key]];
-            });
-          }*/
-          return this.musics.filter((item) => {
-            return item.judul.toLowerCase().match(this.searchContent.toLowerCase());
-          });
-        }else{
-          return [];
-        }
+      playlistID: function(){
+        if(this.$route.params.playlist_id){
+          return this.$route.params.playlist_id;
+        } return 0;
       },
+      displayed_list: function(){
+        if(this.searchMusic === null){
+          return this.musics;
+        } return this.searchMusic;
+      },
+      // searchMusic: function(){
+      //   if(this.dataLoaded == 1){
+      //     if(this.searchKeyword.length > 2){
+      //       return axios.get(window.location.origin+'/api/searchMusic/'+this.searchKeyword+'/'+this.playlistID)
+      //         .then(({data}) => { //console.log(data);
+      //           return data.data;
+      //         })
+      //     } return this.musics;
+      //   } return [];
+
+      //   // if(this.dataLoaded == 1){
+      //   //   /*if(typeof(this.musics) === 'object' && this.musics !== null){
+      //   //     this.musics = Object.keys(this.musics).map(function(key){
+      //   //       return [Number(key), this.musics[key]];
+      //   //     });
+      //   //   }*/
+      //   //   return this.musics.filter((item) => {
+      //   //     return item.judul.toLowerCase().match(this.searchKeyword.toLowerCase());
+      //   //   });
+      //   // }else{
+      //   //   return [];
+      //   // }
+      // },
       music_crud_right: function(){
         if(this.userLogin.user_type === 1 || this.userLogin.user_type === 2 || this.userLogin.hak_akses === 1){
           return true;
@@ -260,10 +284,16 @@
               if(data.error){
                 location.reload();
               }else{
-                if(page > this.page){
-                  this.musics = [...this.musics, ...data.data];
-                }else{
+                // if(page => this.page){
+                //   this.musics = [...this.musics, ...data.data];
+                // }else{
+                //   this.musics = data.data;
+                // }
+
+                if(page == 1){
                   this.musics = data.data;
+                }else{
+                  this.musics = [...this.musics, ...data.data];
                 }
                 this.last_page = data.last_page;
                 //this.file = data.data[0].filename;
@@ -283,10 +313,16 @@
               if(data.error){
                 location.reload();
               }else{ 
-                if(page > this.page){
-                  this.musics = [...this.musics, ...data.data];
-                }else{
+                // if(page => this.page){
+                //   this.musics = [...this.musics, ...data.data];
+                // }else{
+                //   this.musics = data.data;
+                // }
+
+                if(page == 1){
                   this.musics = data.data;
+                }else{
+                  this.musics = [...this.musics, ...data.data];
                 }
                 this.last_page = data.last_page;
                 for(let item of data.data){
@@ -301,10 +337,16 @@
               if(data.error){
                 location.reload();
               }else{
-                if(page > this.page){
-                  this.musics = [...this.musics, ...data.data];
-                }else{
+                // if(page => this.page){
+                //   this.musics = [...this.musics, ...data.data];
+                // }else{
+                //   this.musics = data.data;
+                // }
+
+                if(page == 1){
                   this.musics = data.data;
+                }else{
+                  this.musics = [...this.musics, ...data.data];
                 }
                 this.last_page = data.last_page;
                 //this.musics = [].concat(this.musics, data.data);
@@ -327,7 +369,7 @@
       formatDatetime(datetime){
         return moment(String(datetime)).format('llll');
       },
-      playAudio(judul, path, id, index){ console.log('id: '+id);
+      playAudio(judul, path, id, index){ //console.log('id: '+id);
         if(path){
           this.judul = judul;
           this.file = path;
@@ -342,7 +384,7 @@
           }
           axios.post(window.location.origin+'/api/log', postToLog)
           .then(({ data }) => {
-            console.log(data);
+            //console.log(data);
           })
           .catch(({error}) => {
             console.error(error);
@@ -362,11 +404,13 @@
       },
       download(judul, path, id){
         let filename = path.split('/')[path.split('/').length - 1];
+        let extension = filename.split('.')[filename.split('.').length - 1];
+
         // download from ftp server to project folder
         axios.get(window.location.origin+'/api/download/'+filename).then(res => {
           // downlload from project folder to client
           axios.get(res.data, { responseType: 'blob' }).then(({ data }) => {
-            const blob = new Blob([data], {type: 'audio/mp3'});
+            const blob = new Blob([data], {type: 'audio/'+extension});
             let link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
             link.download = judul;
@@ -379,7 +423,7 @@
             }
             axios.post(window.location.origin+'/api/log', postToLog)
             .then(({ data }) => {
-              console.log(data);
+              //console.log(data);
             })
             .catch(({error}) => {
               console.error(error);
@@ -434,7 +478,7 @@
         }
 
         this.$confirm('Delete '+music_judul+' from '+playlist+'?', '', confirm_type)
-          .then( ()=> { console.log('click');
+          .then( ()=> { //console.log('click');
             if(this.$route.params.playlist_id){
               let patchMusic = {
                 'act': 'remove_from_playlist',
@@ -445,6 +489,7 @@
                 .then(({response}) => {
                   this.$alert(music_judul+' removed from '+playlist+' playlist', '', 'success');
                   this.loadMusics(1);
+                  // location.reload();
                 })
                 .catch(({error}) => {
                   this.$alert(error.message, '', 'error');
@@ -453,7 +498,7 @@
               this.$confirm('This delete action cannot be undone!', '', 'warning')
                 .then( () => {
                   axios.delete(window.location.origin+'/api/music/'+music_id)
-                    .then(({response}) => { console.log(response);
+                    .then(({response}) => { //console.log(response);
                       this.$alert('Delete Successful', '', 'success');
             
                       let postToLog = {
@@ -463,8 +508,9 @@
                       }
                       axios.post(window.location.origin+'/api/log', postToLog)
                       .then(({ data }) => {
-                        console.log(data);
+                        //console.log(data);
                         this.loadMusics(1);
+                        // location.reload();
                       })
                       .catch(({error}) => {
                         console.error(error);
@@ -519,9 +565,22 @@
     watch:{
       '$route.params.playlist_id': function(playlist_id){
         this.musics = [];
+        this.searchKeyword = '';
         this.loadMusics(1);
         this.loadTotalMusics();
-      }, 
+      },
+      searchKeyword: function(value){ //console.log(value);
+        if(this.dataLoaded == 1){
+          if(value.length > 2){
+            axios.get(window.location.origin+'/api/searchMusic/'+this.searchKeyword+'/'+this.playlistID)
+              .then(({data}) => { //console.log(data);
+                this.searchMusic = data;
+              })
+          }else if(value == ''){
+            this.searchMusic = null;
+          }
+        }
+      },
     },
     mounted(){ //this.$session.start(30000);
       axios.get(window.location.origin+'/api/user/getUserLogin').then(({data}) => {

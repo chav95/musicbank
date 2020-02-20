@@ -162,7 +162,7 @@
         return moment(String(datetime)).format('llll');
       },
       getResults(page = 1) {
-        axios.get(window.location.origin+'/api/log?page=' + page)
+        axios.get(window.location.origin+'/api/user?page=' + page)
           .then(response => {
             this.allUser = response.data;
           });

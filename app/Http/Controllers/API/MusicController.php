@@ -51,6 +51,7 @@ class MusicController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request){
         $playlist = $request->playlist;
         if($request->hasFile('file_name')){
@@ -63,14 +64,13 @@ class MusicController extends Controller
                 $originalFilename = trim($item->getClientOriginalName());
                 $extension = $item->getClientOriginalExtension();
                 $filenameOnly = pathinfo($originalFilename, PATHINFO_FILENAME);
-                //$filename = str_slug($filenameOnly).'-'.time().'.'.$extension;
                 $filename = str_slug($filenameOnly).'.'.$extension;
 
                 if(Storage::disk('ftp')->exists($originalFilename)){
                     return response()->json(array('error' => 'File already exist'), 500);
                 }else{
                     $getID3 = new \getID3;
-                    $metadata = $getID3->analyze($item);
+                    return $metadata = self::convert_latin1_to_utf8($getID3->analyze($item));
 
                     if(Storage::disk('ftp')->put($originalFilename, fopen($item, 'r+'))){
                         $music = new Music;
@@ -166,6 +166,9 @@ class MusicController extends Controller
             
             $result = self::flatten(Playlist::where('id', $playlist)->with('music')->with('allChildrenContent')->get(), '');
             $result = collect($result)->paginate(10);
+        }else if(strpos($id, 'searchMusic') !== false){ return $id;
+            $params = str_replace('searchMusic?', '', $id);
+            return $params;
         }else if($id == 'getUploadedMusicPerMonth'){
             $result = [];
             
@@ -205,20 +208,6 @@ class MusicController extends Controller
         }
 
         return $result;
-    }
-
-    protected function flatten($object, $path){
-        $result = [];
-        foreach ($object as $array){
-            $curr_path = $path.'/'.$array['nama_playlist'];
-            foreach($array['music'] as $item){
-                $item['folder_path'] = $curr_path;
-                array_push($result, $item);
-            }
-            $result = array_merge($result, self::flatten($array['allChildrenContent'], $curr_path));         
-        }
-        is_object($result) ? $result = $result->toArray() : $result;
-        return array_filter($result);
     }
 
     /**
@@ -264,6 +253,49 @@ class MusicController extends Controller
         Storage::disk('public')->put($filename, $getFile);
         //return url('/storage/'.$filename);
         return url('/uploads/'.$filename);
-        
+    }
+
+    public function searchMusic($keyword, $playlistID){
+        $keyword = strtolower($keyword);
+        if($playlistID == 0){
+            return Music::latest()->where('status', '=', '1')->whereRaw("LOWER(judul) LIKE '%{$keyword}%'")->get();
+        }else{
+            return self::flatten(Playlist::where('id', $playlistID)->with('music')->with('allChildrenContent')->get(), '', $keyword);
+        }
+    }
+
+    /////////////////////////
+
+    protected function flatten($object, $path, $keyword = ''){
+        $result = [];
+        foreach ($object as $array){
+            $curr_path = $path.'/'.$array['nama_playlist'];
+            foreach($array['music'] as $item){
+                if($keyword === '' || strpos(strtolower($item['judul']), strtolower($keyword)) !== false){
+                    $item['folder_path'] = $curr_path;
+                    array_push($result, $item);
+                }
+            }
+            $result = array_merge($result, self::flatten($array['allChildrenContent'], $curr_path, $keyword));         
+        }
+        is_object($result) ? $result = $result->toArray() : $result;
+        return array_filter($result);
+    }
+
+    protected static function convert_latin1_to_utf8($dat){
+        if(is_string($dat)){
+            return utf8_encode($dat);
+        }else if(is_array($dat)){
+            $ret = [];
+            foreach ($dat as $i => $d) $ret[ $i ] = self::convert_latin1_to_utf8($d);
+    
+            return $ret;
+        }else if(is_object($dat)){
+            foreach ($dat as $i => $d) $dat->$i = self::convert_latin1_to_utf8($d);
+    
+            return $dat;
+        }else{
+            return $dat;
+        }
     }
 }

@@ -2314,6 +2314,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2344,33 +2347,55 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       autoPlay: false,
       totalMusics: 0,
       musics: [],
+      searchMusic: null,
+      //displayed_list: [],
       fileArr: [],
       judulArr: [],
       dataLoaded: 0,
       modal_music_id: 0,
       modal_music_judul: '',
       sortParam: 'created_at@DESC',
-      searchContent: '',
+      searchKeyword: '',
       dragMusic: []
     };
   },
   computed: {
-    searchMusic: function searchMusic() {
-      var _this = this;
-
-      if (this.dataLoaded == 1) {
-        /*if(typeof(this.musics) === 'object' && this.musics !== null){
-          this.musics = Object.keys(this.musics).map(function(key){
-            return [Number(key), this.musics[key]];
-          });
-        }*/
-        return this.musics.filter(function (item) {
-          return item.judul.toLowerCase().match(_this.searchContent.toLowerCase());
-        });
-      } else {
-        return [];
+    playlistID: function playlistID() {
+      if (this.$route.params.playlist_id) {
+        return this.$route.params.playlist_id;
       }
+
+      return 0;
     },
+    displayed_list: function displayed_list() {
+      if (this.searchMusic === null) {
+        return this.musics;
+      }
+
+      return this.searchMusic;
+    },
+    // searchMusic: function(){
+    //   if(this.dataLoaded == 1){
+    //     if(this.searchKeyword.length > 2){
+    //       return axios.get(window.location.origin+'/api/searchMusic/'+this.searchKeyword+'/'+this.playlistID)
+    //         .then(({data}) => { //console.log(data);
+    //           return data.data;
+    //         })
+    //     } return this.musics;
+    //   } return [];
+    //   // if(this.dataLoaded == 1){
+    //   //   /*if(typeof(this.musics) === 'object' && this.musics !== null){
+    //   //     this.musics = Object.keys(this.musics).map(function(key){
+    //   //       return [Number(key), this.musics[key]];
+    //   //     });
+    //   //   }*/
+    //   //   return this.musics.filter((item) => {
+    //   //     return item.judul.toLowerCase().match(this.searchKeyword.toLowerCase());
+    //   //   });
+    //   // }else{
+    //   //   return [];
+    //   // }
+    // },
     music_crud_right: function music_crud_right() {
       if (this.userLogin.user_type === 1 || this.userLogin.user_type === 2 || this.userLogin.hak_akses === 1) {
         return true;
@@ -2388,7 +2413,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.$alert(this.modal_music_judul + ' added to selected ' + type, '', 'success');
     },
     loadTotalMusics: function loadTotalMusics(sortingParam) {
-      var _this2 = this;
+      var _this = this;
 
       if (this.$route.params.playlist_id) {
         //console.log('total playlist');
@@ -2399,7 +2424,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           if (data.status == 403) {
             location.reload();
           } else {
-            _this2.totalMusics = data;
+            _this.totalMusics = data;
           }
         });
       } else {
@@ -2411,13 +2436,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           if (data.error) {
             location.reload();
           } else {
-            _this2.totalMusics = data;
+            _this.totalMusics = data;
           }
         });
       }
     },
     loadMusics: function loadMusics(page) {
-      var _this3 = this;
+      var _this2 = this;
 
       var sortingParam = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'created_at@DESC';
       this.page = page; // if(sortingParam == undefined){
@@ -2433,13 +2458,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           if (data.error) {
             location.reload();
           } else {
-            if (page > _this3.page) {
-              _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+            // if(page => this.page){
+            //   this.musics = [...this.musics, ...data.data];
+            // }else{
+            //   this.musics = data.data;
+            // }
+            if (page == 1) {
+              _this2.musics = data.data;
             } else {
-              _this3.musics = data.data;
+              _this2.musics = [].concat(_toConsumableArray(_this2.musics), _toConsumableArray(data.data));
             }
 
-            _this3.last_page = data.last_page; //this.file = data.data[0].filename;
+            _this2.last_page = data.last_page; //this.file = data.data[0].filename;
 
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
@@ -2450,9 +2480,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 var item = _step.value;
 
                 //console.log(item.filepath);
-                _this3.fileArr.push(item.filename);
+                _this2.fileArr.push(item.filename);
 
-                _this3.judulArr.push(item.judul);
+                _this2.judulArr.push(item.judul);
               }
             } catch (err) {
               _didIteratorError = true;
@@ -2469,7 +2499,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               }
             }
 
-            _this3.dataLoaded = 1;
+            _this2.dataLoaded = 1;
           }
         });
       } else {
@@ -2484,13 +2514,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             if (data.error) {
               location.reload();
             } else {
-              if (page > _this3.page) {
-                _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+              // if(page => this.page){
+              //   this.musics = [...this.musics, ...data.data];
+              // }else{
+              //   this.musics = data.data;
+              // }
+              if (page == 1) {
+                _this2.musics = data.data;
               } else {
-                _this3.musics = data.data;
+                _this2.musics = [].concat(_toConsumableArray(_this2.musics), _toConsumableArray(data.data));
               }
 
-              _this3.last_page = data.last_page;
+              _this2.last_page = data.last_page;
               var _iteratorNormalCompletion2 = true;
               var _didIteratorError2 = false;
               var _iteratorError2 = undefined;
@@ -2499,9 +2534,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 for (var _iterator2 = data.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                   var item = _step2.value;
 
-                  _this3.fileArr.push(item.filename);
+                  _this2.fileArr.push(item.filename);
 
-                  _this3.judulArr.push(item.judul);
+                  _this2.judulArr.push(item.judul);
                 }
               } catch (err) {
                 _didIteratorError2 = true;
@@ -2518,7 +2553,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 }
               }
 
-              _this3.dataLoaded = 1;
+              _this2.dataLoaded = 1;
             }
           });
         } else if (sortingParam == 'created_at') {
@@ -2528,13 +2563,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             if (data.error) {
               location.reload();
             } else {
-              if (page > _this3.page) {
-                _this3.musics = [].concat(_toConsumableArray(_this3.musics), _toConsumableArray(data.data));
+              // if(page => this.page){
+              //   this.musics = [...this.musics, ...data.data];
+              // }else{
+              //   this.musics = data.data;
+              // }
+              if (page == 1) {
+                _this2.musics = data.data;
               } else {
-                _this3.musics = data.data;
+                _this2.musics = [].concat(_toConsumableArray(_this2.musics), _toConsumableArray(data.data));
               }
 
-              _this3.last_page = data.last_page; //this.musics = [].concat(this.musics, data.data);
+              _this2.last_page = data.last_page; //this.musics = [].concat(this.musics, data.data);
 
               var _iteratorNormalCompletion3 = true;
               var _didIteratorError3 = false;
@@ -2544,9 +2584,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 for (var _iterator3 = data.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                   var item = _step3.value;
 
-                  _this3.fileArr.push(item.filename);
+                  _this2.fileArr.push(item.filename);
 
-                  _this3.judulArr.push(item.judul);
+                  _this2.judulArr.push(item.judul);
                 }
               } catch (err) {
                 _didIteratorError3 = true;
@@ -2563,7 +2603,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 }
               }
 
-              _this3.dataLoaded = 1;
+              _this2.dataLoaded = 1;
             }
           });
         }
@@ -2590,8 +2630,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       return moment__WEBPACK_IMPORTED_MODULE_1___default()(String(datetime)).format('llll');
     },
     playAudio: function playAudio(judul, path, id, index) {
-      console.log('id: ' + id);
-
+      //console.log('id: '+id);
       if (path) {
         this.judul = judul;
         this.file = path;
@@ -2603,9 +2642,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           'action': 'play music',
           'item_name': judul
         };
-        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref6) {
+        axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref6) {//console.log(data);
+
           var data = _ref6.data;
-          console.log(data);
         })["catch"](function (_ref7) {
           var error = _ref7.error;
           console.error(error);
@@ -2626,7 +2665,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.judul = this.judulArr[next];
     },
     download: function download(judul, path, id) {
-      var filename = path.split('/')[path.split('/').length - 1]; // download from ftp server to project folder
+      var filename = path.split('/')[path.split('/').length - 1];
+      var extension = filename.split('.')[filename.split('.').length - 1]; // download from ftp server to project folder
 
       axios.get(window.location.origin + '/api/download/' + filename).then(function (res) {
         // downlload from project folder to client
@@ -2635,7 +2675,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }).then(function (_ref8) {
           var data = _ref8.data;
           var blob = new Blob([data], {
-            type: 'audio/mp3'
+            type: 'audio/' + extension
           });
           var link = document.createElement('a');
           link.href = window.URL.createObjectURL(blob);
@@ -2646,9 +2686,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             'action': 'download music',
             'item_name': judul
           };
-          axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {
+          axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref9) {//console.log(data);
+
             var data = _ref9.data;
-            console.log(data);
           })["catch"](function (_ref10) {
             var error = _ref10.error;
             console.error(error);
@@ -2665,7 +2705,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       });
     },
     addToWishlist: function addToWishlist(music_id, music_judul) {
-      var _this4 = this;
+      var _this3 = this;
 
       this.$confirm('Add ' + music_judul + ' to your wishlist?', '', 'question').then(function () {
         var postToWishlist = {
@@ -2674,7 +2714,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         axios.post(window.location.origin + '/api/wishlist', postToWishlist).then(function (_ref12) {
           var response = _ref12.response;
 
-          _this4.$alert(music_judul + ' added to your wishlist', '', 'success');
+          _this3.$alert(music_judul + ' added to your wishlist', '', 'success');
         })["catch"](function (_ref13) {
           var error = _ref13.error;
           console.error(error);
@@ -2697,7 +2737,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.modal_music_judul = music_judul;
     },
     deleteMusic: function deleteMusic(music_id, music_judul) {
-      var _this5 = this;
+      var _this4 = this;
 
       var playlist = 'Music Bank permanently';
       var confirm_type = 'warning';
@@ -2708,32 +2748,32 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
 
       this.$confirm('Delete ' + music_judul + ' from ' + playlist + '?', '', confirm_type).then(function () {
-        console.log('click');
-
-        if (_this5.$route.params.playlist_id) {
+        //console.log('click');
+        if (_this4.$route.params.playlist_id) {
           var patchMusic = {
             'act': 'remove_from_playlist',
             'music_id': music_id,
-            'playlist_id': _this5.$route.params.playlist_id
+            'playlist_id': _this4.$route.params.playlist_id
           };
           axios.post(window.location.origin + '/api/music', patchMusic).then(function (_ref15) {
             var response = _ref15.response;
 
-            _this5.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
+            _this4.$alert(music_judul + ' removed from ' + playlist + ' playlist', '', 'success');
 
-            _this5.loadMusics(1);
+            _this4.loadMusics(1); // location.reload();
+
           })["catch"](function (_ref16) {
             var error = _ref16.error;
 
-            _this5.$alert(error.message, '', 'error');
+            _this4.$alert(error.message, '', 'error');
           });
         } else {
-          _this5.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
+          _this4.$confirm('This delete action cannot be undone!', '', 'warning').then(function () {
             axios["delete"](window.location.origin + '/api/music/' + music_id).then(function (_ref17) {
               var response = _ref17.response;
-              console.log(response);
 
-              _this5.$alert('Delete Successful', '', 'success');
+              //console.log(response);
+              _this4.$alert('Delete Successful', '', 'success');
 
               var postToLog = {
                 'item_id': music_id,
@@ -2742,9 +2782,10 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               };
               axios.post(window.location.origin + '/api/log', postToLog).then(function (_ref18) {
                 var data = _ref18.data;
-                console.log(data);
 
-                _this5.loadMusics(1);
+                //console.log(data);
+                _this4.loadMusics(1); // location.reload();
+
               })["catch"](function (_ref19) {
                 var error = _ref19.error;
                 console.error(error);
@@ -2756,7 +2797,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             })["catch"](function (_ref20) {
               var error = _ref20.error;
 
-              _this5.$alert(error.message, '', 'error');
+              _this4.$alert(error.message, '', 'error');
 
               if (error.error) {
                 location.reload();
@@ -2774,18 +2815,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       });
     },
     deletePlaylist: function deletePlaylist(id, nama_playlist) {
-      var _this6 = this;
+      var _this5 = this;
 
       this.$confirm('Confirm Delete Playlist ' + nama_playlist + ' and all the content?', '', 'error').then(function (res) {
         axios["delete"](window.location.origin + '/api/playlist/' + id).then(function (result) {
-          _this6.$alert('Delete Success', '', 'success');
+          _this5.$alert('Delete Success', '', 'success');
 
           location.reload();
         });
       });
     },
     renamePlaylist: function renamePlaylist(id, nama_playlist) {
-      var _this7 = this;
+      var _this6 = this;
 
       //this.$confirm('Confirm Delete Playlist '+nama_playlist+' and all the content?', '', 'error')
       this.$prompt("Rename Playlist", nama_playlist).then(function (text) {
@@ -2797,7 +2838,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           'playlist_new_name': text
         };
         axios.post(window.location.origin + '/api/playlist', renamePlaylist).then(function (result) {
-          _this7.$alert('Rename Success', '', 'success');
+          _this6.$alert('Rename Success', '', 'success');
 
           location.reload();
         });
@@ -2807,16 +2848,33 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   watch: {
     '$route.params.playlist_id': function $routeParamsPlaylist_id(playlist_id) {
       this.musics = [];
+      this.searchKeyword = '';
       this.loadMusics(1);
       this.loadTotalMusics();
+    },
+    searchKeyword: function searchKeyword(value) {
+      var _this7 = this;
+
+      //console.log(value);
+      if (this.dataLoaded == 1) {
+        if (value.length > 2) {
+          axios.get(window.location.origin + '/api/searchMusic/' + this.searchKeyword + '/' + this.playlistID).then(function (_ref22) {
+            var data = _ref22.data;
+            //console.log(data);
+            _this7.searchMusic = data;
+          });
+        } else if (value == '') {
+          this.searchMusic = null;
+        }
+      }
     }
   },
   mounted: function mounted() {
     var _this8 = this;
 
     //this.$session.start(30000);
-    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref22) {
-      var data = _ref22.data;
+    axios.get(window.location.origin + '/api/user/getUserLogin').then(function (_ref23) {
+      var data = _ref23.data;
       _this8.userLogin = data;
     });
     this.loadMusics(1);
@@ -3729,6 +3787,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       isUploading: false,
       uploadProgress: 0,
       uploadResult: '',
+      totalFilesize: 0,
       sendMail: {
         name: 'Recepient Name',
         title: 'Mail Title',
@@ -3747,7 +3806,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     onFileSelected: function onFileSelected(event) {
-      console.log(event);
+      //console.log(event.target.files);
       this.filenameList = [];
       this.toUpload = new FormData();
       this.selectedFile = event.target.files;
@@ -3757,9 +3816,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.filenameList = ['No File Selected'];
       } else {
         for (var i = 0; i < event.target.files.length; i++) {
+          //console.log(event.target.files[i].size)
+          this.totalFilesize += event.target.files[i].size;
           this.filenameList.push(event.target.files[i].name);
           this.toUpload.append('file_name[' + i + ']', event.target.files[i]);
-        }
+        } //console.log(this.totalFilesize);
+
+      }
+
+      if (this.totalFilesize > 100000000) {
+        //100 mega
+        this.$alert('Total Filesize Must Not Exceed 100MB!', '', 'warning');
       }
     },
     resetModal: function resetModal() {
@@ -3774,37 +3841,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     uploadMusic: function uploadMusic() {
       var _this2 = this;
 
-      //axios.post(window.location.origin+'/api/sendmail', this.sendMail, 'sendMail');
-      //axios.get(window.location.origin+'/api/sendmail');
-      var data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
-
-      if (this.selectedFile === null || this.selectedFile.length === 0) {
-        this.$alert('No Music Choosen', '', 'warning');
-      } else if (this.selectedPlaylistArr.length == 0) {
-        this.$alert('Must Pick At Least 1 Playlist', '', 'warning');
+      if (this.totalFilesize > 100000000) {
+        //100 mega
+        this.$alert('Total Filesize Must Not Exceed 100MB!', '', 'warning');
       } else {
-        this.toUpload.append('playlist', this.selectedPlaylistArr);
-        console.log(this.toUpload);
-        this.isUploading = true;
-        axios.post(window.location.origin + '/api/music', this.toUpload, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          onUploadProgress: function onUploadProgress(uploadEvent) {
-            //console.log('Upload Progress: '+Math.round(uploadEvent.loaded/uploadEvent.total*100)+'%')
-            _this2.uploadProgress = Math.round(uploadEvent.loaded / uploadEvent.total * 100);
-          }
-        }).then(function (res) {
-          _this2.toUpload = new FormData();
+        var data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
 
-          _this2.$alert('Upload Succesful', '', 'success').then();
+        if (this.selectedFile === null || this.selectedFile.length === 0) {
+          this.$alert('No Music Choosen', '', 'warning');
+        } else if (this.selectedPlaylistArr.length == 0) {
+          this.$alert('Must Pick At Least 1 Playlist', '', 'warning');
+        } else {
+          this.toUpload.append('playlist', this.selectedPlaylistArr);
+          console.log(this.toUpload);
+          this.isUploading = true;
+          axios.post(window.location.origin + '/api/music', this.toUpload, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: function onUploadProgress(uploadEvent) {
+              //console.log('Upload Progress: '+Math.round(uploadEvent.loaded/uploadEvent.total*100)+'%')
+              _this2.uploadProgress = Math.round(uploadEvent.loaded / uploadEvent.total * 100);
+            }
+          }).then(function (res) {
+            _this2.toUpload = new FormData();
 
-          _this2.uploadResult = 'success';
-        })["catch"](function (err) {
-          _this2.$alert('Upload Failed: ' + err.message, '', 'error');
+            _this2.$alert('Upload Succesful', '', 'success').then();
 
-          _this2.uploadResult = 'error';
-        });
+            _this2.uploadResult = 'success';
+          })["catch"](function (err) {
+            _this2.$alert('Upload Failed: ' + err.message, '', 'error');
+
+            _this2.uploadResult = 'error';
+          });
+        }
       }
     }
   },
@@ -4013,7 +4083,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios.get(window.location.origin + '/api/log?page=' + page).then(function (response) {
+      axios.get(window.location.origin + '/api/user?page=' + page).then(function (response) {
         _this3.allUser = response.data;
       });
     },
@@ -68571,19 +68641,19 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.searchContent,
-                          expression: "searchContent"
+                          value: _vm.searchKeyword,
+                          expression: "searchKeyword"
                         }
                       ],
                       staticClass: "form-control",
                       attrs: { type: "text", placeholder: "Search" },
-                      domProps: { value: _vm.searchContent },
+                      domProps: { value: _vm.searchKeyword },
                       on: {
                         input: function($event) {
                           if ($event.target.composing) {
                             return
                           }
-                          _vm.searchContent = $event.target.value
+                          _vm.searchKeyword = $event.target.value
                         }
                       }
                     })
@@ -68619,10 +68689,12 @@ var render = function() {
                   _vm._v(" "),
                   _c("thead", [
                     _c("tr", [
+                      _c("th", { staticClass: "table-no" }, [_vm._v("No")]),
+                      _vm._v(" "),
                       _c(
                         "th",
                         {
-                          staticClass: "headerButton",
+                          staticClass: "table-title-play text-capitalize",
                           attrs: { title: "Sort By Title", colspan: "2" },
                           on: {
                             click: function($event) {
@@ -68634,13 +68706,15 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _vm.$route.params.playlist_id
-                        ? _c("th", [_vm._v("Playlist")])
+                        ? _c("th", { staticClass: "table-playlist" }, [
+                            _vm._v("Playlist")
+                          ])
                         : _vm._e(),
                       _vm._v(" "),
                       _c(
                         "th",
                         {
-                          staticClass: "headerButton",
+                          staticClass: "table-datetime text-capitalize",
                           attrs: { title: "Sort By Time Of Upload" },
                           on: {
                             click: function($event) {
@@ -68661,7 +68735,9 @@ var render = function() {
                         ]
                       ),
                       _vm._v(" "),
-                      _c("th", [_vm._v("Modify")])
+                      _c("th", { staticClass: "table-modify" }, [
+                        _vm._v("Modify")
+                      ])
                     ])
                   ])
                 ]
@@ -68679,14 +68755,14 @@ var render = function() {
                   "table",
                   {
                     staticClass: "table table-head-fixed",
-                    attrs: { id: "content-table", num: _vm.searchMusic.length }
+                    attrs: { id: "content-table" }
                   },
                   [
                     _c(
                       "tbody",
                       [
-                        _vm.searchMusic !== "" && _vm.searchMusic != 0
-                          ? _vm._l(_vm.searchMusic, function(music, index) {
+                        _vm.displayed_list !== "" && _vm.displayed_list != 0
+                          ? _vm._l(_vm.displayed_list, function(music, index) {
                               return _c(
                                 "tr",
                                 {
@@ -68698,9 +68774,15 @@ var render = function() {
                                   }
                                 },
                                 [
-                                  _c("td", [_vm._v(_vm._s(music.judul))]),
+                                  _c("td", { staticClass: "table-no" }, [
+                                    _vm._v(_vm._s(index + 1))
+                                  ]),
                                   _vm._v(" "),
-                                  _c("td", [
+                                  _c("td", { staticClass: "table-title" }, [
+                                    _vm._v(_vm._s(music.judul))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "table-play" }, [
                                     _c(
                                       "button",
                                       {
@@ -68733,12 +68815,15 @@ var render = function() {
                                   _vm.$route.params.playlist_id
                                     ? _c(
                                         "td",
-                                        { staticClass: "text-capitalize" },
+                                        {
+                                          staticClass:
+                                            "table-playlist text-capitalize"
+                                        },
                                         [_vm._v(_vm._s(music.folder_path))]
                                       )
                                     : _vm._e(),
                                   _vm._v(" "),
-                                  _c("td", [
+                                  _c("td", { staticClass: "table-datetime" }, [
                                     _vm._v(
                                       _vm._s(
                                         _vm.formatDatetime(music.created_at)
@@ -68746,7 +68831,7 @@ var render = function() {
                                     )
                                   ]),
                                   _vm._v(" "),
-                                  _c("td", [
+                                  _c("td", { staticClass: "table-modify" }, [
                                     _vm.userLogin !== null
                                       ? _c(
                                           "div",
@@ -68870,13 +68955,11 @@ var render = function() {
                           : [
                               _c("tr", [
                                 _c("td", { attrs: { colspan: "100%" } }, [
-                                  _vm.$route.params.playlist_id &&
-                                  _vm.musics.length == 0
+                                  _vm.$route.params.playlist_id
                                     ? _c("h3", { staticClass: "text-center" }, [
                                         _vm._v("Playlist Is Empty")
                                       ])
-                                    : !_vm.$route.params.playlist_id &&
-                                      _vm.musics.length == 0
+                                    : !_vm.$route.params.playlist_id
                                     ? _c("h3", { staticClass: "text-center" }, [
                                         _vm._v("Music Bank Is Empty")
                                       ])
@@ -68911,6 +68994,8 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("colgroup", [
+      _c("col", { attrs: { width: "15px" } }),
+      _vm._v(" "),
       _c("col", { attrs: { width: "652px" } }),
       _vm._v(" "),
       _c("col", { attrs: { width: "113px" } }),

@@ -80,6 +80,7 @@
         isUploading: false,
         uploadProgress: 0,
         uploadResult: '',
+        totalFilesize: 0,
 
         sendMail: {
           name: 'Recepient Name',
@@ -93,7 +94,7 @@
         //axios.get(window.location.origin+'/api/music').then(({data}) => (this.playlist = data));
         axios.get(window.location.origin+'/api/playlist/playlistSelection').then(({data}) => (this.playlistSelect = data));
       },
-      onFileSelected(event){ console.log(event);
+      onFileSelected(event){ //console.log(event.target.files);
         this.filenameList = [];
         this.toUpload = new FormData();
         this.selectedFile = event.target.files;
@@ -102,10 +103,15 @@
         if(event.target.files.length == 0){
           this.filenameList = ['No File Selected'];
         }else{
-          for(let i=0; i<event.target.files.length; i++){
+          for(let i=0; i<event.target.files.length; i++){ //console.log(event.target.files[i].size)
+            this.totalFilesize += event.target.files[i].size;
             this.filenameList.push(event.target.files[i].name);
             this.toUpload.append('file_name['+i+']', event.target.files[i]);
-          }
+          } //console.log(this.totalFilesize);
+        }
+
+        if(this.totalFilesize > 100000000){ //100 mega
+          this.$alert('Total Filesize Must Not Exceed 100MB!', '', 'warning');
         }
       },
       resetModal(){
@@ -118,34 +124,35 @@
         this.selectedPlaylistArr = [];
       },
       uploadMusic(){
-        //axios.post(window.location.origin+'/api/sendmail', this.sendMail, 'sendMail');
-        //axios.get(window.location.origin+'/api/sendmail');
-
-        let data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
-        if(this.selectedFile === null || this.selectedFile.length === 0){
-          this.$alert('No Music Choosen', '', 'warning');
-        }else if(this.selectedPlaylistArr.length == 0){
-          this.$alert('Must Pick At Least 1 Playlist', '', 'warning');
+        if(this.totalFilesize > 100000000){ //100 mega
+          this.$alert('Total Filesize Must Not Exceed 100MB!', '', 'warning');
         }else{
-          this.toUpload.append('playlist', this.selectedPlaylistArr); console.log(this.toUpload);
-          this.isUploading = true;
+          let data = JSON.parse(JSON.stringify(this.selectedPlaylistArr)); //console.log(data);
+          if(this.selectedFile === null || this.selectedFile.length === 0){
+            this.$alert('No Music Choosen', '', 'warning');
+          }else if(this.selectedPlaylistArr.length == 0){
+            this.$alert('Must Pick At Least 1 Playlist', '', 'warning');
+          }else{
+            this.toUpload.append('playlist', this.selectedPlaylistArr); console.log(this.toUpload);
+            this.isUploading = true;
 
-          axios.post(window.location.origin+'/api/music', this.toUpload, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            },
-            onUploadProgress: uploadEvent => {
-              //console.log('Upload Progress: '+Math.round(uploadEvent.loaded/uploadEvent.total*100)+'%')
-              this.uploadProgress = Math.round(uploadEvent.loaded/uploadEvent.total*100);
-            }
-          }).then(res=>{
-            this.toUpload = new FormData();
-            this.$alert('Upload Succesful', '', 'success').then();
-            this.uploadResult = 'success';
-          }).catch(err=>{
-            this.$alert('Upload Failed: '+err.message, '', 'error');
-            this.uploadResult = 'error';
-          });
+            axios.post(window.location.origin+'/api/music', this.toUpload, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              onUploadProgress: uploadEvent => {
+                //console.log('Upload Progress: '+Math.round(uploadEvent.loaded/uploadEvent.total*100)+'%')
+                this.uploadProgress = Math.round(uploadEvent.loaded/uploadEvent.total*100);
+              }
+            }).then(res=>{
+              this.toUpload = new FormData();
+              this.$alert('Upload Succesful', '', 'success').then();
+              this.uploadResult = 'success';
+            }).catch(err=>{
+              this.$alert('Upload Failed: '+err.message, '', 'error');
+              this.uploadResult = 'error';
+            });
+          }
         }
       },
     },

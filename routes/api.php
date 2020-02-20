@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request){
 });
 
 Route::middleware('auth:api')->get('/download/{filename}', 'API\MusicController@download')->name('download');
+Route::middleware('auth:api')->get('/searchMusic/{keyword}/{playlistID}', 'API\MusicController@searchMusic')->name('searchMusic');
 
 Route::resources([
     'music' => 'API\MusicController',
